@@ -1,8 +1,7 @@
 import os
 
-from django.db import models
 from django.contrib.postgres.fields import JSONField
-from django.template.defaultfilters import slugify
+from django.db import models
 from image_cropping import ImageCropField
 from image_cropping import ImageRatioField
 
@@ -17,6 +16,7 @@ def favicon_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = 'favicon.%s' % ext
     return os.path.join('img', instance.slug, filename)
+
 
 def image_path(instance, filename):
     ext = filename.split('.')[-1]
@@ -40,14 +40,14 @@ class Language(Choices):
 
 class PublicationStatusField(models.CharField):
     def __init__(self, *args, **kwargs):
-        return super(PublicationStatusField, self).__init__(
+        super(PublicationStatusField, self).__init__(
             max_length=255,
             choices=PublicationStatus.choices())
 
 
 class LanguageField(models.CharField):
     def __init__(self, *args, **kwargs):
-        return super(LanguageField, self).__init__(
+        super(LanguageField, self).__init__(
             max_length=255,
             choices=Language.choices())
 
@@ -74,7 +74,7 @@ class Page(models.Model):
     description = models.TextField(null=True, blank=True)
 
 
-class Row(models.Model):
+class Section(models.Model):
     page = models.ForeignKey(Page, on_delete=models.CASCADE)
     pub_status = PublicationStatusField()
     order = models.IntegerField(default=1)
@@ -101,9 +101,10 @@ class Cell(models.Model):
 
 class CellPosition(models.Model):
     cell = models.ForeignKey(Cell, on_delete=models.CASCADE)
-    row = models.ForeignKey(Row, on_delete=models.CASCADE)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE)
     x = models.PositiveIntegerField()
     y = models.PositiveIntegerField()
+
 
 class Image(models.Model):
     website = models.ForeignKey(Website, on_delete=models.CASCADE)
