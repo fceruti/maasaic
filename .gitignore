@@ -1,0 +1,5 @@
+.env
+.cache
+.sass-cache
+*.sqlite3
+node_modules
