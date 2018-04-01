@@ -303,6 +303,14 @@
   </div>
 {% endif %}
 
+
+{# Loading area #}
+{% if page_edit_on %}
+  <div id="loading-overlay" class="hidden">
+    <div id="loading-msg"><i class="fa fa-circle-o-notch fa-spin"></i> waiting for response</div>
+  </div>
+{% endif %}
+
 {#<div id="user-panel">#}
 {#  {% if user_is_owner %}#}
 {#    {% if page_edit_on %}#}
