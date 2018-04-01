@@ -1,0 +1,269 @@
+@import 'variables'
+@import 'mixins'
+
+@mixin sidebar-bordered-btn()
+  font-size: $sidebar-bordered-btn-font-size
+  color: $sidebar-bordered-btn-color
+  border: 1px solid $sidebar-bordered-btn-color
+  padding: $sidebar-bordered-btn-padding
+  margin: $sidebar-bordered-btn-margin
+  @include border-radius($sidebar-bordered-btn-border-radius)
+  width: $sidebar-bordered-btn-height
+  float: left
+  cursor: pointer
+  text-align: center
+  &:hover
+    color: $sidebar-bordered-btn-color-active !important
+    border-color: $sidebar-bordered-btn-color-active !important
+
+@mixin sidebar-bordered-btn-grab()
+  @include sidebar-bordered-btn
+  @include cursor-grab
+  &.active
+    @include cursor-grabbing()
+
+
+@mixin sidebar-right-btn()
+  font-size: $sidebar-right-btn-font-size
+  color: $sidebar-right-btn-color
+  height: $sidebar-right-btn-height
+  padding: $sidebar-right-btn-padding
+  float: right
+  cursor: pointer
+  &:hover
+    color: $sidebar-right-btn-active-color !important
+
+#sidebar
+  @include linear-gradient($sidebar-bg...)
+  @include box-shadow($sidebar-box-shadow)
+  border-radius: 10px
+  width: $sidebar-width
+  position: fixed
+  top: 10px
+  right: 10px
+  bottom: 10px
+  z-index: $sidebar-zindex
+  overflow-y: scroll
+
+#sidebar-inner
+  margin: $sidebar-padding
+
+  .sidebar-subtitle
+    font-size: $sidebar-subtitle-font-size
+    color: $sidebar-subtitle-color
+    margin: $sidebar-subtitle-margin
+    text-transform: uppercase
+    font-weight: bold
+    clear: both
+
+    .create-btn
+      float: right
+      border: 1px solid
+      padding: 1px 4px
+      font-size: 10px
+      border-radius: 4px
+      cursor: pointer
+      &:hover
+        color: $primary-color
+
+.sidebar-website
+  margin-bottom: 15px
+  height: 30px
+  .sidebar-website-favicon
+    float: left
+    margin-right: 6px
+    padding: 4px 0
+    width: 32px
+    img
+      width: 32px
+      height: 32px
+  .sidebar-website-content
+    float: left
+    .sidebar-website-name
+      color: $sidebar-website-name-color
+      font-size: $sidebar-website-name-font-size
+      font-weight: bold
+      margin: 0 0 2px
+    .sidebar-website-url
+      color: $sidebar-website-url-color
+      font-size: $sidebar-website-url-font-size
+  .sidebar-page-select-btn
+    @include sidebar-bordered-btn
+  .sidebar-website-edit-btn
+    @include sidebar-right-btn
+
+.sidebar-page
+  margin-bottom: 15px
+  height: 30px
+  .sidebar-page-select-btn
+    @include sidebar-bordered-btn
+  .sidebar-page-edit-btn
+    @include sidebar-right-btn
+  .sidebar-page-content
+    float: left
+    .sidebar-page-select-name
+      font-size: $sidebar-page-name-font-size
+      color: $sidebar-page-name-color
+    .sidebar-page-select-slug
+      font-size: $sidebar-page-slug-font-size
+      color: $sidebar-page-slug-color
+    .sidebar-page-select-name, .sidebar-page-select-slug
+      position: relative
+      top: -2px
+  &:hover
+    .sidebar-page-content
+      .sidebar-page-select-name
+        color: $sidebar-page-name-hover-color
+      .sidebar-page-select-slug
+        color: $sidebar-light-color-light
+    .sidebar-page-select-btn
+      color: $sidebar-bordered-btn-indirect-hover-color
+      border-color: $sidebar-bordered-btn-indirect-hover-color
+    .sidebar-page-edit-btn
+      color: $sidebar-bordered-btn-indirect-hover-color
+
+
+.section-list
+  .section-list-item
+    height: $sidebar-section-item-height
+    clear: both
+    .section-list-item-reorder-btn
+      @include sidebar-bordered-btn-grab
+
+    .section-list-item-text
+      font-size: $sidebar-section-item-text-font-size
+      color: $sidebar-section-item-text-color
+      line-height: $sidebar-section-item-height
+      display: inline
+    .section-list-item-edit-btn, .section-list-item-visibility-btn
+      @include sidebar-right-btn
+    .section-list-item-visibility-btn
+      margin: 0 7px
+
+    &:hover
+      .section-list-item-reorder-btn
+        color: $sidebar-bordered-btn-indirect-hover-color
+        border-color: $sidebar-bordered-btn-indirect-hover-color
+      .section-list-item-text
+        color: $sidebar-section-item-text-hover-color
+      .section-list-item-edit-btn, .section-list-item-visibility-btn
+        color: $sidebar-right-btn-indirect-hover-color
+        border-color: $sidebar-right-btn-indirect-hover-color
+
+.cell-list
+  margin: $sidebar-cell-list-margin
+  .cell-list-item
+    height: $sidebar-cell-item-height
+    margin: $sidebar-cell-item-margin
+    clear: both
+    .cell-list-item-reorder-btn
+      @include sidebar-bordered-btn-grab
+    .cell-list-item-type
+      line-height: $sidebar-cell-item-height
+      color: $sidebar-cell-item-text-color
+      font-size: 14px
+      display: inline
+    .cell-list-item-text
+      font-size: $sidebar-cell-item-text-font-size
+      color: $sidebar-cell-item-text-color
+      display: inline
+      .coordinate
+        font-size: $sidebar-cell-item-text-coordinate-font-size
+        position: relative
+        bottom: 1px
+        margin-right: 1px
+    .cell-list-item-edit-btn, .cell-list-item-visibility-btn
+      @include sidebar-right-btn
+    .cell-list-item-visibility-btn
+      margin: 0 7px
+    &:hover
+      .cell-list-item-reorder-btn
+        color: $sidebar-bordered-btn-indirect-hover-color
+        border-color: $sidebar-bordered-btn-indirect-hover-color
+      .cell-list-item-type
+        color: $sidebar-cell-item-text-hover-color
+      .cell-list-item-edit-btn, .cell-list-item-visibility-btn
+        color: $sidebar-right-btn-indirect-hover-color
+        border-color: $sidebar-right-btn-indirect-hover-color
+      .cell-list-item-text
+        color: $sidebar-cell-item-text-hover-color
+
+// --------------------------------------------------------------------
+// Dropdown
+// --------------------------------------------------------------------
+.sidebar-dropdown-wrapper
+  position: relative
+  &.active
+    .sidebar-dropdown
+      opacity: 1
+      pointer-events: auto
+
+  .sidebar-dropdown
+    position: absolute
+    top: 40px
+    left: 0
+    right: 0
+    z-index: $sidebar-dropdown-zindex
+
+    /* Styles */
+    background: $sidebar-dropdown-bg
+    border: 1px solid $sidebar-dropdown-border-color
+    box-shadow: 0 0 5px rgba(0,0,0,0.1)
+    font-weight: normal
+    transition: all 0.2s ease-in
+    list-style: none
+    border-radius: 4px
+
+    /* Hiding */
+    opacity: 0
+    pointer-events: none
+
+    &:after
+      content: ""
+      width: 0
+      height: 0
+      position: absolute
+      bottom: 100%
+      left: 5px
+      border-width: 0 6px 6px 6px
+      border-style: solid
+      border-color: $sidebar-dropdown-border-color transparent
+
+    &:before
+      content: ""
+      width: 0
+      height: 0
+      position: absolute
+      bottom: 100%
+      left: 3px
+      border-width: 0 8px 8px 8px
+      border-style: solid
+      border-color: $sidebar-dropdown-border-color transparent
+
+    li
+      a
+        display: block
+        padding: 10px
+        text-decoration: none
+        border-bottom: 1px solid $sidebar-dropdown-border-color
+        transition: all 0.1s ease-out
+        .name
+          font-size: $sidebar-dropdown-item-name-font-size
+          color: $sidebar-dropdown-item-name-color
+          display: block
+        .url
+          display: block
+          font-size: $sidebar-dropdown-item-url-font-size
+          color: $sidebar-dropdown-item-url-color
+      &:hover
+        a
+          color: $sidebar-dropdown-item-name-hover-color
+          .name
+            color: $sidebar-dropdown-item-name-hover-color
+          .url
+            color: $sidebar-dropdown-item-url-hover-color
+      &:first-of-type a
+        border-radius: 4px 4px 0 0
+      &:last-of-type a
+        border-radius: 0 0 4px 4px
+        border: none

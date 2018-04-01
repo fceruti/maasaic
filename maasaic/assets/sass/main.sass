@@ -1,0 +1,261 @@
+@import 'variables'
+
+html, body
+  font-family: $font-family
+  color: $text_color
+  font-size: $font-size
+  position: relative
+
+sub
+  vertical-align: sub
+  font-size: smaller
+sup
+  vertical-align: super
+  font-size: small
+em
+  font-style: italic
+strong
+  font-weight: bold
+
+.hidden
+  display: none !important
+
+//$color_1: darken(#CBE86B, 15%)
+//$color_2: #1C140D
+//$color_3: #de4a29
+//$color_4: #542437
+//$color_5: #53777A
+//
+//$text_color: $color_2
+//
+//$primary_color: darken(#CBE86B, 15%)
+//
+//$danger_color: $color_3
+//
+//$n-cols: 5
+//$cell-width: 200px
+//$cell-height: 200px
+//
+//$user-panel-height: 20px
+//$page-width: $n-cols * $cell-width
+//
+//$insert-panel-bg-color: $color_5
+//$insert-cell-border-width: 1px
+//$insert-cell-active-bg-color: $color_5
+//$insert-cell-active-border-color: darken($insert-cell-active-bg-color, 10%)
+//$insert-cell-error-color: red
+//
+//$editor_background_color: white
+
+//body
+//  font-family: 'Roboto', sans-serif
+//  color: $text_color
+//  font-size: 20px
+//
+//sub
+//  vertical-align: sub
+//  font-size: smaller
+//sup
+//  vertical-align: super
+//  font-size: small
+//em
+//  font-style: italic
+//strong
+//  font-weight: bold
+//
+//.hidden
+//  display: none
+//
+//.trumbowyg-box, .trumbowyg-editor
+//  width: 99%
+//
+//.trumbowyg-button-pane
+//  background: none
+//
+//
+//#user-panel
+//  height: $user-panel-height
+//  background: #333
+//
+//.section
+//  .wrapper
+//    width: $page-width
+//    position: relative
+//    margin: auto
+//
+//
+//.cell
+//  position: absolute
+//  overflow: hidden
+//  z-index: 100
+//
+//.insert-cell
+//  position: absolute
+//  z-index: 1000
+//  height: $cell-height
+//  width: $cell-width
+//  opacity: 0.6
+//  &.active
+//    background: $insert-cell-active-bg-color
+//    border: $insert-cell-border-width solid $insert-cell-active-bg-color
+//
+//    &.error
+//      background: lighten($insert-cell-error-color, 40%)
+//      border: $insert-cell-border-width solid lighten($insert-cell-error-color, 20%) !important
+//
+//
+//
+//@for $i from 1 through $n-cols
+//  .cell-width-#{$i}
+//    width: $cell-width * $i
+//
+//  .cell-x-#{$i}
+//    left: $cell-width * ($i - 1)
+//
+//  .insert-cell-x-#{$i}
+//    left: $cell-width * ($i - 1) - ($insert-cell-border-width / 2)
+//
+//@for $i from 1 through 12
+//  .cell-height-#{$i}
+//    height: $cell-height * $i
+//
+//  .cell-y-#{$i}
+//    top: $cell-height * ($i - 1)
+//
+//  .section-height-#{$i}
+//    height: $cell-height * $i
+//
+//  .insert-cell-y-#{$i}
+//    top: $cell-height * ($i - 1) - ($insert-cell-border-width / 2)
+//
+//.insert-cell-panel
+//  height: 60px
+//  width: 180px
+//  background: $insert-panel-bg-color
+//  position: absolute
+//  z-index: 2000
+//  border-radius: 30px
+//  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3)
+//
+//  .insert-cell-btn-container
+//    margin: 10px 10px 10px 0
+//    height: 40px
+//    width: 40px
+//    color: white
+//    float: left
+//
+//    &:first-child
+//      margin-left: 20px
+//
+//    .circle
+//      width: 30px
+//      height: 30px
+//      background: lighten($insert-panel-bg-color, 40%)
+//      border-radius: 50%
+//      text-align: center
+//      margin-left: 5px
+//      margin-bottom: 5px
+//      font-size: 20px
+//      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3)
+//
+//      .fa
+//        margin-top: 5px
+//        color: $insert-panel-bg-color
+//    .text
+//      font-size: 8px
+//      display: block
+//      text-align: center
+//      text-transform: uppercase
+//      color: lighten($insert-panel-bg-color, 40%)
+//
+//    &:hover
+//      cursor: pointer
+//      .text
+//        color: lighten($insert-panel-bg-color, 60%)
+//      .circle
+//        background: lighten($insert-panel-bg-color, 60%)
+//
+//
+//.edit-cell-container
+//  position: absolute
+//  top: 0
+//  right: 0
+//  bottom: 0
+//  left: 0
+//  height: 100vh
+//  min-height: 100%
+//  background: $editor_background_color
+//  z-index: 5000
+//  .edit-cell-popup-wrapper
+//    background: $editor_background_color
+//    width: $page-width
+//    margin: auto
+//    overflow-y: scroll
+//    overflow-x: hidden
+//  .editor-title
+//    font-size: 20px
+//    text-align: center
+//    margin: 40px 0
+//    font-weight: bold
+//    cursor: pointer
+//
+//    .close-button
+//      background: $text_color
+//      border-radius: 50%
+//      color: white
+//      width: 20px
+//      height: 20px
+//      float: right
+//      font-size: 14px
+//      position: relative
+//      top: -5px
+//      line-height: 30px
+//      .fa
+//        text-align: center
+//        position: relative
+//        top: 2px
+//      &:hover
+//        background: $primary_color
+//  .editor-subtitle
+//    font-size: 20px
+//    text-align: center
+//    margin: 20px 0
+//
+//  .trumbowyg-box
+//    width: 700px
+//    margin: auto
+//
+//  #editing-cell
+//    margin: auto
+//    background: white
+//    border: 2px solid #ddd
+//    overflow: hidden
+//
+//  .form-buttons
+//    height: 50px
+//    width: 100%
+//    margin: 40px auto
+//    clear: both
+//    text-align: center
+//
+//    .btn
+//      cursor: pointer
+//      padding: 10px
+//      height: 30px
+//      width: 200px
+//      line-height: 30px
+//      text-align: center
+//      background: $primary_color
+//      color: white
+//      border-radius: 4px
+//      display: inline-block
+//      &:hover
+//        background: darken($primary_color, 10%)
+//      &.link
+//        background: none
+//        &.danger
+//          color: $danger_color
+//          &:hover
+//            color: darken($danger_color, 20%)
+
+

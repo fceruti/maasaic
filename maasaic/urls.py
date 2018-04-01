@@ -14,8 +14,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.urls import include
 from django.urls import path
+from django.urls import re_path
+
+from maasaic.apps.content.views import PageView
+
+from django.views.generic import RedirectView
+favicon_view = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('nested_admin/', include('nested_admin.urls')),
+    path('favicon.ico', favicon_view),
+    re_path('(?P<url>.*)', PageView.as_view(), name='page'),
 ]

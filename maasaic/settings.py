@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import environ
+
+env = environ.Env()
+root_path = environ.Path(__file__) - 2
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -40,12 +44,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # Third party
+    'nested_admin',
+    'compressor',
     'easy_thumbnails',
     'image_cropping',
 
     # Custom apps
     'maasaic.apps.users',
     'maasaic.apps.content',
+    'maasaic.apps.utils',
 ]
 
 MIDDLEWARE = [
@@ -63,7 +70,7 @@ ROOT_URLCONF = 'maasaic.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [root_path('maasaic/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,13 +88,7 @@ WSGI_APPLICATION = 'maasaic.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+DATABASES = {'default': env.db('DJANGO_DATABASE_URL')}
 
 
 # Password validation
@@ -113,6 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
+APPEND_SLASH = False
 
 LANGUAGE_CODE = 'en-us'
 
@@ -129,3 +131,24 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
+ASSETS_PATH = root_path('maasaic/assets')
+NODE_MODULES_PATH = root_path('node_modules')
+STATICFILES_DIRS = [
+    ASSETS_PATH,
+    NODE_MODULES_PATH,
+]
+STATIC_ROOT = root_path('static')
+COMPRESS_PRECOMPILERS = (
+    ('text/coffeescript', 'coffee --compile --stdio'),
+    ('text/less', 'lessc {infile} {outfile}'),
+    ('text/x-sass', 'sass {infile} {outfile}'),
+    ('text/x-scss', 'sass --scss {infile} {outfile}'),
+    ('text/stylus', 'stylus < {infile} > {outfile}'),
+)
+COMPRESS_ENABLED = False
+COMPRESS_OFFLINE = False

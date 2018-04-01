@@ -1,0 +1,82 @@
+@import 'variables'
+@import 'mixins'
+
+.cell
+  &.cell--layer-edit
+    @include transition(border,background 0.2s)
+    @include box-sizing(border-box)
+    border: $edit-cell-border
+    &:hover
+      background: $edit-cell-bg-hover
+      border: $edit-cell-border-hover
+      .edit-cell-ctrl
+        top: 5px
+
+    .edit-cell-inner
+      position: relative
+
+    .edit-cell-ctrl
+      @include transition(top 0.2s)
+      z-index: $edit-cell-ctrl-zindex
+      position: absolute
+      top: -50px
+      right: 5px
+
+      .edit-cell-ctrl-btns
+        @include box-shadow($edit-cell-ctrl-btns-shadow)
+        @include border-radius($edit-cell-ctrl-btns-border-radius)
+        @include border-radius($edit-cell-ctrl-btns-border-radius)
+        height: $edit-cell-ctrl-btns-height
+        background: $edit-cell-ctrl-btns-bg
+        padding: $edit-cell-ctrl-btns-padding
+        float: right
+        .edit-cell-ctrl-btn
+          color: $edit-cell-ctrl-btn-color
+          width: $edit-cell-ctrl-btn-width
+          height: $edit-cell-ctrl-btn-height
+          cursor: pointer
+          text-align: center
+          display: inline
+          float: left
+          .icon
+            font-size: $edit-cell-ctrl-btn-icon-size
+            height: $edit-cell-ctrl-btn-icon-height
+            margin-bottom: $edit-cell-ctrl-btn-icon-margin-bottom
+          .text
+            font-size: $edit-cell-ctrl-btn-text-size
+            text-transform: uppercase
+          &:hover
+            color: $edit-cell-ctrl-btn-color-hover
+
+  &.cell--layer-insert
+    @include transition(border,background 0.2s)
+    @include box-sizing(border-box)
+    @include user-select(none)
+    border: $insert-cell-border
+
+    &.is-inserting
+      background: $insert-cell-bg-hover
+      border: $insert-cell-border-inserting
+    &.edge-top
+      border-top: $insert-cell-border-inserting-edge
+    &.edge-right
+      border-right: $insert-cell-border-inserting-edge
+    &.edge-bottom
+      border-bottom: $insert-cell-border-inserting-edge
+    &.edge-left
+      border-left: $insert-cell-border-inserting-edge
+
+  &.move-cell
+    background: fade-out(green, 0.6)
+  
+.insert-cell-ctrl
+  @include box-shadow($insert-cell-ctrl-shadow)
+  @include border-radius($insert-cell-ctrl-border-radius)
+  width: $insert-cell-ctrl-width
+  height: $insert-cell-ctrl-height
+  background: $insert-cell-ctrl-bg
+  z-index: $insert-cell-ctrl-zindex
+  position: absolute
+
+
+

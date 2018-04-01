@@ -1,0 +1,397 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% load times %}
+{% load cells %}
+
+{% block title %}{{ page.name }} | {{ website.name }}{% endblock %}
+
+{% block body_class %}{% if page_edit_on %}body-edit-page{% endif %}{% endblock %}
+
+{% block extra_css %}
+  <link href="{{ FONTS_URL }}" rel="stylesheet">
+{% endblock %}
+
+{% block extra_js %}
+  {% include 'fonts.html' %}
+{% endblock %}
+
+{% block content %}
+
+<div class="page"
+     data-website-id="{{ page.website.id }}"
+     data-website-pub_status="{{ page.website.pub_status }}"
+     data-website-slug="{{ page.website.slug }}"
+     data-website-name="{{ page.website.name }}"
+     data-website-description="{{ page.website.description }}"
+     data-website-language="{{ page.website.language }}"
+     data-website-page_width="{{ page.website.page_width }}"
+     data-parent_page="{{ page.parent_page.pk }}"
+     data-pub_status="{{ page.pub_status }}"
+     data-name="{{ page.name }}"
+     data-slug="{{ page.slug }}"
+     data-page_width="{{ page.page_width }}"
+     data-description="{{ page.description }}">
+  {% for section in page.visible_sections %}
+    <div class="section
+                section--{{ section.n_columns }}-columns
+                section--{{ section.n_rows }}-rows
+                section--{{ section.cell_height }}-height"
+         style="{% for key, val in section.css.items %}{{ key }}:{{ val }};{% endfor %}"
+         data-pub_status="{{ section.pub_status }}"
+         data-order="{{ section.order }}"
+         data-n_columns="{{ section.n_columns }}"
+         data-height="{{ section.height }}"
+         data-name="{{ section.name }}"
+         data-slug="{{ section.slug }}">
+      <div class="section-inner"
+           style="width: {{ page.get_page_width }}px">
+      {# VIEW LAYER #}
+        <div class="view-layer">
+          {% for cell in section.cell_set.all %}
+            <div class="cell
+                        cell--layer-view
+                        cell--w-{{ cell.w }}
+                        cell--h-{{ cell.h }}
+                        cell--x-{{ cell.x }}
+                        cell--y-{{ cell.y }}"
+                 style="{% for key, val in cell.css.items %}{{ key }}:{{ val }};{% endfor %}"
+                 data-section="{{ section.pk }}"
+                 data-type="{{ cell.cell_type }}"
+                 data-w="{{ cell.w }}"
+                 data-h="{{ cell.h }}"
+                 data-x="{{ cell.x }}"
+                 data-y="{{ cell.y }}">
+              <div class="cell-inner" style="margin: {{ cell.padding }}">
+                {{ cell.draw_content }}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+        {% if page_edit_on %}
+          {# INSERT LAYER #}
+          <div class="insert-layer"
+               data-section="{{ section.id }}">
+            {% for row in section.n_rows|times %}
+              {% for col in section.n_columns|times %}
+                <div class="cell
+                            cell--layer-insert
+                            cell--w-1
+                            cell--h-1
+                            cell--x-{{ col }}
+                            cell--y-{{ row }}"
+                     data-section="{{ section.pk }}"
+                     data-x="{{ col }}"
+                     data-y="{{ row }}">
+                </div>
+              {% endfor %}
+            {% endfor %}
+            <div class="insert-cell-ctrl"
+                 data-section="{{ section.pk }}">
+
+            </div>
+          </div>
+
+          {# EDIT LAYER #}
+          <div class="edit-layer">
+            {% for cell in section.cell_set.all %}
+              <div class="cell
+                          cell--layer-edit
+                          cell--w-{{ cell.w }}
+                          cell--h-{{ cell.h }}
+                          cell--x-{{ cell.x }}
+                          cell--y-{{ cell.y }}"
+                   data-id="{{ cell.pk }}"
+                   data-section="{{ section.pk }}"
+                   data-type="{{ cell.cell_type }}"
+                   data-w="{{ cell.w }}"
+                   data-h="{{ cell.h }}"
+                   data-x="{{ cell.x }}"
+                   data-y="{{ cell.y }}">
+                <div class="edit-cell-inner">
+                  <div class="edit-cell-ctrl">
+                    <div class="edit-cell-ctrl-btns">
+                      <div class="edit-cell-ctrl-btn
+                                  edit-cell-ctrl-btn-move">
+                        <div class="icon">
+                          <i class="fa fa-arrows"></i>
+                        </div>
+                        <span class="text">Move</span>
+                      </div>
+                      <div class="edit-cell-ctrl-btn
+                                  edit-cell-ctrl-btn-edit">
+                        <div class="icon">
+                          <i class="fa fa-edit"></i>
+                        </div>
+                        <span class="text">Edit</span>
+                      </div>
+                      <div class="edit-cell-ctrl-btn
+                                  edit-cell-ctrl-btn-edit">
+                        <div class="icon">
+                          <i class="fa fa-times"></i>
+                        </div>
+                        <span class="text">Delete</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+          {# MOVE LAYER #}
+{#          <div class="move-layer hidden">#}
+{#            {% for row in section.n_rows|times %}#}
+{#              {% for col in section.n_columns|times %}#}
+{#                <div class="cell#}
+{#                            cell--layer-move#}
+{#                            {% insert_cell_class col row section.cell_set.all %}#}
+{#                            cell--w-1#}
+{#                            cell--h-1#}
+{#                            cell--x-{{ col }}#}
+{#                            cell--y-{{ row }}"#}
+{#                     data-section="{{ section.pk }}"#}
+{#                     data-x="{{ col }}"#}
+{#                     data-y="{{ row }}">#}
+{#                </div>#}
+{#              {% endfor %}#}
+{#            {% endfor %}#}
+{#            <div class="cell moving-cell"#}
+{#                 data-section="{{ section.pk }}">#}
+{##}
+{#            </div>#}
+{#          </div>#}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+{# Popups #}
+{% if page_edit_on %}
+<div class="modal hidden" id="website-edit-modal">
+  <div class="modal-header">
+    <div class="modal-close-btn">
+      <i class="fa fa-times"></i>
+    </div>
+    <h2>Modify website</h2>
+  </div>
+  <div class="modal-content"></div>
+  <div class="modal-footer"></div>
+</div>
+{% endif %}
+
+{# Sidebar #}
+{% if page_edit_on %}
+  <div id="sidebar">
+    <div id="sidebar-inner">
+      {# Website #}
+      <h3 class="sidebar-subtitle">
+        Website
+        <span class="create-btn" id="sidebar-add-website-btn">
+          Add <i class="fa fa-plus"></i>
+        </span>
+      </h3>
+      <div class="sidebar-website">
+        <div class="sidebar-website-edit-btn"
+             id="sidebar-edit-website-btn">
+          <i class="fa fa-edit"></i>
+        </div>
+        <div id="website-select-dropdown"
+             class="sidebar-dropdown-wrapper">
+          <div class="sidebar-page-select-btn">
+            <i class="fa fa-angle-down"></i>
+          </div>
+          <ul class="sidebar-dropdown">
+            {% for web in user.website_set.all %}
+              <li><a href="#">
+                <span class="name">{{ web.name }}</span>
+                <span class="url">{{ web.domain }}</span>
+              </a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="sidebar-website-content">
+          <h2 class="sidebar-website-name">{{ website.name }}</h2>
+          <h3 class="sidebar-website-url">{{ website.domain }}</h3>
+        </div>
+      </div>
+
+      {# Page #}
+      <h3 class="sidebar-subtitle">
+        Page
+        <span class="create-btn" id="sidebar-add-page-btn">
+          Add <i class="fa fa-plus"></i>
+        </span>
+      </h3>
+      <div class="sidebar-page">
+        <div class="sidebar-page-edit-btn"
+             id="sidebar-edit-page-btn">
+          <i class="fa fa-edit"></i>
+        </div>
+        <div id="page-select-dropdown"
+             class="sidebar-dropdown-wrapper">
+          <div class="sidebar-page-select-btn">
+            <i class="fa fa-angle-down"></i>
+          </div>
+          <ul class="sidebar-dropdown">
+            {% for page in website.page_set.all %}
+              <li><a href="#">
+                <span class="name">{{ page.name }}</span>
+                <span class="url">{{ page.slug }}</span>
+              </a></li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="sidebar-page-content">
+          <h2 class="sidebar-page-select-name">{{ page.name }}</h2>
+          <h3 class="sidebar-page-select-slug">{{ page.slug }}</h3>
+        </div>
+      </div>
+
+      {# Sections #}
+      <h3 class="sidebar-subtitle">
+        Sections
+        <span class="create-btn">Add <i class="fa fa-plus"></i></span>
+      </h3>
+      <ul class="section-list">
+        {% for section in page.section_set.all %}
+          <li>
+            <div class="section-list-item">
+              <div class="section-list-item-reorder-btn">
+                <i class="fa fa-reorder"></i>
+              </div>
+              <div class="section-list-item-text">
+                {{ section.name }}
+              </div>
+              <div class="section-list-item-edit-btn">
+                <i class="fa fa-edit"></i>
+              </div>
+              <div class="section-list-item-visibility-btn">
+                <i class="fa fa-eye"></i>
+              </div>
+            </div>
+
+            {# Cells #}
+            <ul class="cell-list">
+              {% for cell in section.cell_set.all %}
+                <li class="cell-list-item"
+                    data-section="{{ section.pk }}"
+                    data-cell-id="{{ cell.pk }}">
+                  <div class="cell-list-item-reorder-btn">
+                    <i class="fa fa-reorder"></i>
+                  </div>
+                  <div class="cell-list-item-type">
+                    {% cell_type_icon cell %}
+                  </div>
+                  <div class="cell-list-item-text">
+                    (<span class="coordinate">x</span>{{ cell.x }} <span class="coordinate">y</span>{{ cell.y }}) (<span class="coordinate">w</span>{{ cell.w }} <span class="coordinate">h</span>{{ cell.h }})
+                  </div>
+                  <div class="cell-list-item-edit-btn">
+                    <i class="fa fa-edit"></i>
+                  </div>
+                  <div class="cell-list-item-visibility-btn">
+                    <i class="fa fa-eye"></i>
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endif %}
+
+{#<div id="user-panel">#}
+{#  {% if user_is_owner %}#}
+{#    {% if page_edit_on %}#}
+{#      <a href="{% url 'page' current_page.absolute_url %}">Back to normal mode</a>#}
+{#    {% else %}#}
+{#      <a href="{% url 'page' current_page.absolute_url %}?edit=on">Edit mode</a>#}
+{#    {% endif %}#}
+{#  {% endif %}#}
+{#</div>#}
+{##}
+{#{% if page_edit_on %}#}
+{#  <div id="edit-cell-popup" class="edit-cell-container hidden closable">#}
+{#    <div class="edit-cell-popup-wrapper hidden" id="edit-cell-popup-text" >#}
+{#      <h2 class="editor-title">#}
+{#        <i class="fa fa-font"></i> | Create text cell#}
+{#        <span class="close-button">#}
+{#          <i class="fa fa-times"></i>#}
+{#        </span>#}
+{#      </h2>#}
+{#      <div id="text-editor"></div>#}
+{#      <div class="form">#}
+{#        <div class="form-item">#}
+{#          <div class="label">Padding</div>#}
+{#          <div class="input"><input type="text" /></div>#}
+{#        </div>#}
+{#        <div class="form-item">#}
+{#          <div class="label">Background</div>#}
+{#          <div class="input"><div class="color-picker"></div></div>#}
+{#        </div>#}
+{#      </div>#}
+{#      <h3 class="editor-subtitle">Preview</h3>#}
+{#      <div id="editing-cell"><div id="editing-cell-inner"></div></div>#}
+{#      <div class="form-buttons">#}
+{#        <div class="btn link danger"><i class="fa fa-trash"></i> Delete</div>#}
+{#        <div class="btn">Save</div>#}
+{#      </div>#}
+{#    </div>#}
+{#  </div>#}
+{#{% endif %}#}
+{##}
+{##}
+{#<div class="section section-height-{{ section.height }}" id="section-{{ section.pk }}">#}
+{#  <div class="wrapper">#}
+{#    {% for cell_position in section.cellposition_set.all %}#}
+{#      {% with cell_position.cell as cell %}#}
+{#      <div class="cell cell-width-{{ cell.width }} cell-height-{{ cell.height }} cell-x-{{ cell_position.x }} cell-y-{{ cell_position.y }}"#}
+{#           style="{% for key, val in cell.css.items %}{{ key }}:{{ val }};{% endfor %}"#}
+{#           data-section="{{ section.pk }}"#}
+{#           data-x="{{ cell_position.x }}" data-y="{{ cell_position.y }}"#}
+{#           data-w="{{ cell.width }}" data-h="{{ cell.height }}"#}
+{#           data-type="{{ cell.cell_type }}">#}
+{#        {% if page_edit_on %}#}
+{#          <h1>Lets edit</h1>#}
+{#        {% endif %}#}
+{#      </div>#}
+{#      {% endwith %}#}
+{#    {% endfor %}#}
+{#    {% if page_edit_on %}#}
+{#    {% for row in section.height|times %}#}
+{#      {% for col in N_COLS|times %}#}
+{#        <div class="insert-cell insert-cell-x-{{ col }} insert-cell-y-{{ row }}"#}
+{#             data-section="{{ section.pk }}" data-x="{{ col }}" data-y="{{ row }}">#}
+{#        </div>#}
+{#      {% endfor %}#}
+{#    {% endfor %}#}
+{#      <div class="insert-cell-panel hidden" data-section="{{ section.pk }}">#}
+{#        <div class="insert-cell-btn-container"#}
+{#             id="insert-cell-text-btn"#}
+{#             data-section="{{ section.pk }}">#}
+{#          <div class="circle">#}
+{#            <i class="fa fa-font"></i>#}
+{#          </div>#}
+{#          <span class="text">Text</span>#}
+{#        </div>#}
+{#        <div class="insert-cell-btn-container">#}
+{#          <div class="circle">#}
+{#            <i class="fa fa-camera-retro"></i>#}
+{#          </div>#}
+{#          <span class="text">Image</span>#}
+{#        </div>#}
+{#        <div class="insert-cell-btn-container">#}
+{#          <div class="circle">#}
+{#            <i class="fa fa-youtube"></i>#}
+{#          </div>#}
+{#          <span class="text">Video</span>#}
+{#        </div>#}
+{#      </div>#}
+{#    {% endif %}#}
+{#  </div>#}
+{#</div>#}
+
+{% endblock %}
