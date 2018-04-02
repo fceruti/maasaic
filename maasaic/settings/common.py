@@ -14,7 +14,7 @@ import os
 import environ
 
 env = environ.Env()
-root_path = environ.Path(__file__) - 2
+root_path = environ.Path(__file__) - 3
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -65,7 +65,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'maasaic.urls'
+ROOT_URLCONF = 'maasaic.urls.%s' % env('DJANGO_ENV')
 
 TEMPLATES = [
     {

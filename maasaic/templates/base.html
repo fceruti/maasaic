@@ -4,6 +4,7 @@
 <html>
   <head>
     <title>{% block title %}Maasaic{% endblock %}</title>
+    <meta charset="UTF-8">
     {% compress css file maasaic %}
       <link href="{% static 'sass/libs/reset.sass' %}" type="text/x-sass" rel="stylesheet"/>
 {#      <link href="{% static 'fonts/roboto/css/fonts.css' %}" type="text/css" rel="stylesheet"/>#}
@@ -23,16 +24,17 @@
 
     {% compress js file maasaic %}
       <script src="{% static 'jquery/dist/jquery.min.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'trumbowyg/dist/trumbowyg.min.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'trumbowyg/dist/plugins/colors/trumbowyg.colors.min.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'js/trumbowyg.lineheight.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'js/trombowya.fontsize.js' %}"  type="text/javascript"></script>
+{#      <script src="{% static 'trumbowyg/dist/trumbowyg.min.js' %}"  type="text/javascript"></script>#}
+{#      <script src="{% static 'trumbowyg/dist/plugins/colors/trumbowyg.colors.min.js' %}"  type="text/javascript"></script>#}
+{#      <script src="{% static 'js/trumbowyg.lineheight.js' %}"  type="text/javascript"></script>#}
+{#      <script src="{% static 'js/trombowya.fontsize.js' %}"  type="text/javascript"></script>#}
 {#      <script src="{% static 'js/trombowya.fontsize.js' %}"  type="text/javascript"></script>#}
       <script src="{% static 'js/event-bus.js' %}"  type="text/javascript"></script>
       <script src="{% static 'js/page.js' %}"  type="text/javascript"></script>
       <script src="{% static 'js/sidebar.js' %}"  type="text/javascript"></script>
       <script src="{% static 'js/modals.js' %}"  type="text/javascript"></script>
       <script src="{% static 'js/loading.js' %}"  type="text/javascript"></script>
+      <script src="{% static 'js/forms.js' %}"  type="text/javascript"></script>
       <script type="text/javascript">
         $(document).ready(function(){
           EventBus.fire(HTML_INJECTED);
@@ -42,8 +44,6 @@
     {% block extra_js %}{% endblock %}
   </head>
   <body class="{% block body_class %}{% endblock %}">
-    {% block content %}
-
-    {% endblock %}
+    {% block content %}{% endblock %}
   </body>
 </html>

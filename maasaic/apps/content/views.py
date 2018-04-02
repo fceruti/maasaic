@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-from django.views.generic import FormView
+from django.views.generic import UpdateView
 
 from maasaic.apps.content.models import Website
 from maasaic.apps.content.models import Page
@@ -8,6 +8,8 @@ from maasaic.apps.content.models import Section
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils.functional import cached_property
+
 from django.contrib import messages
 
 
@@ -39,11 +41,11 @@ FONTS_URL = "https://fonts.googleapis.com/css?family=Amatic+SC|Cinzel|Covered+By
 class PageView(TemplateView):
     template_name = 'page.html'
 
-    @property
+    @cached_property
     def website(self):
         return Website.objects.get()
 
-    @property
+    @cached_property
     def tree(self):
         parts = self.kwargs['url'].split('/')
         pages = []
@@ -57,13 +59,12 @@ class PageView(TemplateView):
             pages.append(page)
         return pages
 
-    @property
+    @cached_property
     def page(self):
         return self.tree[-1]
 
     def get_context_data(self, **kwargs):
         context = super(PageView, self).get_context_data(**kwargs)
-
         context['FONTS'] = FONTS
         context['FONTS_URL'] = FONTS_URL
         context['website'] = self.website
@@ -79,16 +80,24 @@ class PageView(TemplateView):
         return context
 
 
-class SectionVisibilityUpdateView(FormView):
+class SectionVisibilityUpdateView(UpdateView):
     form_class = SectionVisibilityForm
     http_method_names = ['post']
 
-    def get_success_url(self):
+    def get_object(self, queryset=None):
         section = get_object_or_404(Section, pk=self.kwargs['section_pk'])
-        return reverse('page', args=[section.page.absolute_path])
+        return section
+
+    def get_success_url(self):
+        section = self.get_object()
+        url = section.page.absolute_path + '?edit=on'
+        return url
+
+    def form_valid(self, form):
+        form.save(commit=True)
+        return HttpResponseRedirect(redirect_to=self.get_success_url())
 
     def form_invalid(self, form):
         messages.error(self.request, form.errors)
-        url = self.get_success_url()
-        return HttpResponseRedirect(redirect_to=url)
+        return HttpResponseRedirect(redirect_to=self.get_success_url())
 

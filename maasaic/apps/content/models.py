@@ -1,7 +1,7 @@
 import os
 from django.conf import settings
 from urllib.parse import urljoin
-
+from django.utils.functional import cached_property
 from django.contrib.postgres.fields import JSONField
 from django.db import models
 from image_cropping import ImageCropField
@@ -131,6 +131,7 @@ class Page(models.Model):
             .filter(is_visible=True)\
             .order_by('-order')
 
+    @cached_property
     def absolute_path(self):
         slug = '/' if self.slug is None else self.slug
         if self.parent_page is None:

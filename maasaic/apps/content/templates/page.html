@@ -17,6 +17,9 @@
 {% endblock %}
 
 {% block content %}
+{% if page_edit_on %}
+  <div id="js-ajax-container">
+{% endif %}
 
 <div class="page"
      data-website-id="{{ page.website.id }}"
@@ -163,22 +166,22 @@
 {#          </div>#}
         {% endif %}
       </div>
-    {% endfor %}
-  </div>
+    </div>
+  {% endfor %}
 </div>
 
 {# Popups #}
 {% if page_edit_on %}
-<div class="modal hidden" id="js-website-edit-modal">
-  <div class="modal-header">
-    <div class="modal-close-btn">
-      <i class="fa fa-times"></i>
+  <div class="modal hidden" id="js-website-edit-modal">
+    <div class="modal-header">
+      <div class="modal-close-btn">
+        <i class="fa fa-times"></i>
+      </div>
+      <h2>Modify website</h2>
     </div>
-    <h2>Modify website</h2>
+    <div class="modal-content"></div>
+    <div class="modal-footer"></div>
   </div>
-  <div class="modal-content"></div>
-  <div class="modal-footer"></div>
-</div>
 {% endif %}
 
 {# Sidebar #}
@@ -254,7 +257,7 @@
         </div>
         <div class="sidebar-item-content">
           <h2 class="name">{{ page.name }}</h2>
-          <h3 class="description"><{{ page.absolute_path }}/h3>
+          <h3 class="description">{{ page.absolute_path }}</h3>
         </div>
       </div>
       {# Sections #}
@@ -277,11 +280,12 @@
                 </div>
               </div>
               <div class="sidebar-item-option right">
-                <form method="{% url 'section_visibility_update' section.pk %}" action="post">
+                <form method="post" action="{% url 'section_visibility_update' section.pk %}" class="js-ajax-form">
                   {% csrf_token %}
-                  <input type="hidden" name="is_visible" value="{% if section.is_visible %}false{% else %}true{% endif %}" />
+                  <input type="hidden" name="is_visible" value="{% if section.is_visible %}False{% else %}True{% endif %}" />
                   <button class="sidebar-option-btn" type="submit">
-                    <i class="fa fa-eye"></i>
+                    {% if section.is_visible %}<i class="fa fa-eye"></i>
+                    {% else %}<i class="fa fa-eye-slash"></i>{% endif %}
                   </button>
                 </form>
               </div>
@@ -316,7 +320,6 @@
                     <div class="sidebar-item-content">
                       <h2 class="name">{% cell_type_icon cell %} | No text</h2>
                       <h3 class="description"><span class="coordinate">x:</span> {{ cell.x }}, <span class="coordinate">y:</span> {{ cell.y }}, <span class="coordinate">w:</span> {{ cell.w }}, <span class="coordinate">h:</span> {{ cell.h }}</h3>
-
                     </div>
                   </div>
                 </li>
@@ -329,103 +332,15 @@
   </div>
 {% endif %}
 
-
-{# Loading area #}
+{# js-ajax-container #}
 {% if page_edit_on %}
-  <div id="loading-overlay" class="hidden">
-    <div id="loading-msg"><i class="fa fa-circle-o-notch fa-spin"></i> waiting for response</div>
   </div>
 {% endif %}
 
-{#<div id="user-panel">#}
-{#  {% if user_is_owner %}#}
-{#    {% if page_edit_on %}#}
-{#      <a href="{% url 'page' current_page.absolute_url %}">Back to normal mode</a>#}
-{#    {% else %}#}
-{#      <a href="{% url 'page' current_page.absolute_url %}?edit=on">Edit mode</a>#}
-{#    {% endif %}#}
-{#  {% endif %}#}
-{#</div>#}
-{##}
-{#{% if page_edit_on %}#}
-{#  <div id="edit-cell-popup" class="edit-cell-container hidden closable">#}
-{#    <div class="edit-cell-popup-wrapper hidden" id="edit-cell-popup-text" >#}
-{#      <h2 class="editor-title">#}
-{#        <i class="fa fa-font"></i> | Create text cell#}
-{#        <span class="close-button">#}
-{#          <i class="fa fa-times"></i>#}
-{#        </span>#}
-{#      </h2>#}
-{#      <div id="text-editor"></div>#}
-{#      <div class="form">#}
-{#        <div class="form-item">#}
-{#          <div class="label">Padding</div>#}
-{#          <div class="input"><input type="text" /></div>#}
-{#        </div>#}
-{#        <div class="form-item">#}
-{#          <div class="label">Background</div>#}
-{#          <div class="input"><div class="color-picker"></div></div>#}
-{#        </div>#}
-{#      </div>#}
-{#      <h3 class="editor-subtitle">Preview</h3>#}
-{#      <div id="editing-cell"><div id="editing-cell-inner"></div></div>#}
-{#      <div class="form-buttons">#}
-{#        <div class="btn link danger"><i class="fa fa-trash"></i> Delete</div>#}
-{#        <div class="btn">Save</div>#}
-{#      </div>#}
-{#    </div>#}
-{#  </div>#}
-{#{% endif %}#}
-{##}
-{##}
-{#<div class="section section-height-{{ section.height }}" id="section-{{ section.pk }}">#}
-{#  <div class="wrapper">#}
-{#    {% for cell_position in section.cellposition_set.all %}#}
-{#      {% with cell_position.cell as cell %}#}
-{#      <div class="cell cell-width-{{ cell.width }} cell-height-{{ cell.height }} cell-x-{{ cell_position.x }} cell-y-{{ cell_position.y }}"#}
-{#           style="{% for key, val in cell.css.items %}{{ key }}:{{ val }};{% endfor %}"#}
-{#           data-section="{{ section.pk }}"#}
-{#           data-x="{{ cell_position.x }}" data-y="{{ cell_position.y }}"#}
-{#           data-w="{{ cell.width }}" data-h="{{ cell.height }}"#}
-{#           data-type="{{ cell.cell_type }}">#}
-{#        {% if page_edit_on %}#}
-{#          <h1>Lets edit</h1>#}
-{#        {% endif %}#}
-{#      </div>#}
-{#      {% endwith %}#}
-{#    {% endfor %}#}
-{#    {% if page_edit_on %}#}
-{#    {% for row in section.height|times %}#}
-{#      {% for col in N_COLS|times %}#}
-{#        <div class="insert-cell insert-cell-x-{{ col }} insert-cell-y-{{ row }}"#}
-{#             data-section="{{ section.pk }}" data-x="{{ col }}" data-y="{{ row }}">#}
-{#        </div>#}
-{#      {% endfor %}#}
-{#    {% endfor %}#}
-{#      <div class="insert-cell-panel hidden" data-section="{{ section.pk }}">#}
-{#        <div class="insert-cell-btn-container"#}
-{#             id="insert-cell-text-btn"#}
-{#             data-section="{{ section.pk }}">#}
-{#          <div class="circle">#}
-{#            <i class="fa fa-font"></i>#}
-{#          </div>#}
-{#          <span class="text">Text</span>#}
-{#        </div>#}
-{#        <div class="insert-cell-btn-container">#}
-{#          <div class="circle">#}
-{#            <i class="fa fa-camera-retro"></i>#}
-{#          </div>#}
-{#          <span class="text">Image</span>#}
-{#        </div>#}
-{#        <div class="insert-cell-btn-container">#}
-{#          <div class="circle">#}
-{#            <i class="fa fa-youtube"></i>#}
-{#          </div>#}
-{#          <span class="text">Video</span>#}
-{#        </div>#}
-{#      </div>#}
-{#    {% endif %}#}
-{#  </div>#}
-{#</div>#}
-
+{# loading #}
+<div id="loading-overlay" class="hidden">
+  <div id="loading-msg">
+    <i class="fa fa-circle-o-notch fa-spin"></i> waiting for response
+  </div>
+</div>
 {% endblock %}
