@@ -169,7 +169,7 @@
 
 {# Popups #}
 {% if page_edit_on %}
-<div class="modal hidden" id="website-edit-modal">
+<div class="modal hidden" id="js-website-edit-modal">
   <div class="modal-header">
     <div class="modal-close-btn">
       <i class="fa fa-times"></i>
@@ -185,90 +185,109 @@
 {% if page_edit_on %}
   <div id="sidebar">
     <div id="sidebar-inner">
+
       {# Website #}
-      <h3 class="sidebar-subtitle">
+      <h3 class="sidebar-title">
         Website
-        <span class="create-btn" id="sidebar-add-website-btn">
+        <span class="title-btn" id="js-sidebar-website-add-btn">
           Add <i class="fa fa-plus"></i>
         </span>
       </h3>
-      <div class="sidebar-website">
-        <div class="sidebar-website-edit-btn"
-             id="sidebar-edit-website-btn">
-          <i class="fa fa-edit"></i>
-        </div>
-        <div id="website-select-dropdown"
-             class="sidebar-dropdown-wrapper">
-          <div class="sidebar-page-select-btn">
-            <i class="fa fa-angle-down"></i>
+      <div class="sidebar-item">
+        <div class="sidebar-item-option left">
+          <div class="sidebar-dropdown-wrapper"
+               id="js-website-select-dropdown">
+            <div class="sidebar-option-btn bordered">
+              <i class="fa fa-angle-down"></i>
+            </div>
+            <ul class="sidebar-dropdown">
+              {% for web in user.website_set.all %}
+                <li><a href="#">
+                  <span class="name">{{ web.name }}</span>
+                  <span class="description">{{ web.domain }}</span>
+                </a></li>
+              {% endfor %}
+            </ul>
           </div>
-          <ul class="sidebar-dropdown">
-            {% for web in user.website_set.all %}
-              <li><a href="#">
-                <span class="name">{{ web.name }}</span>
-                <span class="url">{{ web.domain }}</span>
-              </a></li>
-            {% endfor %}
-          </ul>
         </div>
-        <div class="sidebar-website-content">
-          <h2 class="sidebar-website-name">{{ website.name }}</h2>
-          <h3 class="sidebar-website-url">{{ website.domain }}</h3>
+        <div class="sidebar-item-option right">
+          <div class="sidebar-option-btn"
+               id="js-sidebar-website-edit-btn">
+            <i class="fa fa-edit"></i>
+          </div>
+        </div>
+        <div class="sidebar-item-content">
+          <h2 class="name">{{ website.name }}</h2>
+          <h3 class="description">{{ website.domain }}</h3>
         </div>
       </div>
 
       {# Page #}
-      <h3 class="sidebar-subtitle">
+      <h3 class="sidebar-title">
         Page
-        <span class="create-btn" id="sidebar-add-page-btn">
+        <span class="title-btn" id="js-sidebar-page-add-btn">
           Add <i class="fa fa-plus"></i>
         </span>
       </h3>
-      <div class="sidebar-page">
-        <div class="sidebar-page-edit-btn"
-             id="sidebar-edit-page-btn">
-          <i class="fa fa-edit"></i>
-        </div>
-        <div id="page-select-dropdown"
-             class="sidebar-dropdown-wrapper">
-          <div class="sidebar-page-select-btn">
-            <i class="fa fa-angle-down"></i>
+      <div class="sidebar-item">
+        <div class="sidebar-item-option left">
+          <div class="sidebar-dropdown-wrapper"
+               id="js-page-select-dropdown">
+            <div class="sidebar-option-btn bordered">
+              <i class="fa fa-angle-down"></i>
+            </div>
+            <ul class="sidebar-dropdown">
+              {% for page in website.page_set.all %}
+                <li><a href="#">
+                  <span class="name">{{ page.name }}</span>
+                  <span class="url">{{ page.slug }}</span>
+                </a></li>
+              {% endfor %}
+            </ul>
           </div>
-          <ul class="sidebar-dropdown">
-            {% for page in website.page_set.all %}
-              <li><a href="#">
-                <span class="name">{{ page.name }}</span>
-                <span class="url">{{ page.slug }}</span>
-              </a></li>
-            {% endfor %}
-          </ul>
         </div>
-        <div class="sidebar-page-content">
-          <h2 class="sidebar-page-select-name">{{ page.name }}</h2>
-          <h3 class="sidebar-page-select-slug">{{ page.slug }}</h3>
+        <div class="sidebar-item-option right">
+          <div class="sidebar-option-btn"
+               id="js-sidebar-edit-page-btn">
+            <i class="fa fa-edit"></i>
+          </div>
+        </div>
+        <div class="sidebar-item-content">
+          <h2 class="name">{{ page.name }}</h2>
+          <h3 class="description"><{{ page.absolute_path }}/h3>
         </div>
       </div>
-
       {# Sections #}
-      <h3 class="sidebar-subtitle">
+      <h3 class="sidebar-title">
         Sections
-        <span class="create-btn">Add <i class="fa fa-plus"></i></span>
+        <span class="title-btn">Add <i class="fa fa-plus"></i></span>
       </h3>
       <ul class="section-list">
         {% for section in page.section_set.all %}
           <li>
-            <div class="section-list-item">
-              <div class="section-list-item-reorder-btn">
-                <i class="fa fa-reorder"></i>
+            <div class="sidebar-item">
+              <div class="sidebar-item-option left">
+                <div class="sidebar-option-btn bordered grab">
+                  <i class="fa fa-reorder"></i>
+                </div>
               </div>
-              <div class="section-list-item-text">
-                {{ section.name }}
+              <div class="sidebar-item-option right">
+                <div class="sidebar-option-btn">
+                  <i class="fa fa-edit"></i>
+                </div>
               </div>
-              <div class="section-list-item-edit-btn">
-                <i class="fa fa-edit"></i>
+              <div class="sidebar-item-option right">
+                <form method="{% url 'section_visibility_update' section.pk %}" action="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="is_visible" value="{% if section.is_visible %}false{% else %}true{% endif %}" />
+                  <button class="sidebar-option-btn" type="submit">
+                    <i class="fa fa-eye"></i>
+                  </button>
+                </form>
               </div>
-              <div class="section-list-item-visibility-btn">
-                <i class="fa fa-eye"></i>
+              <div class="sidebar-item-content">
+                <h2 class="name">{{ section.name }}</h2>
+                <h3 class="description">#{{ section.order }}</h3>
               </div>
             </div>
 
@@ -278,20 +297,27 @@
                 <li class="cell-list-item"
                     data-section="{{ section.pk }}"
                     data-cell-id="{{ cell.pk }}">
-                  <div class="cell-list-item-reorder-btn">
-                    <i class="fa fa-reorder"></i>
-                  </div>
-                  <div class="cell-list-item-type">
-                    {% cell_type_icon cell %}
-                  </div>
-                  <div class="cell-list-item-text">
-                    (<span class="coordinate">x</span>{{ cell.x }} <span class="coordinate">y</span>{{ cell.y }}) (<span class="coordinate">w</span>{{ cell.w }} <span class="coordinate">h</span>{{ cell.h }})
-                  </div>
-                  <div class="cell-list-item-edit-btn">
-                    <i class="fa fa-edit"></i>
-                  </div>
-                  <div class="cell-list-item-visibility-btn">
-                    <i class="fa fa-eye"></i>
+                  <div class="sidebar-item">
+                    <div class="sidebar-item-option left">
+                      <div class="sidebar-option-btn bordered grab">
+                        <i class="fa fa-reorder"></i>
+                      </div>
+                    </div>
+                    <div class="sidebar-item-option right">
+                      <div class="sidebar-option-btn">
+                        <i class="fa fa-edit"></i>
+                      </div>
+                    </div>
+                    <div class="sidebar-item-option right">
+                      <div class="sidebar-option-btn">
+                        <i class="fa fa-eye"></i>
+                      </div>
+                    </div>
+                    <div class="sidebar-item-content">
+                      <h2 class="name">{% cell_type_icon cell %} | No text</h2>
+                      <h3 class="description"><span class="coordinate">x:</span> {{ cell.x }}, <span class="coordinate">y:</span> {{ cell.y }}, <span class="coordinate">w:</span> {{ cell.w }}, <span class="coordinate">h:</span> {{ cell.h }}</h3>
+
+                    </div>
                   </div>
                 </li>
               {% endfor %}

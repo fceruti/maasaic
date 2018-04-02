@@ -1,7 +1,14 @@
 from django.views.generic import TemplateView
+from django.views.generic import FormView
 
 from maasaic.apps.content.models import Website
 from maasaic.apps.content.models import Page
+from maasaic.apps.content.forms import SectionVisibilityForm
+from maasaic.apps.content.models import Section
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.contrib import messages
 
 
 FONTS = [
@@ -70,4 +77,18 @@ class PageView(TemplateView):
             context['page_edit_on'] = False
             context['user_is_owner'] = True
         return context
+
+
+class SectionVisibilityUpdateView(FormView):
+    form_class = SectionVisibilityForm
+    http_method_names = ['post']
+
+    def get_success_url(self):
+        section = get_object_or_404(Section, pk=self.kwargs['section_pk'])
+        return reverse('page', args=[section.page.absolute_path])
+
+    def form_invalid(self, form):
+        messages.error(self.request, form.errors)
+        url = self.get_success_url()
+        return HttpResponseRedirect(redirect_to=url)
 

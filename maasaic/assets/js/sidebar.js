@@ -33,22 +33,22 @@ DropDown.prototype = {
 
 
 function bindSidebarEvents() {
-    new DropDown($('#website-select-dropdown'));
-    new DropDown($('#page-select-dropdown'));
+    new DropDown($('#js-website-select-dropdown'));
+    new DropDown($('#js-page-select-dropdown'));
 
-    $('#sidebar-add-website-btn').click(function(){
+    $('#js-sidebar-add-website-btn').click(function(){
         EventBus.fire(WEBSITE_ADD_CLICKED);
     });
 
-    $('#sidebar-edit-website-btn').click(function(){
+    $('#js-sidebar-edit-website-btn').click(function(){
         EventBus.fire(WEBSITE_EDIT_CLICKED);
     });
 
-    $('#sidebar-add-page-btn').click(function(){
+    $('#js-sidebar-add-page-btn').click(function(){
         EventBus.fire(PAGE_ADD_CLICKED);
     });
 
-    $('#sidebar-edit-page-btn').click(function(){
+    $('#js-sidebar-edit-page-btn').click(function(){
         EventBus.fire(PAGE_EDIT_CLICKED);
     });
 }
