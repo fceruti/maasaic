@@ -51,7 +51,7 @@
            style="width: {{ page.get_page_width }}px">
       {# VIEW LAYER #}
         <div class="view-layer">
-          {% for cell in section.cell_set.all %}
+          {% for cell in section.visible_cells.all %}
             <div class="cell
                         cell--layer-view
                         cell--w-{{ cell.w }}
@@ -313,9 +313,14 @@
                       </div>
                     </div>
                     <div class="sidebar-item-option right">
-                      <div class="sidebar-option-btn">
-                        <i class="fa fa-eye"></i>
-                      </div>
+                      <form method="post" action="{% url 'cell_visibility_update' cell.pk %}" class="js-ajax-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="is_visible" value="{% if cell.is_visible %}False{% else %}True{% endif %}" />
+                        <button class="sidebar-option-btn" type="submit">
+                          {% if cell.is_visible %}<i class="fa fa-eye"></i>
+                          {% else %}<i class="fa fa-eye-slash"></i>{% endif %}
+                        </button>
+                      </form>
                     </div>
                     <div class="sidebar-item-content">
                       <h2 class="name">{% cell_type_icon cell %} | No text</h2>

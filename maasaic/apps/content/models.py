@@ -177,6 +177,10 @@ class Section(models.Model):
     def __str__(self):
         return '%s #%s' % (self.page, self.order)
 
+    def visible_cells(self):
+        return self.cell_set\
+            .filter(is_visible=True)
+
 
 class Cell(models.Model):
     class Type(Choices):

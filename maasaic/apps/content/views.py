@@ -1,17 +1,16 @@
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.utils.functional import cached_property
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 
-from maasaic.apps.content.models import Website
-from maasaic.apps.content.models import Page
+from maasaic.apps.content.forms import CellVisibilityForm
 from maasaic.apps.content.forms import SectionVisibilityForm
+from maasaic.apps.content.models import Cell
+from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Section
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from django.utils.functional import cached_property
-
-from django.contrib import messages
-
+from maasaic.apps.content.models import Website
 
 FONTS = [
     ["Roboto", "'Roboto', sans-serif"],
@@ -44,6 +43,10 @@ class PageView(TemplateView):
     @cached_property
     def website(self):
         return Website.objects.get()
+
+    @cached_property
+    def pages(self):
+        return self.website.page_set.all()
 
     @cached_property
     def tree(self):
@@ -101,3 +104,23 @@ class SectionVisibilityUpdateView(UpdateView):
         messages.error(self.request, form.errors)
         return HttpResponseRedirect(redirect_to=self.get_success_url())
 
+
+class CellVisibilityUpdateView(UpdateView):
+    form_class = CellVisibilityForm
+    http_method_names = ['post']
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Cell, pk=self.kwargs['cell_pk'])
+
+    def get_success_url(self):
+        cell = self.get_object()
+        url = cell.section.page.absolute_path + '?edit=on'
+        return url
+
+    def form_valid(self, form):
+        form.save(commit=True)
+        return HttpResponseRedirect(redirect_to=self.get_success_url())
+
+    def form_invalid(self, form):
+        messages.error(self.request, form.errors)
+        return HttpResponseRedirect(redirect_to=self.get_success_url())
