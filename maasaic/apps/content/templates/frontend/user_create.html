@@ -1,0 +1,12 @@
+{% extends 'frontend/_base.html' %}
+
+{% block title %}Maasaic | Keep it weird{% endblock %}
+
+{% block content %}
+    <form method="POST" action="{% url 'user_create' %}">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Create page"/>
+    </form>
+{% endblock %}
+

@@ -1,0 +1,16 @@
+{% extends 'frontend/_website_detail_base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}Create page{% endblock %}
+
+{% block website_detail_content %}
+  <p><a href="{% url 'website_pages' website.subdomain %}">< back to pages</a></p>
+    <form role="form" class="form-horizontal" method="POST" action="{% url 'website_page_create' website.subdomain %}">
+      <legend>Create page</legend>
+      {% csrf_token %}
+      {% bootstrap_form form %}
+      {% buttons %}
+        <button type="submit" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Create page</button>
+      {% endbuttons %}
+    </form>
+{% endblock %}

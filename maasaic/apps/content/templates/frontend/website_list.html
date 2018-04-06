@@ -1,0 +1,59 @@
+{% extends 'frontend/_panel_base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}My sites{% endblock %}
+
+{% block panel_content %}
+  <div class="container">
+    <br/>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'website_list' %}"><i class="fa fa-globe"></i> My sites</a></li>
+      </ol>
+    </nav>
+    <button type="button" class="btn btn-success btn-sm float-right" data-toggle="modal" data-target="#create-site-modal">
+      <i class="fa fa-plus-circle"></i> Create site
+    </button>
+    <h1>My sites</h1>
+    <div class="row">
+      {% for website in websites %}
+        <div class="col">
+          <div class="card" style="width: 18rem;">
+            <img class="card-img-top" src="" alt="Card image cap" style="height: 100px; width: 100%">
+            <div class="card-body">
+              <h5 class="card-title"><a href="{% url 'website_detail' website.subdomain %}">{{ website.name }}</a></h5>
+              <p class="card-text">{{ website.description }}</p>
+              <a href="{% url 'website_detail' website.subdomain %}" class="btn btn-primary">Edit site</a>
+              <a href="{{ website.public_url }}" class="btn btn-link" target="_blank">Visit site</a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# Create website modal #}
+  <div class="modal" tabindex="-1" role="dialog" id="create-site-modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"> Create site</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="POST" action="{% url 'website_create'  %}">
+          <div class="modal-body">
+              {% csrf_token %}
+              {% bootstrap_form website_create_form %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-link text-danger" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Create site</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

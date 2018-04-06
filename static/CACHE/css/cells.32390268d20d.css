@@ -1,0 +1,92 @@
+.cell.cell--layer-edit {
+  -webkit-transition: border, background 0.2s;
+  -o-transition: border, background 0.2s;
+  transition: border, background 0.2s;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: 2px solid transparent; }
+  .cell.cell--layer-edit:hover {
+    background: rgba(67, 180, 204, 0.2);
+    border: 2px solid rgba(67, 180, 204, 0.6); }
+    .cell.cell--layer-edit:hover .edit-cell-ctrl {
+      top: 5px; }
+  .cell.cell--layer-edit .edit-cell-inner {
+    position: relative; }
+  .cell.cell--layer-edit .edit-cell-ctrl {
+    -webkit-transition: top 0.2s;
+    -o-transition: top 0.2s;
+    transition: top 0.2s;
+    z-index: 350;
+    position: absolute;
+    top: -50px;
+    right: 5px; }
+    .cell.cell--layer-edit .edit-cell-ctrl .edit-cell-ctrl-btns {
+      -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      -webkit-border-radius: 12px;
+      border-radius: 12px;
+      background-clip: padding-box;
+      -webkit-border-radius: 12px;
+      border-radius: 12px;
+      background-clip: padding-box;
+      height: 30px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 5px;
+      float: right; }
+      .cell.cell--layer-edit .edit-cell-ctrl .edit-cell-ctrl-btns .edit-cell-ctrl-btn {
+        color: rgba(255, 255, 255, 0.6);
+        width: 50px;
+        height: 30px;
+        cursor: pointer;
+        text-align: center;
+        display: inline;
+        float: left; }
+        .cell.cell--layer-edit .edit-cell-ctrl .edit-cell-ctrl-btns .edit-cell-ctrl-btn .icon {
+          font-size: 20px;
+          height: 20px;
+          margin-bottom: 2px; }
+        .cell.cell--layer-edit .edit-cell-ctrl .edit-cell-ctrl-btns .edit-cell-ctrl-btn .text {
+          font-size: 8px;
+          text-transform: uppercase; }
+        .cell.cell--layer-edit .edit-cell-ctrl .edit-cell-ctrl-btns .edit-cell-ctrl-btn:hover {
+          color: white; }
+.cell.cell--layer-insert {
+  -webkit-transition: border, background 0.2s;
+  -o-transition: border, background 0.2s;
+  transition: border, background 0.2s;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border: 2px solid transparent; }
+  .cell.cell--layer-insert.is-inserting {
+    background: rgba(67, 180, 204, 0.2);
+    border: 1px solid rgba(67, 180, 204, 0.6); }
+  .cell.cell--layer-insert.edge-top {
+    border-top: 2px solid rgba(67, 180, 204, 0.6); }
+  .cell.cell--layer-insert.edge-right {
+    border-right: 2px solid rgba(67, 180, 204, 0.6); }
+  .cell.cell--layer-insert.edge-bottom {
+    border-bottom: 2px solid rgba(67, 180, 204, 0.6); }
+  .cell.cell--layer-insert.edge-left {
+    border-left: 2px solid rgba(67, 180, 204, 0.6); }
+.cell.move-cell {
+  background: rgba(0, 128, 0, 0.4); }
+
+.insert-cell-ctrl {
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+  background-clip: padding-box;
+  width: 180px;
+  height: 120px;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 350;
+  position: absolute; }
+
+/*# sourceMappingURL=tmp2gjipwfy.css.map */

@@ -1,0 +1,35 @@
+{% extends 'frontend/_panel_base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}{{ page_title }} | {{ website.name }}{% endblock %}
+
+{% block panel_content %}
+  <div class="container">
+    <br/>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'website_list' %}"><i class="fa fa-globe"></i> My sites</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'website_detail' website.subdomain %}">{{ website.name }}</a></li>
+        {% block extra_breadcrumbs %}{% endblock %}
+      </ol>
+    </nav>
+    <h1>{{ website.name }}</h1>
+    <p class="lead"><a href="{{ website.domain }}" target="_blank">{{ website.domain }}</a></p>
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link{% if current_tab == 'pages' %} active{% endif %}" href="{% url 'website_detail' website.subdomain %}"><i class="fa fa-clone"></i> Pages</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link{% if current_tab == 'config' %} active{% endif %}" href="{% url 'website_config' website.subdomain %}"><i class="fa fa-cog"></i> Configuration</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link{% if current_tab == 'page_attr' %} active{% endif %}" href="{% url 'website_page_attr' website.subdomain %}"><i class="fa fa-sliders"></i> Pages default attributes</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link{% if current_tab == 'cell_attr' %} active{% endif %}" href="{% url 'website_cell_attr' website.subdomain %}"><i class="fa fa-paint-brush"></i> Cells default attributes</a>
+      </li>
+    </ul>
+    <br/>
+    {% block website_detail_content %}{% endblock %}
+  </div>
+{% endblock %}

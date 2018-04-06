@@ -1,0 +1,26 @@
+{% extends 'frontend/_base.html' %}
+{% load bootstrap4 %}
+{% block title %}Maasaic | Make the web weird again!{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <br/>
+    <h1 class="text-center">Maasaic.com</h1>
+    <p class="lead text-center">Make the web weird again!</p>
+    <p class="text-center">Don't haven an account? Create one <a href="{% url 'home' %}">here</a>.</p>
+    <br/>
+    <div class="row justify-content-md-center">
+      <div class="col col-4">
+        <form method="POST" action="{% url 'login' %}">
+          <legend>Login</legend>
+          {% csrf_token %}
+          {% bootstrap_form form %}
+          {% buttons %}
+            <button type="submit" class="btn btn-primary btn-block">Login</button>
+          {% endbuttons %}
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

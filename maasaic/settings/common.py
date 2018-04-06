@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'compressor',
     'easy_thumbnails',
     'image_cropping',
+    'bootstrap4',
 
     # Custom apps
     'maasaic.apps.users',
@@ -63,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'maasaic.apps.content.middleware.SubdomainMiddleware',
 ]
 
 ROOT_URLCONF = 'maasaic.urls.%s' % env('DJANGO_ENV')
@@ -95,6 +97,9 @@ DATABASES = {'default': env.db('DJANGO_DATABASE_URL')}
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
 AUTH_USER_MODEL = 'users.User'
+LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/sites'
+LOGOUT_REDIRECT_URL = '/'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -127,9 +132,9 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
-
+# ------------------------------------------------------------------------------
+# Static files
+# ------------------------------------------------------------------------------
 STATIC_URL = '/static/'
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -152,3 +157,20 @@ COMPRESS_PRECOMPILERS = (
 )
 COMPRESS_ENABLED = False
 COMPRESS_OFFLINE = False
+
+
+# ------------------------------------------------------------------------------
+# Cropping
+# ------------------------------------------------------------------------------
+from easy_thumbnails.conf import Settings as thumbnail_settings
+THUMBNAIL_PROCESSORS = (
+    'image_cropping.thumbnail_processors.crop_corners',
+) + thumbnail_settings.THUMBNAIL_PROCESSORS
+IMAGE_CROPPING_JQUERY_URL = None
+IMAGE_CROPPING_BACKEND_PARAMS = {'version_suffix': 'crop'}
+
+# ------------------------------------------------------------------------------
+# Custom
+# ------------------------------------------------------------------------------
+DEFAULT_SITE_DOMAIN = env('DEFAULT_SITE_DOMAIN')
+SECURE_SCHEMA = env('SECURE_SCHEMA', default=False)

@@ -1,12 +1,13 @@
 import os
-from django.conf import settings
 from urllib.parse import urljoin
-from django.utils.functional import cached_property
+
+from django.conf import settings
 from django.contrib.postgres.fields import JSONField
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.utils.functional import cached_property
 from image_cropping import ImageCropField
 from image_cropping import ImageRatioField
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 from maasaic.apps.users.models import User
 from maasaic.apps.utils.models import Choices
@@ -59,8 +60,8 @@ class PublicationStatus(Choices):
 
 
 class Language(Choices):
-    EN = 'English'
-    ES = 'Spanish'
+    EN = 'EN'
+    ES = 'ES'
 
 
 class CellHeight(Choices):
@@ -91,7 +92,8 @@ class LanguageField(models.CharField):
 class Website(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_visible = models.BooleanField(default=False)
-    slug = models.CharField(max_length=255, unique=True, db_index=True)
+    private_domain = models.CharField(max_length=255, unique=True, db_index=True, null=True, blank=True)
+    subdomain = models.CharField(max_length=255, unique=True, db_index=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     language = LanguageField()
@@ -102,10 +104,18 @@ class Website(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.slug
+        return self.domain
 
+    @property
     def domain(self):
-        return '%s.maasaic.com' % self.slug
+        if self.private_domain:
+            return self.private_domain
+        return '%s.%s' % (self.subdomain, settings.DEFAULT_SITE_DOMAIN)
+
+    @property
+    def public_url(self):
+        schema = 'https' if settings.SECURE_SCHEMA else 'http'
+        return '{schema}://{domain}'.format(schema=schema, domain=self.domain)
 
 
 class Page(models.Model):
@@ -113,34 +123,28 @@ class Page(models.Model):
         LIVE = 'LIVE'
         EDIT = 'EDIT'
     website = models.ForeignKey(Website, on_delete=models.CASCADE)
-    parent_page = models.ForeignKey('self', null=True, blank=True,
-                                    on_delete=models.SET_NULL)
+    target_page = models.ForeignKey('self', null=True, blank=True,
+                                    on_delete=models.CASCADE,
+                                    related_name='edit_page')
+    is_visible = models.CharField(max_length=255)
     mode = models.CharField(max_length=255, choices=Mode.choices())
-    name = models.CharField(max_length=255)
-    slug = models.CharField(max_length=255, default='')
+    title = models.CharField(max_length=255)
+    path = models.CharField(max_length=255, null=True, blank=True)
     page_width = models.PositiveIntegerField(null=True, blank=True, help_text='In pixels', default=1000)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('parent_page', 'slug', 'mode')
+        unique_together = ('website', 'path', 'mode')
 
     def visible_sections(self):
         return self.section_set\
             .filter(is_visible=True)\
             .order_by('-order')
 
-    @cached_property
-    def absolute_path(self):
-        slug = '/' if self.slug is None else self.slug
-        if self.parent_page is None:
-            return slug
-        else:
-            return urljoin(self.parent_page.absolute_path(), slug)
-
     def __str__(self):
-        return '%s | %s' % (self.website.name, self.name)
+        return '%s | %s' % (self.website.name, self.title)
 
     def get_page_width(self):
         if self.page_width:
@@ -148,9 +152,15 @@ class Page(models.Model):
         else:
             return self.website.page_width
 
+    @property
+    def public_url(self):
+        return urljoin(self.website.public_url, self.path)
+
 
 class Section(models.Model):
     page = models.ForeignKey(Page, on_delete=models.CASCADE)
+    target_section = models.ForeignKey('self', null=True, blank=True,
+                                       on_delete=models.CASCADE)
     order = models.IntegerField(default=1)
     is_visible = models.BooleanField(default=True)
     n_columns = models.PositiveIntegerField(
@@ -189,6 +199,8 @@ class Cell(models.Model):
         IFRAME = 'IFRAME'
 
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
+    target_cell = models.ForeignKey('self', null=True, blank=True,
+                                    on_delete=models.CASCADE)
     cell_type = models.CharField(max_length=255, choices=Type.choices())
     is_visible = models.BooleanField(default=True)
     h = models.PositiveIntegerField(help_text='Number of cells')

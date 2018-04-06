@@ -1,9 +1,10 @@
+import nested_admin
 from django.contrib import admin
-from maasaic.apps.content.models import Website
+
+from maasaic.apps.content.models import Cell
 from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Section
-from maasaic.apps.content.models import Cell
-import nested_admin
+from maasaic.apps.content.models import Website
 
 
 # ------------------------------------------------------------------------------
@@ -15,7 +16,7 @@ class WebsiteAdmin(admin.ModelAdmin):
         model = Page
         extra = 0
 
-    list_display = ['slug', 'name', 'user', 'created_at', 'updated_at']
+    list_display = ['name', 'subdomain', 'private_domain',  'user', 'created_at', 'updated_at']
     inlines = [PageInline]
 
 
@@ -36,7 +37,7 @@ class SectionInline(nested_admin.NestedStackedInline):
 
 @admin.register(Page)
 class PageAdmin(nested_admin.NestedModelAdmin):
-    list_display = ['website', 'name', 'slug', 'created_at', 'updated_at']
+    list_display = ['website', 'title', 'created_at', 'updated_at']
     inlines = [SectionInline]
 
 
