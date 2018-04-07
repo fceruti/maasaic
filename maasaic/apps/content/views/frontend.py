@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
@@ -14,7 +15,6 @@ from django.views.generic import ListView
 from django.views.generic import RedirectView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from maasaic.apps.content.forms import PageCreateForm
 from maasaic.apps.content.forms import UserCreateForm
@@ -23,9 +23,11 @@ from maasaic.apps.content.forms import WebsiteConfigForm
 from maasaic.apps.content.forms import WebsiteCreateForm
 from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Website
-from maasaic.apps.content.utils import resolve_url
 
 
+# ------------------------------------------------------------------------------
+# Home
+# ------------------------------------------------------------------------------
 class HomeView(TemplateView):
     template_name = 'frontend/home.html'
 
@@ -59,6 +61,9 @@ class UserLogoutView(RedirectView):
         return reverse('home')
 
 
+# ------------------------------------------------------------------------------
+# Websites
+# ------------------------------------------------------------------------------
 class WebsiteListView(LoginRequiredMixin, ListView):
     template_name = 'frontend/website_list.html'
     context_object_name = 'websites'
@@ -98,71 +103,7 @@ class WebsiteDetailView(RedirectView, WebsiteDetailBase):
     slug_url_kwarg = 'subdomain'
 
     def get_redirect_url(self, *args, **kwargs):
-        return reverse('website_pages', args=[self.website.subdomain])
-
-
-class WebsitePageListView(DetailView, WebsiteDetailBase):
-    template_name = 'frontend/page_list.html'
-    form_class = WebsiteConfigForm
-    model = Website
-    slug_field = 'subdomain'
-    slug_url_kwarg = 'subdomain'
-
-    def get_context_data(self, **kwargs):
-        context = super(WebsitePageListView, self).get_context_data(**kwargs)
-        context['page_title'] = 'Pages'
-        context['current_tab'] = 'pages'
-        context['pages'] = Page.objects.filter(website=self.website,
-                                               mode=Page.Mode.LIVE)
-        context['page_create_form'] = PageCreateForm(website=self.website)
-        return context
-
-
-class WebsitePageCreateView(CreateView, WebsiteDetailBase):
-    template_name = 'frontend/page_create.html'
-    model = Page
-    form_class = PageCreateForm
-
-    def get_form_kwargs(self, *args, **kwargs):
-        kw = super(WebsitePageCreateView, self).get_form_kwargs(*args, **kwargs)
-        kw['website'] = self.website
-        return kw
-
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, 'Page created')
-        url = reverse('website_pages', args=[self.website.subdomain])
-        return HttpResponseRedirect(url)
-
-    def get_context_data(self, **kwargs):
-        context = super(WebsitePageCreateView, self).get_context_data(**kwargs)
-        context['website'] = self.website
-        context['current_tab'] = 'pages'
-        return context
-
-
-class WebsitePageEditView(DetailView, WebsiteDetailBase):
-    template_name = 'frontend/page_edit.html'
-    model = Page
-
-    def get_context_data(self, **kwargs):
-        context = super(WebsitePageEditView, self).get_context_data(**kwargs)
-        context['page_edit_on'] = True
-        context['website'] = self.website
-        return context
-
-
-class WebsitePageDeleteView(DeleteView, WebsiteDetailBase):
-    model = Page
-
-    def get_success_url(self):
-        return reverse('website_pages', args=[self.website.subdomain])
-
-    def delete(self, request, *args, **kwargs):
-        response = super(WebsitePageDeleteView, self)\
-            .delete(request, *args, **kwargs)
-        messages.success(self.request, 'Your page has been deleted')
-        return response
+        return reverse('page_list', args=[self.website.subdomain])
 
 
 class WebsiteConfigView(LoginRequiredMixin, UpdateView):
@@ -205,3 +146,68 @@ class WebsiteCellAttrView(LoginRequiredMixin, UpdateView):
         context['page_title'] = 'Cell attributes'
         context['current_tab'] = 'cell_attr'
         return context
+
+
+# ------------------------------------------------------------------------------
+# Pages
+# ------------------------------------------------------------------------------
+class PageListView(DetailView, WebsiteDetailBase):
+    template_name = 'frontend/page_list.html'
+    form_class = WebsiteConfigForm
+    model = Website
+    slug_field = 'subdomain'
+    slug_url_kwarg = 'subdomain'
+
+    def get_context_data(self, **kwargs):
+        context = super(PageListView, self).get_context_data(**kwargs)
+        context['page_title'] = 'Pages'
+        context['current_tab'] = 'pages'
+        context['page_create_form'] = PageCreateForm(website=self.website)
+        return context
+
+
+class PageCreateView(CreateView, WebsiteDetailBase):
+    template_name = 'frontend/page_create.html'
+    model = Page
+    form_class = PageCreateForm
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kw = super(PageCreateView, self).get_form_kwargs(*args, **kwargs)
+        kw['website'] = self.website
+        return kw
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Page created')
+        url = reverse('website_pages', args=[self.website.subdomain])
+        return HttpResponseRedirect(url)
+
+    def get_context_data(self, **kwargs):
+        context = super(PageCreateView, self).get_context_data(**kwargs)
+        context['website'] = self.website
+        context['current_tab'] = 'pages'
+        return context
+
+
+class PagePageEditView(DetailView, WebsiteDetailBase):
+    template_name = 'frontend/page_edit.html'
+    model = Page
+
+    def get_context_data(self, **kwargs):
+        context = super(PagePageEditView, self).get_context_data(**kwargs)
+        context['page_edit_on'] = True
+        context['website'] = self.website
+        return context
+
+
+class PageDeleteView(DeleteView, WebsiteDetailBase):
+    model = Page
+
+    def get_success_url(self):
+        return reverse('website_pages', args=[self.website.subdomain])
+
+    def delete(self, request, *args, **kwargs):
+        response = super(PageDeleteView, self)\
+            .delete(request, *args, **kwargs)
+        messages.success(self.request, 'Your page has been deleted')
+        return response

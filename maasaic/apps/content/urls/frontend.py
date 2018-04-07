@@ -21,6 +21,10 @@ from django.urls import include
 from django.urls import path
 
 from maasaic.apps.content.views.frontend import HomeView
+from maasaic.apps.content.views.frontend import PageCreateView
+from maasaic.apps.content.views.frontend import PageDeleteView
+from maasaic.apps.content.views.frontend import PageListView
+from maasaic.apps.content.views.frontend import PagePageEditView
 from maasaic.apps.content.views.frontend import UserCreateView
 from maasaic.apps.content.views.frontend import UserLoginView
 from maasaic.apps.content.views.frontend import UserLogoutView
@@ -30,10 +34,6 @@ from maasaic.apps.content.views.frontend import WebsiteCreateView
 from maasaic.apps.content.views.frontend import WebsiteDetailView
 from maasaic.apps.content.views.frontend import WebsiteListView
 from maasaic.apps.content.views.frontend import WebsitePageAttrView
-from maasaic.apps.content.views.frontend import WebsitePageCreateView
-from maasaic.apps.content.views.frontend import WebsitePageDeleteView
-from maasaic.apps.content.views.frontend import WebsitePageEditView
-from maasaic.apps.content.views.frontend import WebsitePageListView
 
 base_urls = sys.modules[settings.ROOT_URLCONF].urlpatterns
 
@@ -46,11 +46,10 @@ urlpatterns = [
     path('sites/create', WebsiteCreateView.as_view(), name='website_create'),
 
     path('sites/<str:subdomain>', WebsiteDetailView.as_view(), name='website_detail'),
-    path('sites/<str:subdomain>/pages', WebsitePageListView.as_view(), name='website_pages'),
-    path('sites/<str:subdomain>/pages/create', WebsitePageCreateView.as_view(), name='website_page_create'),
-    path('sites/<str:subdomain>/pages/<int:pk>/edit', WebsitePageEditView.as_view(), name='website_page_edit'),
-    path('sites/<str:subdomain>/pages/<int:pk>/delete', WebsitePageDeleteView.as_view(), name='website_page_delete'),
-
+    path('sites/<str:subdomain>/pages', PageListView.as_view(), name='page_list'),
+    path('sites/<str:subdomain>/pages/create', PageCreateView.as_view(), name='page_create'),
+    path('sites/<str:subdomain>/pages/<int:pk>/edit', PagePageEditView.as_view(), name='page_edit'),
+    path('sites/<str:subdomain>/pages/<int:pk>/delete', PageDeleteView.as_view(), name='page_delete'),
 
 
     path('sites/<str:subdomain>/general-config', WebsiteConfigView.as_view(), name='website_config'),

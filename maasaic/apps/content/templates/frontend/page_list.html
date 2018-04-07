@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 
 {% block extra_breadcrumbs %}
-  <li class="breadcrumb-item"><a href="{% url 'website_pages' website.subdomain %}"><i class="fa fa-clone"></i> Pages</a></li>
+  <li class="breadcrumb-item"><a href="{% url 'page_list' website.subdomain %}"><i class="fa fa-clone"></i> Pages</a></li>
 {% endblock %}
 
 {% block website_detail_content %}
@@ -54,7 +54,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form method="POST" action="{% url 'website_page_create' website.subdomain %}">
+        <form method="POST" action="{% url 'page_create' website.subdomain %}">
           <div class="modal-body">
               {% csrf_token %}
               {% bootstrap_form page_create_form %}

@@ -17,7 +17,7 @@
     <p class="lead"><a href="{{ website.domain }}" target="_blank">{{ website.domain }}</a></p>
     <ul class="nav nav-tabs">
       <li class="nav-item">
-        <a class="nav-link{% if current_tab == 'pages' %} active{% endif %}" href="{% url 'website_detail' website.subdomain %}"><i class="fa fa-clone"></i> Pages</a>
+        <a class="nav-link{% if current_tab == 'pages' %} active{% endif %}" href="{% url 'page_list' website.subdomain %}"><i class="fa fa-clone"></i> Pages</a>
       </li>
       <li class="nav-item">
         <a class="nav-link{% if current_tab == 'config' %} active{% endif %}" href="{% url 'website_config' website.subdomain %}"><i class="fa fa-cog"></i> Configuration</a>
