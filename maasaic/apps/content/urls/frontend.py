@@ -24,7 +24,7 @@ from maasaic.apps.content.views.frontend import HomeView
 from maasaic.apps.content.views.frontend import PageCreateView
 from maasaic.apps.content.views.frontend import PageDeleteView
 from maasaic.apps.content.views.frontend import PageListView
-from maasaic.apps.content.views.frontend import PagePageEditView
+from maasaic.apps.content.views.frontend import PageUpdateView
 from maasaic.apps.content.views.frontend import UserCreateView
 from maasaic.apps.content.views.frontend import UserLoginView
 from maasaic.apps.content.views.frontend import UserLogoutView
@@ -34,6 +34,7 @@ from maasaic.apps.content.views.frontend import WebsiteCreateView
 from maasaic.apps.content.views.frontend import WebsiteDetailView
 from maasaic.apps.content.views.frontend import WebsiteListView
 from maasaic.apps.content.views.frontend import WebsitePageAttrView
+from maasaic.apps.content.views.frontend import PageConfigView
 
 base_urls = sys.modules[settings.ROOT_URLCONF].urlpatterns
 
@@ -48,11 +49,11 @@ urlpatterns = [
     path('sites/<str:subdomain>', WebsiteDetailView.as_view(), name='website_detail'),
     path('sites/<str:subdomain>/pages', PageListView.as_view(), name='page_list'),
     path('sites/<str:subdomain>/pages/create', PageCreateView.as_view(), name='page_create'),
-    path('sites/<str:subdomain>/pages/<int:pk>/edit', PagePageEditView.as_view(), name='page_edit'),
+    path('sites/<str:subdomain>/pages/<int:pk>/config', PageConfigView.as_view(), name='page_config'),
+    path('sites/<str:subdomain>/pages/<int:pk>/update', PageUpdateView.as_view(), name='page_update'),
     path('sites/<str:subdomain>/pages/<int:pk>/delete', PageDeleteView.as_view(), name='page_delete'),
 
-
-    path('sites/<str:subdomain>/general-config', WebsiteConfigView.as_view(), name='website_config'),
+    path('sites/<str:subdomain>/config', WebsiteConfigView.as_view(), name='website_config'),
     path('sites/<str:subdomain>/default-page-attrs', WebsitePageAttrView.as_view(), name='website_page_attr'),
     path('sites/<str:subdomain>/default-cell-attrs', WebsiteCellAttrView.as_view(), name='website_cell_attr'),
     path('admin', admin.site.urls),

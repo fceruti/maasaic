@@ -4,7 +4,7 @@
 {% load times %}
 {% load cells %}
 
-{% block title %}{{ page.name }} | {{ website.name }}{% endblock %}
+{% block title %}{{ page.title }} | {{ website.name }}{% endblock %}
 
 {% block body_class %}{% if page_edit_on %}body-edit-page{% endif %}{% endblock %}
 
@@ -187,13 +187,9 @@
 {% if page_edit_on %}
   <div id="sidebar">
     <div id="sidebar-inner">
-
       {# Website #}
       <h3 class="sidebar-title">
         Website
-        <span class="title-btn" id="js-sidebar-website-add-btn">
-          Add <i class="fa fa-plus"></i>
-        </span>
       </h3>
       <div class="sidebar-item">
         <div class="sidebar-item-option left">
@@ -213,23 +209,19 @@
           </div>
         </div>
         <div class="sidebar-item-option right">
-          <div class="sidebar-option-btn"
-               id="js-sidebar-website-edit-btn">
+          <a class="sidebar-option-btn" href="{% url 'website_detail' website.subdomain %}">
             <i class="fa fa-edit"></i>
-          </div>
+          </a>
         </div>
         <div class="sidebar-item-content">
           <h2 class="name">{{ website.name }}</h2>
-          <h3 class="description">{{ website.domain }}</h3>
+          <h3 class="description">{{ website.domain|truncatechars:26 }}</h3>
         </div>
       </div>
 
       {# Page #}
       <h3 class="sidebar-title">
         Page
-        <span class="title-btn" id="js-sidebar-page-add-btn">
-          Add <i class="fa fa-plus"></i>
-        </span>
       </h3>
       <div class="sidebar-item">
         <div class="sidebar-item-option left">
@@ -240,19 +232,18 @@
             </div>
             <ul class="sidebar-dropdown">
               {% for page in website.edit_pages %}
-                <li><a href="{% url 'page_edit' website.subdomain page.pk %}">
+                <li><a href="{% url 'page_update' website.subdomain page.pk %}">
                   <span class="name">{{ page.title }}</span>
-                  <span class="url">{{ page.path }}</span>
+                  <span class="description">{{ page.path }}</span>
                 </a></li>
               {% endfor %}
             </ul>
           </div>
         </div>
         <div class="sidebar-item-option right">
-          <div class="sidebar-option-btn"
-               id="js-sidebar-edit-page-btn">
+          <a class="sidebar-option-btn" href="{% url 'page_config' website.subdomain page.target_page.pk %}">
             <i class="fa fa-edit"></i>
-          </div>
+          </a>
         </div>
         <div class="sidebar-item-content">
           <h2 class="name">{{ page.title }}</h2>

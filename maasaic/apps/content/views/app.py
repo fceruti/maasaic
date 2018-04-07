@@ -45,7 +45,7 @@ from django.contrib import messages
 from maasaic.apps.content.urls import frontend as frontend_urls
 
 
-class BaseVaiew(View):
+class BaseView(View):
     website = None
 
     def dispatch(self, request, *args, **kwargs):
@@ -100,13 +100,14 @@ class PageView(TemplateView, BaseView):
 
     @cached_property
     def pages(self):
-        return self.website.page_set.all()
+        return Website.objects.get(subdomain=self.request.subdomain)
 
     @cached_property
     def page(self):
         return get_object_or_404(Page,
                                  website=self.website,
-                                 path=self.kwargs['url'])
+                                 path=self.kwargs['url'],
+                                 mode=Page.Mode.LIVE)
 
     def get_context_data(self, **kwargs):
         context = super(PageView, self).get_context_data(**kwargs)

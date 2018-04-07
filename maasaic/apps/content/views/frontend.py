@@ -17,6 +17,7 @@ from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 
 from maasaic.apps.content.forms import PageCreateForm
+from maasaic.apps.content.forms import PageUpdateForm
 from maasaic.apps.content.forms import UserCreateForm
 from maasaic.apps.content.forms import UserLoginForm
 from maasaic.apps.content.forms import WebsiteConfigForm
@@ -91,10 +92,26 @@ class WebsiteCreateView(LoginRequiredMixin, FormView):
         return HttpResponseRedirect(url)
 
 
+# ------------------------------------------------------------------------------
+# Website
+# ------------------------------------------------------------------------------
 class WebsiteDetailBase(LoginRequiredMixin, View):
+    current_tab = None
+
     @cached_property
     def website(self):
-        return get_object_or_404(Website, subdomain=self.kwargs['subdomain'])
+        return get_object_or_404(Website,
+                                 subdomain=self.kwargs['subdomain'],
+                                 user=self.request.user)
+
+    def get_object(self):
+        return self.website
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(WebsiteDetailBase, self).get_context_data(*args, **kwargs)
+        context['website'] = self.website
+        context['current_tab'] = self.current_tab
+        return context
 
 
 class WebsiteDetailView(RedirectView, WebsiteDetailBase):
@@ -106,62 +123,49 @@ class WebsiteDetailView(RedirectView, WebsiteDetailBase):
         return reverse('page_list', args=[self.website.subdomain])
 
 
-class WebsiteConfigView(LoginRequiredMixin, UpdateView):
+class WebsiteConfigView(WebsiteDetailBase, UpdateView):
     template_name = 'frontend/website_detail_config.html'
     form_class = WebsiteConfigForm
     model = Website
     slug_field = 'subdomain'
     slug_url_kwarg = 'subdomain'
+    current_tab = 'config'
 
-    def get_context_data(self, **kwargs):
-        context = super(WebsiteConfigView, self).get_context_data(**kwargs)
-        context['page_title'] = 'Configuration'
-        context['current_tab'] = 'config'
-        return context
+    def get_success_url(self):
+        return reverse('website_detail', args=[self.website.subdomain])
 
 
-class WebsitePageAttrView(LoginRequiredMixin, UpdateView):
+class WebsitePageAttrView(WebsiteDetailBase, UpdateView):
     template_name = 'frontend/website_detail_page_attr.html'
     form_class = WebsiteConfigForm
     model = Website
     slug_field = 'subdomain'
     slug_url_kwarg = 'subdomain'
-
-    def get_context_data(self, **kwargs):
-        context = super(WebsitePageAttrView, self).get_context_data(**kwargs)
-        context['page_title'] = 'Page attributes'
-        context['current_tab'] = 'page_attr'
-        return context
+    current_tab = 'page_attr'
 
 
-class WebsiteCellAttrView(LoginRequiredMixin, UpdateView):
+class WebsiteCellAttrView(WebsiteDetailBase, UpdateView):
     template_name = 'frontend/website_detail_cell_attr.html'
     form_class = WebsiteConfigForm
     model = Website
     slug_field = 'subdomain'
     slug_url_kwarg = 'subdomain'
-
-    def get_context_data(self, **kwargs):
-        context = super(WebsiteCellAttrView, self).get_context_data(**kwargs)
-        context['page_title'] = 'Cell attributes'
-        context['current_tab'] = 'cell_attr'
-        return context
+    current_tab = 'cell_attr'
 
 
 # ------------------------------------------------------------------------------
 # Pages
 # ------------------------------------------------------------------------------
-class PageListView(DetailView, WebsiteDetailBase):
+class PageListView(WebsiteDetailBase, DetailView):
     template_name = 'frontend/page_list.html'
     form_class = WebsiteConfigForm
     model = Website
     slug_field = 'subdomain'
     slug_url_kwarg = 'subdomain'
+    current_tab = 'pages'
 
     def get_context_data(self, **kwargs):
         context = super(PageListView, self).get_context_data(**kwargs)
-        context['page_title'] = 'Pages'
-        context['current_tab'] = 'pages'
         context['page_create_form'] = PageCreateForm(website=self.website)
         return context
 
@@ -170,6 +174,7 @@ class PageCreateView(CreateView, WebsiteDetailBase):
     template_name = 'frontend/page_create.html'
     model = Page
     form_class = PageCreateForm
+    current_tab = 'pages'
 
     def get_form_kwargs(self, *args, **kwargs):
         kw = super(PageCreateView, self).get_form_kwargs(*args, **kwargs)
@@ -182,19 +187,37 @@ class PageCreateView(CreateView, WebsiteDetailBase):
         url = reverse('page_list', args=[self.website.subdomain])
         return HttpResponseRedirect(url)
 
-    def get_context_data(self, **kwargs):
-        context = super(PageCreateView, self).get_context_data(**kwargs)
-        context['website'] = self.website
-        context['current_tab'] = 'pages'
-        return context
+
+class PageConfigView(WebsiteDetailBase, UpdateView):
+    template_name = 'frontend/page_config.html'
+    model = Page
+    current_tab = 'pages'
+    context_object_name = 'page'
+    form_class = PageUpdateForm
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kw = super(PageConfigView, self).get_form_kwargs(*args, **kwargs)
+        kw['website'] = self.website
+        return kw
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Page updated')
+        url = reverse('page_list', args=[self.website.subdomain])
+        return HttpResponseRedirect(url)
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Page,
+                                 pk=self.kwargs['pk'],
+                                 mode=Page.Mode.LIVE)
 
 
-class PagePageEditView(DetailView, WebsiteDetailBase):
-    template_name = 'frontend/page_edit.html'
+class PageUpdateView(DetailView, WebsiteDetailBase):
+    template_name = 'frontend/page_update.html'
     model = Page
 
     def get_context_data(self, **kwargs):
-        context = super(PagePageEditView, self).get_context_data(**kwargs)
+        context = super(PageUpdateView, self).get_context_data(**kwargs)
         context['page_edit_on'] = True
         context['website'] = self.website
         return context

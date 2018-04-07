@@ -158,6 +158,50 @@ class PageCreateForm(forms.ModelForm):
             return path
 
 
+class PageUpdateForm(PageCreateForm):
+
+    def save(self, commit=True):
+        assert self.instance.mode == Page.Mode.LIVE
+        with transaction.atomic():
+            live_page = self.instance
+            live_page.title = self.cleaned_data['title']
+            live_page.path = self.cleaned_data['path']
+            live_page.description = self.cleaned_data['description']
+            live_page.save()
+
+            edit_page = self.instance.edit_page
+            edit_page.title = self.cleaned_data['title']
+            edit_page.path = self.cleaned_data['path']
+            edit_page.description = self.cleaned_data['description']
+            edit_page.save()
+        return live_page
+
+    def clean_path(self):
+        path = self.cleaned_data['path']
+        if path:
+            if path[0] == '/':
+                path = path[1:]
+            if path[-1] == '/':
+                path = path[:-1]
+            if path == '':
+                path = '/'
+        else:
+            path = '/'
+        if not path_pattern.match(path):
+            err_msg = 'Please create a valid path with the following ' \
+                      'characters: a-z, A-Z, 0-9, /, -, _.'
+            raise forms.ValidationError(err_msg)
+        n_pages = Page.objects \
+            .filter(website=self.website) \
+            .filter(path=path).filter(mode=Page.Mode.LIVE) \
+            .exclude(pk=self.instance.pk)\
+            .count()
+        if n_pages > 0:
+            err_msg = 'The path "%s" is already in use for this page' % path
+            raise forms.ValidationError(err_msg)
+        return path
+
+
 class SectionVisibilityForm(forms.ModelForm):
     class Meta:
         model = Section

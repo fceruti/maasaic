@@ -172,7 +172,12 @@
         .description
           display: block
           font-size: $sidebar-font-size-small
-          color: $sidebar-dropdown-item-url-color
+          color: $sidebar-dropdown-item-desc-color
+        &:visited, &:active
+          .name
+            color: $sidebar-dropdown-item-name-color
+          .description
+            color: $sidebar-dropdown-item-desc-color
       &:hover
         a
           color: $sidebar-dropdown-item-name-hover-color

@@ -1,0 +1,16 @@
+{% extends 'frontend/_website_detail_base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}Page config{% endblock %}
+
+{% block website_detail_content %}
+  <p><a href="{% url 'page_list' website.subdomain %}">< back to pages</a></p>
+    <form role="form" class="form-horizontal" method="POST" action="{% url 'page_config' website.subdomain page.pk %}">
+      <legend>Update page</legend>
+      {% csrf_token %}
+      {% bootstrap_form form %}
+      {% buttons %}
+        <button type="submit" class="btn btn-primary"><i class="fa fa-edit"></i> Update page</button>
+      {% endbuttons %}
+    </form>
+{% endblock %}

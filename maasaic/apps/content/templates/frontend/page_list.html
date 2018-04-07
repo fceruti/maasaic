@@ -17,7 +17,7 @@
       <th>Url</th>
       <th>Visible?</th>
       <th>Description</th>
-      <th colspan="2">Actions</th>
+      <th colspan="3">Actions</th>
     </thead>
     <tbody>
       {% if website.live_pages|length > 0 %}
@@ -28,12 +28,15 @@
             <td>{{ page.is_visible }}</td>
             <td>{{ page.description }}</td>
             <td>
-              <a href="{% url 'page_edit' website.subdomain page.edit_page.pk %}" target="_blank" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> edit</a>
+              <a href="{% url 'page_update' website.subdomain page.edit_page.pk %}" target="_blank" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Edit page</a>
+            </td>
+            <td>
+              <a href="{% url 'page_config' website.subdomain page.pk %}" class="btn btn-link btn-sm"><i class="fa fa-cog"></i> Config</a>
             </td>
             <td>
               <form method="post" action="{% url 'page_delete' website.subdomain page.pk %}">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger btn-sm"><i class="fa fa-remove"></i> delete</button>
+                <button type="submit" class="btn btn-link text-danger btn-sm"><i class="fa fa-remove"></i> delete</button>
               </form>
             </td>
           </tr>
