@@ -179,7 +179,7 @@ class PageCreateView(CreateView, WebsiteDetailBase):
     def form_valid(self, form):
         form.save()
         messages.success(self.request, 'Page created')
-        url = reverse('website_pages', args=[self.website.subdomain])
+        url = reverse('page_list', args=[self.website.subdomain])
         return HttpResponseRedirect(url)
 
     def get_context_data(self, **kwargs):
@@ -199,15 +199,29 @@ class PagePageEditView(DetailView, WebsiteDetailBase):
         context['website'] = self.website
         return context
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Page,
+                                 pk=self.kwargs['pk'],
+                                 mode=Page.Mode.EDIT)
+
 
 class PageDeleteView(DeleteView, WebsiteDetailBase):
     model = Page
 
+    def get_object(self, queryset=None):
+        return get_object_or_404(Page,
+                                 pk=self.kwargs['pk'],
+                                 mode=Page.Mode.LIVE)
+
     def get_success_url(self):
-        return reverse('website_pages', args=[self.website.subdomain])
+        return reverse('page_list', args=[self.website.subdomain])
 
     def delete(self, request, *args, **kwargs):
         response = super(PageDeleteView, self)\
             .delete(request, *args, **kwargs)
         messages.success(self.request, 'Your page has been deleted')
         return response
+
+
+class PagePublishView(WebsiteDetailView):
+    pass

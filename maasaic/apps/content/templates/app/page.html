@@ -239,10 +239,10 @@
               <i class="fa fa-angle-down"></i>
             </div>
             <ul class="sidebar-dropdown">
-              {% for page in website.page_set.all %}
-                <li><a href="#">
-                  <span class="name">{{ page.name }}</span>
-                  <span class="url">{{ page.slug }}</span>
+              {% for page in website.edit_pages %}
+                <li><a href="{% url 'page_edit' website.subdomain page.pk %}">
+                  <span class="name">{{ page.title }}</span>
+                  <span class="url">{{ page.path }}</span>
                 </a></li>
               {% endfor %}
             </ul>
@@ -255,8 +255,8 @@
           </div>
         </div>
         <div class="sidebar-item-content">
-          <h2 class="name">{{ page.name }}</h2>
-          <h3 class="description">{{ page.absolute_path }}</h3>
+          <h2 class="name">{{ page.title }}</h2>
+          <h3 class="description">{{ page.path }}</h3>
         </div>
       </div>
       {# Sections #}

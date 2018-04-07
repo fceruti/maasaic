@@ -116,14 +116,12 @@ class PageCreateForm(forms.ModelForm):
     def save(self, commit=True):
         with transaction.atomic():
             path = self.cleaned_data['path']
-            if path is None:
-                path = ''
             live_page = Page.objects.create(
                 website=self.website,
                 is_visible=False,
                 mode=Page.Mode.LIVE,
                 title=self.cleaned_data['title'],
-                path=self.cleaned_data['path'],
+                path=path,
                 description=self.cleaned_data['description'])
             Page.objects.create(
                 website=self.website,
@@ -131,21 +129,21 @@ class PageCreateForm(forms.ModelForm):
                 target_page=live_page,
                 mode=Page.Mode.EDIT,
                 title=self.cleaned_data['title'],
-                path=self.cleaned_data['path'],
+                path=path,
                 description=self.cleaned_data['description'])
         return live_page
 
     def clean_path(self):
-        # TODO more cleaning
         path = self.cleaned_data['path']
-        if path is None:
-            path = ''
-        if len(path) > 0:
+        if path:
             if path[0] == '/':
                 path = path[1:]
             if path[-1] == '/':
                 path = path[:-1]
-
+            if path == '':
+                path = '/'
+        else:
+            path = '/'
         if not path_pattern.match(path):
             err_msg = 'Please create a valid path with the following ' \
                       'characters: a-z, A-Z, 0-9, /, -, _.'

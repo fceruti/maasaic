@@ -117,15 +117,23 @@ class Website(models.Model):
         schema = 'https' if settings.SECURE_SCHEMA else 'http'
         return '{schema}://{domain}'.format(schema=schema, domain=self.domain)
 
+    @cached_property
+    def edit_pages(self):
+        return self.page_set.filter(mode=Page.Mode.EDIT)
+
+    @cached_property
+    def live_pages(self):
+        return self.page_set.filter(mode=Page.Mode.LIVE)
+
 
 class Page(models.Model):
     class Mode(Choices):
         LIVE = 'LIVE'
         EDIT = 'EDIT'
     website = models.ForeignKey(Website, on_delete=models.CASCADE)
-    target_page = models.ForeignKey('self', null=True, blank=True,
-                                    on_delete=models.CASCADE,
-                                    related_name='edit_page')
+    target_page = models.OneToOneField('self', null=True, blank=True,
+                                       on_delete=models.CASCADE,
+                                       related_name='edit_page')
     is_visible = models.CharField(max_length=255)
     mode = models.CharField(max_length=255, choices=Mode.choices())
     title = models.CharField(max_length=255)
@@ -155,6 +163,12 @@ class Page(models.Model):
     @property
     def public_url(self):
         return urljoin(self.website.public_url, self.path)
+
+    @property
+    def edit_page(self):
+        if self.mode == self.Mode.LIVE:
+            raise Exception
+        return Page.objects.get(target_page=self)
 
 
 class Section(models.Model):
