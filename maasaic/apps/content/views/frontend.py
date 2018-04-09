@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.db.models import Max
 from django.utils.functional import cached_property
 from django.views import View
 from django.views.generic import CreateView
@@ -13,17 +14,23 @@ from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import ListView
 from django.views.generic import RedirectView
+from maasaic.apps.content.forms import CellVisibilityForm
+from maasaic.apps.content.forms import SectionVisibilityForm
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 
 from maasaic.apps.content.forms import PageCreateForm
 from maasaic.apps.content.forms import PageUpdateForm
+
+from maasaic.apps.content.forms import SectionCreateForm
 from maasaic.apps.content.forms import UserCreateForm
 from maasaic.apps.content.forms import UserLoginForm
 from maasaic.apps.content.forms import WebsiteConfigForm
 from maasaic.apps.content.forms import WebsiteCreateForm
 from maasaic.apps.content.models import Page
+from maasaic.apps.content.models import Cell
 from maasaic.apps.content.models import Website
+from maasaic.apps.content.models import Section
 
 
 # ------------------------------------------------------------------------------
@@ -220,6 +227,7 @@ class PageUpdateView(DetailView, WebsiteDetailBase):
         context = super(PageUpdateView, self).get_context_data(**kwargs)
         context['page_edit_on'] = True
         context['website'] = self.website
+        context['section_create_form'] = SectionCreateForm()
         return context
 
     def get_object(self, queryset=None):
@@ -248,3 +256,80 @@ class PageDeleteView(DeleteView, WebsiteDetailBase):
 
 class PagePublishView(WebsiteDetailView):
     pass
+
+
+# ------------------------------------------------------------------------------
+# Page base
+# ------------------------------------------------------------------------------
+class PageBaseView(WebsiteDetailBase):
+
+    @cached_property
+    def page(self):
+        # TODO: more strict
+        return get_object_or_404(Page, pk=self.kwargs['page_pk'])
+
+    def get_success_url(self):
+        return reverse('page_update', args=[self.website.subdomain, self.page.pk])
+
+
+# ------------------------------------------------------------------------------
+# Sections
+# ------------------------------------------------------------------------------
+class SectionCreateView(PageBaseView, CreateView):
+    form_class = SectionCreateForm
+    template_name = 'frontend/section_create.html'
+
+    def form_valid(self, form):
+        section = form.save(commit=False)
+        section.page = self.page
+        max_order = Section.objects.filter(page=self.page)\
+            .aggregate(Max('order'))['order__max']
+        section.order = max_order + 1
+        section.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class SectionVisibilityUpdateView(UpdateView):
+    form_class = SectionVisibilityForm
+    http_method_names = ['post']
+
+    def get_object(self, queryset=None):
+        section = get_object_or_404(Section, pk=self.kwargs['section_pk'])
+        return section
+
+    def get_success_url(self):
+        section = self.get_object()
+        url = section.page.absolute_path + '?edit=on'
+        return url
+
+    def form_valid(self, form):
+        form.save(commit=True)
+        return HttpResponseRedirect(redirect_to=self.get_success_url())
+
+    def form_invalid(self, form):
+        messages.error(self.request, form.errors)
+        return HttpResponseRedirect(redirect_to=self.get_success_url())
+
+
+# ------------------------------------------------------------------------------
+# Cells
+# ------------------------------------------------------------------------------
+class CellVisibilityUpdateView(UpdateView):
+    form_class = CellVisibilityForm
+    http_method_names = ['post']
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Cell, pk=self.kwargs['cell_pk'])
+
+    def get_success_url(self):
+        cell = self.get_object()
+        url = cell.section.page.absolute_path + '?edit=on'
+        return url
+
+    def form_valid(self, form):
+        form.save(commit=True)
+        return HttpResponseRedirect(redirect_to=self.get_success_url())
+
+    def form_invalid(self, form):
+        messages.error(self.request, form.errors)
+        return HttpResponseRedirect(redirect_to=self.get_success_url())

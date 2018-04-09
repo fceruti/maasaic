@@ -20,11 +20,15 @@ from django.contrib import admin
 from django.urls import include
 from django.urls import path
 
+from maasaic.apps.content.views.frontend import CellVisibilityUpdateView
 from maasaic.apps.content.views.frontend import HomeView
+from maasaic.apps.content.views.frontend import PageConfigView
 from maasaic.apps.content.views.frontend import PageCreateView
 from maasaic.apps.content.views.frontend import PageDeleteView
 from maasaic.apps.content.views.frontend import PageListView
 from maasaic.apps.content.views.frontend import PageUpdateView
+from maasaic.apps.content.views.frontend import SectionCreateView
+from maasaic.apps.content.views.frontend import SectionVisibilityUpdateView
 from maasaic.apps.content.views.frontend import UserCreateView
 from maasaic.apps.content.views.frontend import UserLoginView
 from maasaic.apps.content.views.frontend import UserLogoutView
@@ -34,9 +38,19 @@ from maasaic.apps.content.views.frontend import WebsiteCreateView
 from maasaic.apps.content.views.frontend import WebsiteDetailView
 from maasaic.apps.content.views.frontend import WebsiteListView
 from maasaic.apps.content.views.frontend import WebsitePageAttrView
-from maasaic.apps.content.views.frontend import PageConfigView
 
 base_urls = sys.modules[settings.ROOT_URLCONF].urlpatterns
+
+cells_urls = [
+    path('visibility',
+         CellVisibilityUpdateView.as_view(),
+         name='cell_update_visibility'),
+]
+
+section_urls = [
+    path('visibility', SectionVisibilityUpdateView.as_view(), name='section_update_visibility'),
+    path('cells/<int:cell_pk>', include(cells_urls)),
+]
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
@@ -52,6 +66,9 @@ urlpatterns = [
     path('sites/<str:subdomain>/pages/<int:pk>/config', PageConfigView.as_view(), name='page_config'),
     path('sites/<str:subdomain>/pages/<int:pk>/update', PageUpdateView.as_view(), name='page_update'),
     path('sites/<str:subdomain>/pages/<int:pk>/delete', PageDeleteView.as_view(), name='page_delete'),
+
+    path('sites/<str:subdomain>/pages/<int:page_pk>/sections/create', SectionCreateView.as_view(), name='section_create'),
+    path('sites/<str:subdomain>/pages/<int:page_pk>/sections/<int:section_pk>', include(section_urls)),
 
     path('sites/<str:subdomain>/config', WebsiteConfigView.as_view(), name='website_config'),
     path('sites/<str:subdomain>/default-page-attrs', WebsitePageAttrView.as_view(), name='website_page_attr'),

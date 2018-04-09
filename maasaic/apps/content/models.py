@@ -15,9 +15,9 @@ from maasaic.apps.utils.models import Choices
 # ------------------------------------------------------------------------------
 # Sass variables
 # ------------------------------------------------------------------------------
-MAX_COLS = 'MAX_COLS'
-MAX_ROWS = 'MAX_ROWS'
-CELL_HEIGHTS = 'CELL_HEIGHTS'
+MAX_COLS_KEY = 'MAX_COLS'
+MAX_ROWS_KEY = 'MAX_ROWS'
+CELL_HEIGHTS_KEY = 'CELL_HEIGHTS'
 SASS_VARIABLES = {}
 variables_path = os.path.join(settings.ASSETS_PATH, 'sass/_variables.sass')
 with open(variables_path, 'r') as f:
@@ -25,12 +25,12 @@ with open(variables_path, 'r') as f:
         try:
             var_name, value = line.split(':')
             if var_name == '$max-cols':
-                SASS_VARIABLES[MAX_COLS] = int(value)
+                SASS_VARIABLES[MAX_COLS_KEY] = int(value)
             elif var_name == '$max-rows':
-                SASS_VARIABLES[MAX_ROWS] = int(value)
+                SASS_VARIABLES[MAX_ROWS_KEY] = int(value)
             elif var_name == '$cell-heights':
-                SASS_VARIABLES[CELL_HEIGHTS] = [int(hh) for hh in
-                                                value.split(',')]
+                SASS_VARIABLES[CELL_HEIGHTS_KEY] = [int(hh) for hh in
+                                                    value.split(',')]
         except ValueError:
             pass
 
@@ -68,8 +68,8 @@ class CellHeight(Choices):
     pass
 
 
-for cell_height in SASS_VARIABLES[CELL_HEIGHTS]:
-    setattr(CellHeight, 'HEIGHT_%s' % cell_height, cell_height)
+for cell_height in SASS_VARIABLES[CELL_HEIGHTS_KEY]:
+    setattr(CellHeight, '%s_px' % cell_height, cell_height)
 
 
 class PublicationStatusField(models.CharField):
@@ -149,7 +149,7 @@ class Page(models.Model):
     def visible_sections(self):
         return self.section_set\
             .filter(is_visible=True)\
-            .order_by('-order')
+            .order_by('order')
 
     def __str__(self):
         return '%s | %s' % (self.website.name, self.title)
@@ -179,24 +179,22 @@ class Section(models.Model):
     is_visible = models.BooleanField(default=True)
     n_columns = models.PositiveIntegerField(
         default=5,
-        help_text='Measured in cells',
         validators=[MinValueValidator(1),
-                    MaxValueValidator(SASS_VARIABLES[MAX_COLS])])
+                    MaxValueValidator(SASS_VARIABLES[MAX_COLS_KEY])])
     n_rows = models.PositiveIntegerField(
         default=1,
-        help_text='Measured in cells',
         validators=[MinValueValidator(1),
-                    MaxValueValidator(SASS_VARIABLES[MAX_ROWS])])
-    cell_height = models.PositiveIntegerField(choices=CellHeight.choices(),
-                                              help_text='In pixels')
+                    MaxValueValidator(SASS_VARIABLES[MAX_ROWS_KEY])])
+    cell_height = models.PositiveIntegerField(choices=CellHeight.choices())
     css = JSONField(null=True, blank=True)
     name = models.CharField(max_length=255)
-    slug = models.SlugField()
+    html_id = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('page', 'order')
+        ordering = 'order',
 
     def __str__(self):
         return '%s #%s' % (self.page, self.order)
@@ -221,10 +219,10 @@ class Cell(models.Model):
     w = models.PositiveIntegerField(help_text='Number of cells')
     x = models.PositiveIntegerField(
         help_text='Number of cells',
-        choices=[(x + 1, x + 1) for x in range(SASS_VARIABLES[MAX_COLS])])
+        choices=[(x + 1, x + 1) for x in range(SASS_VARIABLES[MAX_COLS_KEY])])
     y = models.PositiveIntegerField(
         help_text='Number of cells',
-        choices=[(x + 1, x + 1) for x in range(SASS_VARIABLES[MAX_ROWS])])
+        choices=[(x + 1, x + 1) for x in range(SASS_VARIABLES[MAX_ROWS_KEY])])
 
     content = models.TextField(null=True, blank=True)
     css = JSONField(null=True, blank=True)

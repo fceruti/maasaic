@@ -1,5 +1,6 @@
 {% extends 'frontend/_panel_base.html' %}
 {% load bootstrap4 %}
+{% load static %}
 
 {% block title %}My sites{% endblock %}
 
@@ -19,7 +20,14 @@
       {% for website in websites %}
         <div class="col">
           <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="" alt="Card image cap" style="height: 100px; width: 100%">
+            <a href="{% url 'website_detail' website.subdomain %}">
+              {% if website.favicon %}
+                <img class="card-img-top" src="" alt="Card image cap" style="height: 100px; width: 100%">
+              {% else %}
+                <img class="card-img-top" src="{% static 'img/favicon.png' %}" alt="Card image cap" >
+              {% endif %}
+            </a>
+
             <div class="card-body">
               <h5 class="card-title"><a href="{% url 'website_detail' website.subdomain %}">{{ website.name }}</a></h5>
               <p class="card-text">{{ website.description }}</p>

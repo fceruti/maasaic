@@ -1,15 +1,16 @@
+import re
+
 from django import forms
 from django.conf import settings
 from django.db import transaction
 
 from maasaic.apps.content.models import Cell
+from maasaic.apps.content.models import MAX_ROWS_KEY
+from maasaic.apps.content.models import Page
+from maasaic.apps.content.models import SASS_VARIABLES
 from maasaic.apps.content.models import Section
 from maasaic.apps.content.models import Website
-from maasaic.apps.content.models import Page
 from maasaic.apps.users.models import User
-from image_cropping import ImageCropWidget
-
-import re
 
 path_pattern = re.compile('^([/\w+-.]*)$')
 
@@ -200,6 +201,34 @@ class PageUpdateForm(PageCreateForm):
             err_msg = 'The path "%s" is already in use for this page' % path
             raise forms.ValidationError(err_msg)
         return path
+
+
+class SectionCreateForm(forms.ModelForm):
+    class Meta:
+        model = Section
+        fields = ['n_columns', 'n_rows', 'cell_height', 'name', 'html_id']
+
+        help_texts = {
+            'n_rows': 'Measured in cells. You can always change this '
+                      'number in the future.',
+            'cell_height': 'Measured in pixels, this is how high every cell '
+                           'inside this section will be',
+            'name': 'Mainly for you to recognize this section.',
+            'html_id': 'Optional, useful when you want to create inside links.'
+        }
+        labels = {
+            'n_columns': '# of columns',
+            'n_rows': '# of rows',
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(SectionCreateForm, self).__init__(*args, **kwargs)
+        self.fields['cell_height'].initial = '200'
+        self.fields['n_rows'].initial = '5'
+        max_cols = SASS_VARIABLES[MAX_ROWS_KEY]
+        self.fields['n_columns'].help_text = \
+            'Measured in cells. Must be a number between 1 and %s. Please' \
+            ' note that you cannot change this value in the future.' % max_cols,
 
 
 class SectionVisibilityForm(forms.ModelForm):

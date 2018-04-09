@@ -36,21 +36,6 @@ function bindSidebarEvents() {
     new DropDown($('#js-website-select-dropdown'));
     new DropDown($('#js-page-select-dropdown'));
 
-    $('#js-sidebar-add-website-btn').click(function(){
-        EventBus.fire(WEBSITE_ADD_CLICKED);
-    });
-
-    $('#js-sidebar-edit-website-btn').click(function(){
-        EventBus.fire(WEBSITE_EDIT_CLICKED);
-    });
-
-    $('#js-sidebar-add-page-btn').click(function(){
-        EventBus.fire(PAGE_ADD_CLICKED);
-    });
-
-    $('#js-sidebar-edit-page-btn').click(function(){
-        EventBus.fire(PAGE_EDIT_CLICKED);
-    });
 }
 
 EventBus.subscribe(HTML_INJECTED, bindSidebarEvents);

@@ -1,5 +1,6 @@
 {% extends 'frontend/_panel_base.html' %}
 {% load bootstrap4 %}
+{% load static %}
 
 {% block title %}{{ page_title }} | {{ website.name }}{% endblock %}
 
@@ -13,8 +14,14 @@
         {% block extra_breadcrumbs %}{% endblock %}
       </ol>
     </nav>
-    <h1>{{ website.name }}</h1>
-    <p class="lead"><a href="{{ website.domain }}" target="_blank">{{ website.domain }}</a></p>
+    <div class="media">
+      <img class="mr-3" src="{% static 'img/favicon.png' %}" alt="{{ website.name }} favicon" style="width: 80px">
+      <div class="media-body">
+        <h1 style="margin: 5px 0 5px">{{ website.name }}</h1>
+        <p class="lead"><a href="{{ website.domain }}" target="_blank">{{ website.domain }}</a></p>
+      </div>
+    </div>
+    <br/>
     <ul class="nav nav-tabs">
       <li class="nav-item">
         <a class="nav-link{% if current_tab == 'pages' %} active{% endif %}" href="{% url 'page_list' website.subdomain %}"><i class="fa fa-clone"></i> Pages</a>
