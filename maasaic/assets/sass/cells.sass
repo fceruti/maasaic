@@ -77,6 +77,29 @@
   background: $insert-cell-ctrl-bg
   z-index: $insert-cell-ctrl-zindex
   position: absolute
+  padding: 15px
 
-
-
+  $icon-width: ($insert-cell-ctrl-width - 60) / 3
+  .insert-cell-ctrl-btn
+    width: $icon-width
+    height: 50px
+    float: left
+    margin: 0 15px 15px 0
+    text-align: center
+    &.no-margin-right
+      margin-right: 0
+    .icon
+      width: $icon-width
+      height: $icon-width * 0.8
+      font-size: $icon-width * 0.8
+      line-height: $icon-width * 0.8
+      color: $insert-cell-ctrl-btn-text-color
+      text-align: center
+    .text
+      color: $insert-cell-ctrl-btn-text-color
+      font-size: $insert-cell-ctrl-btn-font-size
+      white-space: nowrap
+    &:hover
+      cursor: pointer
+      .icon, .text
+        color: $primary-color

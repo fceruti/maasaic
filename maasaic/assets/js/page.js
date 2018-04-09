@@ -126,7 +126,7 @@ function drawInsertControls() {
         var stopInsertBottom = $stopInsertCell.position().top + $stopInsertCell.outerHeight(true);
         var startInsertLeft = $startInsertCell.position().left;
         var stopInsertRight = $stopInsertCell.position().left + $stopInsertCell.outerWidth(true);
-        var insertCellCtrlTop = startInsertTop + ((stopInsertBottom - startInsertTop) / 2) - 60;
+        var insertCellCtrlTop = startInsertTop + ((stopInsertBottom - startInsertTop) / 2) - 70;
         var insertCellCtrlLeft = startInsertLeft + ((stopInsertRight - startInsertLeft) / 2) - 90;
         $insertCellCtrl
             .css({top: insertCellCtrlTop, left: insertCellCtrlLeft})
