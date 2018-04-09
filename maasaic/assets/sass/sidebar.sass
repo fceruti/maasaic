@@ -8,13 +8,12 @@
 
 #sidebar
   @include linear-gradient($sidebar-bg...)
-  @include box-shadow($sidebar-box-shadow)
-  border-radius: 10px
+  border-left: 2px solid $primary-color
   width: $sidebar-width
   position: fixed
-  top: 10px
-  right: 10px
-  bottom: 10px
+  top: 0
+  right: 0
+  bottom: 0
   z-index: $sidebar-zindex
   overflow-y: scroll
 
@@ -86,10 +85,12 @@
     background: none
     padding: 0
     .fa
-      line-height: $sidebar-item-height - 2
+      line-height: $sidebar-item-height
     &.bordered
-      border: 1px solid
+      border: 2px solid
       @include border-radius($sidebar-bordered-btn-border-radius)
+      .fa
+        line-height: $sidebar-item-height - 4
     &.grab
       @include cursor-grab
     &.grabbing
@@ -103,12 +104,12 @@
   &:hover
     .sidebar-item-content
       .name
-        color: $sidebar-base-color-light
+        color: $sidebar-base-color-2
       .description
-        color: $sidebar-light-color-light
+        color: $sidebar-light-color-2
     .sidebar-option-btn
-      color: $sidebar-light-color-light
-      border-color: $sidebar-light-color-light
+      color: $sidebar-light-color-2
+      border-color: $sidebar-light-color-2
 
 .cell-list
   margin-top: 10px
