@@ -2,6 +2,9 @@
 var HTML_INJECTED = 'HTML_INJECTED'
 
 // Cells
+var CELL_MODAL_REQUEST = 'CELL_MODAL_REQUEST';
+
+
 var CELL_HOVERING_START = 'CELL_HOVER_START';
 var CELL_HOVERING_END = 'CELL_HOVER_END';
 var CELL_INVISIBILITY_CLICKED = 'CELL_INVISIBILITY_CLICKED';
@@ -25,13 +28,13 @@ var EventBus = {
     this.keys[key].push(listener);
   },
 
-  fire: function(key, data) {
+  fire: function(key, ...data) {
     // return if the topic doesn't exist, or there are no listeners
     if(!this.keys[key] || this.keys[key].length < 1) return;
 
     // send the event to all listeners
     this.keys[key].forEach(function(listener) {
-      listener(data || {});
+      listener(...data || {});
     });
   }
 };

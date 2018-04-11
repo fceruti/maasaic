@@ -203,6 +203,14 @@ class Section(models.Model):
         return self.cell_set\
             .filter(is_visible=True)
 
+    @property
+    def cell_default_padding(self):
+        return '20px'
+
+    @property
+    def cell_default_bg_color(self):
+        return 'transparent'
+
 
 class Cell(models.Model):
     class Type(Choices):
@@ -215,18 +223,18 @@ class Cell(models.Model):
                                     on_delete=models.CASCADE)
     cell_type = models.CharField(max_length=255, choices=Type.choices())
     is_visible = models.BooleanField(default=True)
-    h = models.PositiveIntegerField(help_text='Number of cells')
-    w = models.PositiveIntegerField(help_text='Number of cells')
+
     x = models.PositiveIntegerField(
         help_text='Number of cells',
         choices=[(x + 1, x + 1) for x in range(SASS_VARIABLES[MAX_COLS_KEY])])
     y = models.PositiveIntegerField(
         help_text='Number of cells',
         choices=[(x + 1, x + 1) for x in range(SASS_VARIABLES[MAX_ROWS_KEY])])
+    w = models.PositiveIntegerField(help_text='Number of cells')
+    h = models.PositiveIntegerField(help_text='Number of cells')
 
     content = models.TextField(null=True, blank=True)
     css = JSONField(null=True, blank=True)
-    padding = models.CharField(max_length=255, default='20px')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

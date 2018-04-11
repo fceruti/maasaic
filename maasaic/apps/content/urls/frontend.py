@@ -38,18 +38,20 @@ from maasaic.apps.content.views.frontend import WebsiteCreateView
 from maasaic.apps.content.views.frontend import WebsiteDetailView
 from maasaic.apps.content.views.frontend import WebsiteListView
 from maasaic.apps.content.views.frontend import WebsitePageAttrView
+from maasaic.apps.content.views.frontend import CellCreateView
 
 base_urls = sys.modules[settings.ROOT_URLCONF].urlpatterns
 
 cells_urls = [
-    path('visibility',
+    path('create', CellCreateView.as_view(), name='cell_create'),
+    path('<int:cell_pk>/visibility',
          CellVisibilityUpdateView.as_view(),
          name='cell_update_visibility'),
 ]
 
 section_urls = [
     path('visibility', SectionVisibilityUpdateView.as_view(), name='section_update_visibility'),
-    path('cells/<int:cell_pk>', include(cells_urls)),
+    path('cells/', include(cells_urls)),
 ]
 
 urlpatterns = [
@@ -68,7 +70,7 @@ urlpatterns = [
     path('sites/<str:subdomain>/pages/<int:pk>/delete', PageDeleteView.as_view(), name='page_delete'),
 
     path('sites/<str:subdomain>/pages/<int:page_pk>/sections/create', SectionCreateView.as_view(), name='section_create'),
-    path('sites/<str:subdomain>/pages/<int:page_pk>/sections/<int:section_pk>', include(section_urls)),
+    path('sites/<str:subdomain>/pages/<int:page_pk>/sections/<int:section_pk>/', include(section_urls)),
 
     path('sites/<str:subdomain>/config', WebsiteConfigView.as_view(), name='website_config'),
     path('sites/<str:subdomain>/default-page-attrs', WebsitePageAttrView.as_view(), name='website_page_attr'),

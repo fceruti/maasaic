@@ -1,41 +1,15 @@
 @import 'variables'
 
-.modal
-  z-index: $modal-zindex
-  display: block
-  height: 100%
-  left: 0
-  position: fixed
-  top: 0
-  width: 100%
+@media (min-width: 992px)
+  .modal-huge
+    max-width: 98%
+
+.note-editor.note-frame .note-editing-area .note-editable
+  background: transparent
+
+.note-editor
+  background: url(/static/img/transparent_bg.png)
+
+.note-toolbar-wrapper
   background: white
-
-  .modal-header, .modal-footer
-    height: 60px
-    width: 100%
-    position: absolute
-
-  .modal-header
-    .modal-close-btn
-      font-size: 30px
-      float: right
-      margin-right: 20px
-      position: relative
-      top: 22px
-      cursor: pointer
-      &:hover
-        color: $primary-color
-    h2
-      margin: 30px 0
-      font-size: 24px
-      text-align: center
-      font-weight: bold
-
-  .modal-content
-    position: absolute
-    top: 60px
-    bottom: 60px
-    overflow-y: auto
-
-  .modal-footer
-    bottom: 0
+  border-radius: 4px 0

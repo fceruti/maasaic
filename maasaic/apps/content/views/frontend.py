@@ -2,10 +2,10 @@ from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.db.models import Max
 from django.utils.functional import cached_property
 from django.views import View
 from django.views.generic import CreateView
@@ -14,23 +14,23 @@ from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import ListView
 from django.views.generic import RedirectView
-from maasaic.apps.content.forms import CellVisibilityForm
-from maasaic.apps.content.forms import SectionVisibilityForm
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 
+from maasaic.apps.content.forms import CellCreateForm
+from maasaic.apps.content.forms import CellVisibilityForm
 from maasaic.apps.content.forms import PageCreateForm
 from maasaic.apps.content.forms import PageUpdateForm
-
 from maasaic.apps.content.forms import SectionCreateForm
+from maasaic.apps.content.forms import SectionVisibilityForm
 from maasaic.apps.content.forms import UserCreateForm
 from maasaic.apps.content.forms import UserLoginForm
 from maasaic.apps.content.forms import WebsiteConfigForm
 from maasaic.apps.content.forms import WebsiteCreateForm
-from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Cell
-from maasaic.apps.content.models import Website
+from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Section
+from maasaic.apps.content.models import Website
 
 
 # ------------------------------------------------------------------------------
@@ -227,6 +227,10 @@ class PageUpdateView(DetailView, WebsiteDetailBase):
         context = super(PageUpdateView, self).get_context_data(**kwargs)
         context['page_edit_on'] = True
         context['website'] = self.website
+        from maasaic.apps.content.views.app import FONTS
+        from maasaic.apps.content.views.app import FONTS_URL
+        context['FONTS'] = FONTS
+        context['FONTS_URL'] = FONTS_URL
         context['section_create_form'] = SectionCreateForm()
         return context
 
@@ -314,6 +318,24 @@ class SectionVisibilityUpdateView(UpdateView):
 # ------------------------------------------------------------------------------
 # Cells
 # ------------------------------------------------------------------------------
+class CellCreateView(CreateView, PageBaseView):
+    model = Cell
+    form_class = CellCreateForm
+
+    @cached_property
+    def section(self):
+        return get_object_or_404(Section, pk=self.kwargs['section_pk'])
+
+    # def form_valid(self, form):
+    #     cell = form.save(commit=False)
+    #     cell.section = self.section
+    #     cell.save()
+    #     url =
+    #     return HttpResponseRedirect(url)
+    def get_success_url(self):
+        return reverse('page_update', args=[self.website.subdomain,
+                                            self.page.pk])
+
 class CellVisibilityUpdateView(UpdateView):
     form_class = CellVisibilityForm
     http_method_names = ['post']

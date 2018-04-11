@@ -15,6 +15,11 @@
 
 {% block extra_js %}
   {% include 'widgets/fonts.html' %}
+  {% if page_edit_on %}
+  <script type="text/javascript">
+    var csrfmiddlewaretoken = '{{ csrf_token }}';
+  </script>
+  {% endif %}
 {% endblock %}
 
 {% block content %}
@@ -25,14 +30,15 @@
 <div class="page"
      data-website-id="{{ page.website.id }}"
      data-website-pub_status="{{ page.website.pub_status }}"
-     data-website-slug="{{ page.website.slug }}"
+     data-website-subdomain="{{ page.website.subdomain }}"
      data-website-name="{{ page.website.name }}"
      data-website-description="{{ page.website.description }}"
      data-website-language="{{ page.website.language }}"
      data-website-page_width="{{ page.website.page_width }}"
+     data-page-id="{{ page.pk }}"
      data-pub_status="{{ page.pub_status }}"
      data-name="{{ page.name }}"
-     data-slug="{{ page.slug }}"
+     data-path="{{ page.path }}"
      data-page_width="{{ page.page_width }}"
      data-description="{{ page.description }}">
   {% for section in page.visible_sections %}
@@ -44,9 +50,14 @@
          data-pub_status="{{ section.pub_status }}"
          data-order="{{ section.order }}"
          data-n_columns="{{ section.n_columns }}"
-         data-height="{{ section.height }}"
+         data-cell_height="{{ section.cell_height }}"
+         data-cell_padding="{{ section.cell_default_padding }}"
+         data-cell_bg_color="{{ section.cell_default_bg_color }}"
+         data-width="{{ page.page_width }}"
          data-name="{{ section.name }}"
-         data-slug="{{ section.slug }}">
+         data-slug="{{ section.slug }}"
+         data-section="{{ section.pk }}"
+         >
       <div class="section-inner"
            style="width: {{ page.get_page_width }}px">
       {# VIEW LAYER #}
@@ -58,15 +69,15 @@
                         cell--h-{{ cell.h }}
                         cell--x-{{ cell.x }}
                         cell--y-{{ cell.y }}"
-                 style="{% for key, val in cell.css.items %}{{ key }}:{{ val }};{% endfor %}"
+                 style="background: {{ cell.css.background }}"
                  data-section="{{ section.pk }}"
                  data-type="{{ cell.cell_type }}"
                  data-w="{{ cell.w }}"
                  data-h="{{ cell.h }}"
                  data-x="{{ cell.x }}"
                  data-y="{{ cell.y }}">
-              <div class="cell-inner" style="margin: {{ cell.padding }}">
-                {{ cell.draw_content }}
+              <div class="cell-inner" style="margin: {{ cell.css.padding }}">
+                {{ cell.content|safe }}
               </div>
             </div>
           {% endfor %}
@@ -89,33 +100,43 @@
                 </div>
               {% endfor %}
             {% endfor %}
-            <div class="insert-cell-ctrl"
+            <div class="insert-cell-ctrl hidden"
                  data-section="{{ section.pk }}">
-              <div class="insert-cell-ctrl-btn">
+              <div class="insert-cell-btn
+                          js-insert-cell-btn"
+                   data-cell-type="text">
                 <div class="icon">
                   <i class="fa fa-font"></i>
                 </div>
                 <div class="text">Text</div>
               </div>
-              <div class="insert-cell-ctrl-btn">
+              <div class="insert-cell-btn
+                          js-insert-cell-btn"
+                   data-cell-type="image">
                 <div class="icon">
                   <i class="fa fa-camera"></i>
                 </div>
                 <div class="text">Image</div>
               </div>
-              <div class="insert-cell-ctrl-btn no-margin-right">
+              <div class="insert-cell-btn no-margin-right
+                          js-insert-cell-btn"
+                   data-cell-type="video">
                 <div class="icon">
                   <i class="fa fa-youtube"></i>
                 </div>
                 <div class="text">Video</div>
               </div>
-              <div class="insert-cell-ctrl-btn">
+              <div class="insert-cell-btn
+                          js-insert-cell-btn"
+                   data-cell-type="clone">
                 <div class="icon">
                   <i class="fa fa-clone"></i>
                 </div>
                 <div class="text">Clone</div>
               </div>
-              <div class="insert-cell-ctrl-btn">
+              <div class="insert-cell-btn
+                          js-insert-cell-btn"
+                   data-cell-type="iframe">
                 <div class="icon">
                   <i class="fa fa-code"></i>
                 </div>
@@ -374,6 +395,14 @@
       </div>
     </div>
   </div>
+
+  {# TEXT CELL #}
+  <div class="modal" tabindex="-1" role="dialog" id="insert-cell-modal">
+    <div class="modal-dialog modal-huge" role="document">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+
 {% endif %}
 
 {# loading #}

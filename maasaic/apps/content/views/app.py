@@ -16,7 +16,7 @@ from maasaic.apps.content.models import Website
 
 FONTS = [
     ["Roboto", "'Roboto', sans-serif"],
-    ["Open Sanas", "'Open Sans', sans-serif"],
+    ["Open Sans", "'Open Sans', sans-serif"],
     ["Montserrat", "'Montserrat', sans-serif"],
     ["Oswald", "'Oswald', sans-serif"],
     ["Raleway", "'Raleway', sans-serif"],

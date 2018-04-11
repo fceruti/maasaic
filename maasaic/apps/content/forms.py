@@ -231,6 +231,28 @@ class SectionCreateForm(forms.ModelForm):
             ' note that you cannot change this value in the future.' % max_cols,
 
 
+class CellCreateForm(forms.ModelForm):
+
+    css_padding = forms.CharField()
+    css_background = forms.CharField()
+
+    class Meta:
+        model = Cell
+        fields = ['section', 'cell_type', 'x', 'y', 'w', 'h', 'content']
+
+    # TODO: clean_css_padding
+    # TODO: clean_css_background
+
+    def save(self, commit=True):
+        cell = super(CellCreateForm, self).save(commit=False)
+        cell.css = {
+            'padding': self.cleaned_data['css_padding'],
+            'background': self.cleaned_data['css_background']
+        }
+        if commit:
+            cell.save()
+
+
 class SectionVisibilityForm(forms.ModelForm):
     class Meta:
         model = Section

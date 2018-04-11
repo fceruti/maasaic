@@ -24,8 +24,35 @@ function getInsertAreaDimensions(){
         stopX = Math.max(insertOptions['startPos'][0], insertOptions['stopPos'][0]),
         startY = Math.min(insertOptions['startPos'][1], insertOptions['stopPos'][1]),
         stopY = Math.max(insertOptions['startPos'][1], insertOptions['stopPos'][1]);
-    return [startX, stopX, startY, stopY];
+    return {'startX': startX,
+            'stopX': stopX,
+            'startY': startY,
+            'stopY': stopY};
 }
+
+function getSectionCellProperties(sectionId) {
+    var $section = $('.section[data-section=' + sectionId + ']')
+    var cellHeight = parseInt($section.attr('data-cell_height')),
+        totalWidth = parseInt($section.attr('data-width')),
+        totalCols = parseInt($section.attr('data-n_columns')),
+        defaultPadding = $section.attr('data-cell_padding'),
+        defaultBgColor = $section.attr('data-cell_bg_color');
+
+    return {'colWidth': totalWidth / totalCols,
+            'rowHeight': cellHeight,
+            'defaultPadding': defaultPadding,
+            'defaultBackground': defaultBgColor};
+}
+
+function getSectionParentsUrlParts(sectionId) {
+    var $section = $('.section[data-section=' + sectionId + ']');
+    var $page = $section.closest('.page');
+    var websiteSubdomain = $page.attr('data-website-subdomain'),
+        pageId = $page.attr('data-page-id');
+    return {'websiteSubdomain': websiteSubdomain,
+            'pageId': pageId};
+}
+
 
 /*******************************************************************************
 * Insert cells
@@ -77,10 +104,10 @@ function drawInsertArea() {
 
     // Calculate start & stop positions
     var insertAreaDimensions = getInsertAreaDimensions();
-    var startX = insertAreaDimensions[0],
-        stopX = insertAreaDimensions[1],
-        startY = insertAreaDimensions[2],
-        stopY = insertAreaDimensions[3];
+    var startX = insertAreaDimensions['startX'],
+        stopX = insertAreaDimensions['stopX'],
+        startY = insertAreaDimensions['startY'],
+        stopY = insertAreaDimensions['stopY'];
     var sectionId = insertOptions['sectionId'];
 
     // Remove any previous left overs
@@ -116,10 +143,10 @@ function drawInsertControls() {
        insertOptions['startPos'] != null &&
        insertOptions['stopPos'] != null) {
         var insertAreaDimensions = getInsertAreaDimensions();
-        var startX = insertAreaDimensions[0],
-            stopX = insertAreaDimensions[1],
-            startY = insertAreaDimensions[2],
-            stopY = insertAreaDimensions[3];
+        var startX = insertAreaDimensions['startX'],
+            stopX = insertAreaDimensions['stopX'],
+            startY = insertAreaDimensions['startY'],
+            stopY = insertAreaDimensions['stopY'];
         var $startInsertCell = getCell('insert', sectionId, startX, startY);
         var $stopInsertCell = getCell('insert', sectionId, stopX, stopY);
         var startInsertTop = $startInsertCell.position().top;
@@ -136,9 +163,40 @@ function drawInsertControls() {
     }
 }
 
+function onInsertCellBtnClicked(target) {
+    var cellType = $(target).closest('.js-insert-cell-btn').attr('data-cell-type');
+    var sectionId = insertOptions['sectionId'];
+    var areaDimensions = getInsertAreaDimensions();
+    var sectionCellProperties= getSectionCellProperties(sectionId);
+    var sectionParentsUrlParts = getSectionParentsUrlParts(sectionId)
+
+    var startX = areaDimensions['startX'],
+        stopX = areaDimensions['stopX'],
+        startY = areaDimensions['startY'],
+        stopY = areaDimensions['stopY'];
+    var x = startX,
+        y = startY,
+        w = stopX - startX + 1,
+        h = stopY - startY + 1;
+
+    var cellObj = {
+        id: null,
+        cellType: 'TEXT',
+        subdomain: sectionParentsUrlParts['websiteSubdomain'],
+        pageId: sectionParentsUrlParts['pageId'],
+        sectionId: sectionId,
+        x: x, y: y, w: w, h: h,
+        content: '',
+        css: {}
+    };
+
+    EventBus.fire(CELL_MODAL_REQUEST, sectionCellProperties, cellObj);
+}
+
 function bindInsertEvents (){
     $('.cell.cell--layer-insert').mousedown(function(){
         if(insertOptions['startPos'] != null || insertOptions['stopPos'] != null){
+            console.log('cleaning insert area');
             clearInsertArea();
             drawInsertControls();
         }else{
@@ -152,10 +210,16 @@ function bindInsertEvents (){
     });
 
     $(document).mouseup(function(event){
-        if($(event.target).hasClass('cell--layer-insert')) {
+        $target = $(event.target)
+        if($target.hasClass('cell--layer-insert')) {
             if(insertOptions['isInserting'] === false) return
             stopInsert(event.target);
         } else {
+            if($target.hasClass('js-insert-cell-btn') ||
+               $target.parent().hasClass('js-insert-cell-btn') ||
+               $target.parent().parent().hasClass('js-insert-cell-btn')){
+                onInsertCellBtnClicked($target);
+            }
             clearInsertArea();
             drawInsertControls();
         }
