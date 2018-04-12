@@ -24,6 +24,7 @@
 
 {% block content %}
 {% if page_edit_on %}
+  {# BEING: AJAX CONTAINER #}
   <div id="js-ajax-container">
 {% endif %}
 
@@ -60,9 +61,9 @@
       <div class="section-inner"
            style="width: {{ page.get_page_width }}px">
 
-      {# VIEW LAYER #}
+        {# VIEW LAYER #}
         <div class="view-layer">
-          {% for cell in section.visible_cells.all %}
+          {% for cell in section.visible_cells %}
             <div class="cell
                         cell--layer-view
                         cell--w-{{ cell.w }}
@@ -148,7 +149,7 @@
 
           {# EDIT LAYER #}
           <div class="edit-layer">
-            {% for cell in section.cell_set.all %}
+            {% for cell in section.editable_cells %}
               <div class="cell
                           cell--layer-edit
                           cell--w-{{ cell.w }}
@@ -207,7 +208,6 @@
                 </div>
               {% endfor %}
             {% endfor %}
-            </div>
           </div>
         {% endif %}
       </div>
@@ -325,7 +325,7 @@
                 <li class="cell-list-item"
                     data-section-id="{{ section.pk }}"
                     data-cell-id="{{ cell.pk }}">
-                  <div class="sidebar-item">
+                  <div class="sidebar-item {% if not cell.is_visible %}not-visible{% endif %}">
                     <div class="sidebar-item-option left">
                       <div class="sidebar-option-btn bordered grab">
                         <i class="fa fa-reorder"></i>

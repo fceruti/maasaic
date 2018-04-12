@@ -204,6 +204,10 @@ class Section(models.Model):
         return self.cell_set\
             .filter(is_visible=True)
 
+    def editable_cells(self):
+        return self.cell_set\
+            .filter(is_visible=True)
+
     @property
     def cell_default_padding(self):
         return '20px'

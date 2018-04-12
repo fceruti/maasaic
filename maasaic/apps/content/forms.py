@@ -265,6 +265,15 @@ class SectionCreateForm(forms.ModelForm):
             ' note that you cannot change this value in the future.' % max_cols,
 
 
+class SectionVisibilityForm(forms.ModelForm):
+    class Meta:
+        model = Section
+        fields = ['is_visible']
+
+
+# ------------------------------------------------------------------------------
+# Cell forms
+# ------------------------------------------------------------------------------
 class CellCreateForm(forms.ModelForm):
 
     css_padding = forms.CharField()
@@ -292,14 +301,6 @@ class CellPositionForm(forms.ModelForm):
     class Meta:
         model = Cell
         fields = ['x', 'y']
-
-    # TODO: validate out of bounds
-
-
-class SectionVisibilityForm(forms.ModelForm):
-    class Meta:
-        model = Section
-        fields = ['is_visible']
 
 
 class CellVisibilityForm(forms.ModelForm):

@@ -50,6 +50,11 @@
   height: $sidebar-item-height
   margin-bottom: 15px
   clear: both
+  &.not-visible
+    .sidebar-item-content
+      .name
+        text-decoration: line-through
+
   .sidebar-item-content
     float: left
     margin: 0 10px

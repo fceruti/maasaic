@@ -347,6 +347,7 @@ class CellCreateView(CreateView, PageBaseView):
 
 class BaseCellUpdateView(UpdateView, PageBaseView):
     http_method_names = ['post']
+    model = Cell
 
     def get_success_url(self):
         cell = self.get_object()
@@ -359,24 +360,10 @@ class BaseCellUpdateView(UpdateView, PageBaseView):
 
 class CellPositionUpdateView(BaseCellUpdateView):
     form_class = CellPositionForm
-    model = Cell
 
 
 class CellVisibilityUpdateView(BaseCellUpdateView):
     form_class = CellVisibilityForm
-
-    def get_success_url(self):
-        cell = self.get_object()
-        url = cell.section.page.absolute_path + '?edit=on'
-        return url
-
-    def form_valid(self, form):
-        form.save(commit=True)
-        return HttpResponseRedirect(redirect_to=self.get_success_url())
-
-    def form_invalid(self, form):
-        messages.error(self.request, form.errors)
-        return HttpResponseRedirect(redirect_to=self.get_success_url())
 
 
 class CellDeleteView(DeleteView):
