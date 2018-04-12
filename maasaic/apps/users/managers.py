@@ -6,7 +6,7 @@ class UserManager(BaseUserManager):
     A custom user manager to deal with emails as unique identifiers for auth
     instead of usernames. The default that's used is "UserManager"
     """
-    def create_user(self, nickname, email, password, **extra_fields):
+    def create_user(self, username, email, password, **extra_fields):
         """
         Creates and saves a User with the given email and password.
         """
@@ -14,7 +14,7 @@ class UserManager(BaseUserManager):
             email = self.normalize_email(email.lower())
         else:
             email = None
-        user = self.model(nickname=nickname, email=email, **extra_fields)
+        user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
         user.save()
         return user
@@ -25,4 +25,4 @@ class UserManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
     def get_by_natural_key(self, username):
-        return self.get(nickname=username)
+        return self.get(username=username)

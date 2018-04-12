@@ -7,14 +7,14 @@ from maasaic.apps.users.managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    nickname = models.CharField(max_length=255, unique=True, db_index=True)
+    username = models.CharField(max_length=255, unique=True, db_index=True)
     email = models.EmailField(unique=True, null=True, blank=True)
     date_joined = models.DateTimeField('date joined', default=timezone.now)
     USERNAME_FIELD = 'email'
     objects = UserManager()
 
     def __str__(self):
-        return self.nickname
+        return self.username
 
     @property
     def is_active(self):
