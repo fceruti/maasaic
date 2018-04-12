@@ -8,6 +8,7 @@ from django.db import models
 from django.utils.functional import cached_property
 from image_cropping import ImageCropField
 from image_cropping import ImageRatioField
+from pyquery import PyQuery as pq
 
 from maasaic.apps.users.models import User
 from maasaic.apps.utils.models import Choices
@@ -243,5 +244,13 @@ class Cell(models.Model):
                (self.section_id, self.cell_type,
                 self.w, self.h, self.x, self.y)
 
-    def draw_content(self):
-        return 'yeah'
+    def text(self):
+
+        if self.cell_type == self.Type.TEXT:
+            if self.content:
+                dom = pq(self.content)
+                return dom.text()
+            else:
+                return '(empty)'
+
+
