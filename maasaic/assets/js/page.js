@@ -200,7 +200,6 @@ function onInsertCellBtnClicked(target) {
 }
 
 function bindInsertEvents (){
-
     EventBus.subscribe(STATE_CHANGED, function(){
         if (appState != STATE_INSERT_AREA_SELECTED) {
             clearInsertArea();
@@ -211,7 +210,6 @@ function bindInsertEvents (){
 
     $('.cell.cell--layer-insert').mousedown(function(){
         if(insertOptions['startPos'] != null || insertOptions['stopPos'] != null){
-            console.log('cleaning insert area');
             clearInsertArea();
             clearInsertOptions();
             drawInsertControls();
@@ -269,15 +267,12 @@ var moveOptions = {
 function startMovingCell(btn){
     appState = STATE_MOVE;
     EventBus.fire(STATE_CHANGED);
-    console.log(btn)
     $cell = $(btn).closest('.cell.cell--layer-edit');
-    console.log($cell)
 
     moveOptions['cellId'] = parseInt($cell.attr('data-cell-id'));
     moveOptions['sectionId'] = parseInt($cell.attr('data-section-id'));
     moveOptions['h'] = parseInt($cell.attr('data-h'));
     moveOptions['w'] = parseInt($cell.attr('data-w'));
-    console.log(moveOptions)
 
     doMoveCell($cell);
     $('.move-layer').removeClass('hidden');
@@ -298,27 +293,13 @@ function doMoveCell(cell){
 }
 
 function stopMoveCell(cell){
-    EventBus.fire(WAITING_SERVER_RESPONSE_STARTED);
-
     var url = '/cells/' + moveOptions['cellId'] + '/move';
     var data = {'x': parseInt($(cell).attr('data-x')),
                 'y': parseInt($(cell).attr('data-y')),
                 'csrfmiddlewaretoken': csrfmiddlewaretoken};
-
-    $.ajax({
-      type: "POST",
-      url: url,
-      data: data,
-      success: function(response) {
-        var newHtml = findInParsed(response, '#js-ajax-container');
-        $('#js-ajax-container').html(newHtml);
-      },
-      complete: function() {
-        EventBus.fire(HTML_INJECTED);
-        EventBus.fire(WAITING_SERVER_RESPONSE_ENDED);
-      }
-    });
-
+    performPost(url, data);
+    clearMoveArea();
+    clearMoveOptions();
 }
 
 function clearMoveOptions() {
@@ -351,7 +332,10 @@ function bindMoveCellEvents() {
     })
 
     $('.edit-cell-ctrl-btn-move').mousedown(function(){
-        startMovingCell(this);
+        if(appState == STATE_VIEW){
+            startMovingCell(this);
+        }
+
     });
     $('.cell--layer-move').mouseover(function(){
         if(appState == STATE_MOVE) {
@@ -361,7 +345,6 @@ function bindMoveCellEvents() {
 
     $(document).mouseup(function(event){
         $target = $(event.target)
-
         // User has lifted the mouse inside a valid area
         if(appState == STATE_MOVE &&
            $target.hasClass('cell--layer-move')) {
@@ -373,13 +356,9 @@ function bindMoveCellEvents() {
             return userCancelMove();
         }
 
-        // User clicked an insert button
-        if(appState == STATE_INSERT_AREA_SELECTED &&
-            ($target.hasClass('js-insert-cell-btn') ||
-             $target.parent().hasClass('js-insert-cell-btn') ||
-             $target.parent().parent().hasClass('js-insert-cell-btn'))){
-            return onInsertCellBtnClicked($target);
-        }
+        // Cleanup
+        clearMoveArea();
+        clearMoveOptions();
     });
 
 }

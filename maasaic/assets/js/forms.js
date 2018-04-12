@@ -5,11 +5,17 @@ function findInParsed(html, selector){
 function bindFormEvents () {
     $('.js-ajax-form').on('submit', function(event){
         event.preventDefault();
-        EventBus.fire(WAITING_SERVER_RESPONSE_STARTED);
-
         var data = $(this).serialize();
         var url = $(this).attr('action');
+        performPost(url, data);
+    });
+}
 
+var isPosting = false
+function performPost(url, data) {
+    if(isPosting === false){
+        EventBus.fire(WAITING_SERVER_RESPONSE_STARTED);
+        isPosting = true;
         $.ajax({
           type: "POST",
           url: url,
@@ -21,9 +27,12 @@ function bindFormEvents () {
           complete: function() {
             EventBus.fire(HTML_INJECTED);
             EventBus.fire(WAITING_SERVER_RESPONSE_ENDED);
+            appState = STATE_VIEW;
+            EventBus.fire(STATE_CHANGED);
+            isPosting = false;
           }
         });
-    });
+    }
 }
 
 EventBus.subscribe(HTML_INJECTED, bindFormEvents);

@@ -103,7 +103,7 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
             $('.note-editing-area').css({'background': $(this).val()})
         });
 
-        // Bind ajax form
+        // TODO: Bind ajax form
     }
 }
 
