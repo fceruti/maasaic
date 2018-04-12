@@ -2,6 +2,7 @@ import re
 
 from django import forms
 from django.conf import settings
+from django.contrib.auth import authenticate
 from django.db import transaction
 
 from maasaic.apps.content.models import Cell
@@ -18,6 +19,37 @@ path_pattern = re.compile('^([/\w+-.]*)$')
 class UserLoginForm(forms.Form):
     subdomain = forms.CharField(max_length=255)
     password = forms.CharField(max_length=255, widget=forms.PasswordInput)
+
+    def __init__(self, request, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+        self.request = request
+        self.user_cache = None
+
+    def clean(self):
+        subdomain = self.cleaned_data.get('subdomain')
+        password = self.cleaned_data.get('password')
+
+        if not subdomain:
+            raise forms.ValidationError('Please enter a subdomain')
+        if not password:
+            raise forms.ValidationError('Please enter a valid username')
+
+        try:
+            website = Website.objects.get(subdomain=subdomain)
+        except Website.DoesNotExist:
+            err = 'Theres no website with a subdomain of "%s".' % subdomain
+            raise forms.ValidationError(err)
+
+        username = website.user.username
+        self.user_cache = authenticate(self.request,
+                                       username=username,
+                                       password=password)
+        if self.user_cache is None:
+            err = 'Wrong subdomain or password'
+            raise forms.ValidationError(err)
+
+    def get_user(self):
+        return self.user_cache
 
 
 class UserCreateForm(forms.Form):

@@ -62,6 +62,14 @@ class UserLoginView(FormView):
     template_name = 'frontend/user_login.html'
     form_class = UserLoginForm
 
+    def get_form_kwargs(self):
+        kw = super(UserLoginView, self).get_form_kwargs()
+        kw['request'] = self.request,
+        return kw
+
+    def get_success_url(self):
+        return reverse('website_list')
+
 
 class UserLogoutView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
