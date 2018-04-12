@@ -19,14 +19,15 @@
       @include transition(top 0.2s)
       z-index: $edit-cell-ctrl-zindex
       position: absolute
-      top: -50px
-      right: 5px
+      top: -60px
+      right: 10px
 
       .edit-cell-ctrl-btns
         @include box-shadow($edit-cell-ctrl-btns-shadow)
         @include border-radius($edit-cell-ctrl-btns-border-radius)
         @include border-radius($edit-cell-ctrl-btns-border-radius)
         height: $edit-cell-ctrl-btns-height
+        border: 2px solid $edit-cell-ctrl-btn-color
         background: $edit-cell-ctrl-btns-bg
         padding: $edit-cell-ctrl-btns-padding
         float: right
@@ -68,7 +69,7 @@
 
   &.cell--layer-move
     &.is-moving
-      background: fade-out(green, 0.6)
+      background: fade-out($primary-color, 0.6)
   
 .insert-cell-ctrl
   @include box-shadow($insert-cell-ctrl-shadow)
@@ -79,21 +80,22 @@
   z-index: $insert-cell-ctrl-zindex
   position: absolute
   padding: 15px
+  border: 2px solid $insert-cell-ctrl-btn-text-color
 
   $icon-width: ($insert-cell-ctrl-width - 60) / 3
   .insert-cell-btn
     width: $icon-width
-    height: 50px
+    height: 40px
     float: left
-    margin: 0 15px 15px 0
+    margin: 0 10px 15px 0
     text-align: center
     &.no-margin-right
       margin-right: 0
     .icon
       width: $icon-width
-      height: $icon-width * 0.8
-      font-size: $icon-width * 0.8
-      line-height: $icon-width * 0.8
+      height: $icon-width * 0.6
+      font-size: $icon-width * 0.6
+      line-height: $icon-width * 0.6
       color: $insert-cell-ctrl-btn-text-color
       text-align: center
     .text
