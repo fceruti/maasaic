@@ -48,7 +48,8 @@
 
 .sidebar-item
   height: $sidebar-item-height
-  margin-bottom: 15px
+  margin: 0 -15px 5px
+  padding: $sidebar-item-vertical-padding 15px
   clear: both
   &.not-visible
     .sidebar-item-content
@@ -71,7 +72,7 @@
       line-height: 1em
 
   .sidebar-item-option
-    height: $sidebar-item-height
+    height: $sidebar-item-height - (2 * $sidebar-item-vertical-padding)
     width: $sidebar-item-option-width
     text-align: center
     &.left
@@ -79,10 +80,10 @@
     &.right
       float: right
     .fa
-      line-height: $sidebar-item-height - 2
+      line-height: $sidebar-item-height - (2 * $sidebar-item-vertical-padding) - 2
 
   .sidebar-option-btn
-    height: $sidebar-item-height
+    height: $sidebar-item-height - (2 * $sidebar-item-vertical-padding)
     width: $sidebar-item-option-width
     font-size: $sidebar-btn-font-size
     cursor: pointer
@@ -91,12 +92,12 @@
     background: none
     padding: 0
     .fa
-      line-height: $sidebar-item-height
+      line-height: 30px
     &.bordered
-      border: 2px solid
+      border: 1px solid
       @include border-radius($sidebar-bordered-btn-border-radius)
       .fa
-        line-height: $sidebar-item-height - 4
+        line-height: $sidebar-item-height - (2 * $sidebar-item-vertical-padding) - 4
     &.grab
       @include cursor-grab
     &.grabbing
@@ -107,7 +108,8 @@
     &:focus
       outline: none
 
-  &:hover
+  &.hover
+    background: rgba($primary-color, 0.1)
     .sidebar-item-content
       .name
         color: $sidebar-base-color-2

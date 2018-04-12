@@ -199,6 +199,14 @@ function onInsertCellBtnClicked(target) {
     EventBus.fire(CELL_MODAL_REQUEST, sectionCellProperties, cellObj);
 }
 
+function onCellHoverStart(sectionId, cellId) {
+    $('.cell.cell--layer-edit[data-section-id="' + sectionId + '"][data-cell-id="' + cellId + '"]').addClass('hover');
+}
+
+function onCellHoverEnd(sectionId, cellId) {
+    $('.cell.cell--layer-edit[data-section-id="' + sectionId + '"][data-cell-id="' + cellId + '"]').removeClass('hover');
+}
+
 function bindInsertEvents (){
     EventBus.subscribe(STATE_CHANGED, function(){
         if (appState != STATE_INSERT_AREA_SELECTED) {
@@ -250,9 +258,23 @@ function bindInsertEvents (){
             return onInsertCellBtnClicked($target);
         }
     });
+
+    $('.cell.cell--layer-edit').hover(
+        function() {
+            var sectionId = $(this).attr('data-section-id');
+            var cellId = $(this).attr('data-cell-id');
+            EventBus.fire(CELL_HOVERING_START, sectionId, cellId);
+        }, function() {
+            var sectionId = $(this).attr('data-section-id');
+            var cellId = $(this).attr('data-cell-id');
+            EventBus.fire(CELL_HOVERING_END, sectionId, cellId);
+        }
+    );
+
 }
 EventBus.subscribe(HTML_INJECTED, bindInsertEvents);
-
+EventBus.subscribe(CELL_HOVERING_START, onCellHoverStart);
+EventBus.subscribe(CELL_HOVERING_END, onCellHoverEnd);
 
 /*******************************************************************************
 * Move cell
