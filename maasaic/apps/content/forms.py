@@ -238,7 +238,7 @@ class PageUpdateForm(PageCreateForm):
 class SectionCreateForm(forms.ModelForm):
     class Meta:
         model = Section
-        fields = ['n_columns', 'n_rows', 'cell_height', 'name', 'html_id']
+        fields = ['page', 'n_columns', 'n_rows', 'cell_height', 'name', 'html_id']
 
         help_texts = {
             'n_rows': 'Measured in cells. You can always change this '
@@ -253,8 +253,10 @@ class SectionCreateForm(forms.ModelForm):
             'n_rows': '# of rows',
         }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, page, *args, **kwargs):
         super(SectionCreateForm, self).__init__(*args, **kwargs)
+        self.fields['page'].initial = page
+        self.fields['page'].widget = forms.HiddenInput()
         self.fields['cell_height'].initial = '200'
         self.fields['n_rows'].initial = '5'
         max_cols = SASS_VARIABLES[MAX_ROWS_KEY]
@@ -283,6 +285,7 @@ class CellCreateForm(forms.ModelForm):
         }
         if commit:
             cell.save()
+        return cell
 
 
 class CellPositionForm(forms.ModelForm):

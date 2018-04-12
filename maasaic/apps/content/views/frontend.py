@@ -240,7 +240,8 @@ class PageUpdateView(DetailView, WebsiteDetailBase):
         from maasaic.apps.content.views.app import FONTS_URL
         context['FONTS'] = FONTS
         context['FONTS_URL'] = FONTS_URL
-        context['section_create_form'] = SectionCreateForm()
+        page = self.get_object()
+        context['section_create_form'] = SectionCreateForm(page=page)
         return context
 
     def get_object(self, queryset=None):
@@ -278,7 +279,6 @@ class PageBaseView(WebsiteDetailBase):
 
     @cached_property
     def page(self):
-        # TODO: more strict
         return get_object_or_404(Page, pk=self.kwargs['page_pk'])
 
     def get_success_url(self):
@@ -288,18 +288,24 @@ class PageBaseView(WebsiteDetailBase):
 # ------------------------------------------------------------------------------
 # Sections
 # ------------------------------------------------------------------------------
-class SectionCreateView(PageBaseView, CreateView):
+class SectionCreateView(CreateView):
     form_class = SectionCreateForm
     template_name = 'frontend/section_create.html'
 
+    def get_form_kwargs(self):
+        kw = super(SectionCreateView, self).get_form_kwargs()
+        kw['page'] = None
+        return kw
+
     def form_valid(self, form):
         section = form.save(commit=False)
-        section.page = self.page
-        max_order = Section.objects.filter(page=self.page)\
+        max_order = Section.objects.filter(page=section.page)\
             .aggregate(Max('order'))['order__max']
         section.order = max_order + 1
         section.save()
-        return HttpResponseRedirect(self.get_success_url())
+        url = reverse('page_update', args=[section.page.website.subdomain,
+                                           section.page.pk])
+        return HttpResponseRedirect(url)
 
 
 class SectionVisibilityUpdateView(UpdateView):
