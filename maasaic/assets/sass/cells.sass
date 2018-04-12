@@ -66,8 +66,9 @@
     &.edge-left
       border-left: $insert-cell-border-inserting-edge
 
-  &.move-cell
-    background: fade-out(green, 0.6)
+  &.cell--layer-move
+    &.is-moving
+      background: fade-out(green, 0.6)
   
 .insert-cell-ctrl
   @include box-shadow($insert-cell-ctrl-shadow)

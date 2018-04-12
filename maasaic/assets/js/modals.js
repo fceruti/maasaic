@@ -21,15 +21,9 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
     // Form url
     var formUrl;
     if (cellObj['id'] == null) {
-        formUrl = '/sites/' + cellObj['subdomain'] +
-                  '/pages/' + cellObj['pageId'] +
-                  '/sections/' + cellObj['sectionId'] +
-                  '/cells/create';
+        formUrl = '/cells/create';
     } else {
-        formUrl = '/sites/' + cellObj['subdomain'] +
-                  '/pages/' + cellObj['pageId'] +
-                  '/sections/' + cellObj['sectionId'] +
-                  '/cells/' + cellObj['id'] + '/update';
+        formUrl = '/cells/' + cellObj['id'] + '/update';
     }
 
     if(cellObj['cellType'] == 'TEXT') {

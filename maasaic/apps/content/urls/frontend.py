@@ -39,20 +39,21 @@ from maasaic.apps.content.views.frontend import WebsiteDetailView
 from maasaic.apps.content.views.frontend import WebsiteListView
 from maasaic.apps.content.views.frontend import WebsitePageAttrView
 from maasaic.apps.content.views.frontend import CellCreateView
+from maasaic.apps.content.views.frontend import CellPositionUpdateView
 
 base_urls = sys.modules[settings.ROOT_URLCONF].urlpatterns
 
 cells_urls = [
     path('create', CellCreateView.as_view(), name='cell_create'),
-    path('<int:cell_pk>/visibility',
-         CellVisibilityUpdateView.as_view(),
-         name='cell_update_visibility'),
+    path('<int:pk>/move', CellPositionUpdateView.as_view(), name='cell_update_move'),
+    path('<int:pk>/visibility', CellVisibilityUpdateView.as_view(), name='cell_update_visibility'),
 ]
 
-section_urls = [
-    path('visibility', SectionVisibilityUpdateView.as_view(), name='section_update_visibility'),
-    path('cells/', include(cells_urls)),
+sections_urls = [
+    path('create', SectionCreateView.as_view(), name='section_create'),
+    path('<int:pk>/visibility', SectionVisibilityUpdateView.as_view(), name='section_update_visibility'),
 ]
+
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
@@ -63,18 +64,18 @@ urlpatterns = [
     path('sites/create', WebsiteCreateView.as_view(), name='website_create'),
 
     path('sites/<str:subdomain>', WebsiteDetailView.as_view(), name='website_detail'),
+    path('sites/<str:subdomain>/config', WebsiteConfigView.as_view(), name='website_config'),
+    path('sites/<str:subdomain>/default-page-attrs', WebsitePageAttrView.as_view(), name='website_page_attr'),
+    path('sites/<str:subdomain>/default-cell-attrs', WebsiteCellAttrView.as_view(), name='website_cell_attr'),
     path('sites/<str:subdomain>/pages', PageListView.as_view(), name='page_list'),
     path('sites/<str:subdomain>/pages/create', PageCreateView.as_view(), name='page_create'),
     path('sites/<str:subdomain>/pages/<int:pk>/config', PageConfigView.as_view(), name='page_config'),
     path('sites/<str:subdomain>/pages/<int:pk>/update', PageUpdateView.as_view(), name='page_update'),
     path('sites/<str:subdomain>/pages/<int:pk>/delete', PageDeleteView.as_view(), name='page_delete'),
 
-    path('sites/<str:subdomain>/pages/<int:page_pk>/sections/create', SectionCreateView.as_view(), name='section_create'),
-    path('sites/<str:subdomain>/pages/<int:page_pk>/sections/<int:section_pk>/', include(section_urls)),
+    path('sections/', include(sections_urls)),
+    path('cells/', include(cells_urls)),
 
-    path('sites/<str:subdomain>/config', WebsiteConfigView.as_view(), name='website_config'),
-    path('sites/<str:subdomain>/default-page-attrs', WebsitePageAttrView.as_view(), name='website_page_attr'),
-    path('sites/<str:subdomain>/default-cell-attrs', WebsiteCellAttrView.as_view(), name='website_cell_attr'),
     path('admin', admin.site.urls),
     path('nested_admin', include('nested_admin.urls')),
 ] + base_urls

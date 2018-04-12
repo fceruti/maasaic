@@ -56,10 +56,10 @@
          data-width="{{ page.page_width }}"
          data-name="{{ section.name }}"
          data-slug="{{ section.slug }}"
-         data-section="{{ section.pk }}"
-         >
+         data-section-id="{{ section.pk }}">
       <div class="section-inner"
            style="width: {{ page.get_page_width }}px">
+
       {# VIEW LAYER #}
         <div class="view-layer">
           {% for cell in section.visible_cells.all %}
@@ -70,7 +70,7 @@
                         cell--x-{{ cell.x }}
                         cell--y-{{ cell.y }}"
                  style="background: {{ cell.css.background }}"
-                 data-section="{{ section.pk }}"
+                 data-section-id="{{ section.pk }}"
                  data-type="{{ cell.cell_type }}"
                  data-w="{{ cell.w }}"
                  data-h="{{ cell.h }}"
@@ -82,10 +82,11 @@
             </div>
           {% endfor %}
         </div>
+
         {% if page_edit_on %}
           {# INSERT LAYER #}
           <div class="insert-layer"
-               data-section="{{ section.id }}">
+               data-section-id="{{ section.id }}">
             {% for row in section.n_rows|times %}
               {% for col in section.n_columns|times %}
                 <div class="cell
@@ -94,14 +95,14 @@
                             cell--h-1
                             cell--x-{{ col }}
                             cell--y-{{ row }}"
-                     data-section="{{ section.pk }}"
+                     data-section-id="{{ section.pk }}"
                      data-x="{{ col }}"
                      data-y="{{ row }}">
                 </div>
               {% endfor %}
             {% endfor %}
             <div class="insert-cell-ctrl hidden"
-                 data-section="{{ section.pk }}">
+                 data-section-id="{{ section.pk }}">
               <div class="insert-cell-btn
                           js-insert-cell-btn"
                    data-cell-type="text">
@@ -154,37 +155,35 @@
                           cell--h-{{ cell.h }}
                           cell--x-{{ cell.x }}
                           cell--y-{{ cell.y }}"
-                   data-id="{{ cell.pk }}"
-                   data-section="{{ section.pk }}"
+                   data-cell-id="{{ cell.pk }}"
+                   data-section-id="{{ section.pk }}"
                    data-type="{{ cell.cell_type }}"
                    data-w="{{ cell.w }}"
                    data-h="{{ cell.h }}"
                    data-x="{{ cell.x }}"
                    data-y="{{ cell.y }}">
-                <div class="edit-cell-inner">
-                  <div class="edit-cell-ctrl">
-                    <div class="edit-cell-ctrl-btns">
-                      <div class="edit-cell-ctrl-btn
-                                  edit-cell-ctrl-btn-move">
-                        <div class="icon">
-                          <i class="fa fa-arrows"></i>
-                        </div>
-                        <span class="text">Move</span>
+                <div class="edit-cell-ctrl">
+                  <div class="edit-cell-ctrl-btns">
+                    <div class="edit-cell-ctrl-btn
+                                edit-cell-ctrl-btn-move">
+                      <div class="icon">
+                        <i class="fa fa-arrows"></i>
                       </div>
-                      <div class="edit-cell-ctrl-btn
-                                  edit-cell-ctrl-btn-edit">
-                        <div class="icon">
-                          <i class="fa fa-edit"></i>
-                        </div>
-                        <span class="text">Edit</span>
+                      <span class="text">Move</span>
+                    </div>
+                    <div class="edit-cell-ctrl-btn
+                                edit-cell-ctrl-btn-edit">
+                      <div class="icon">
+                        <i class="fa fa-edit"></i>
                       </div>
-                      <div class="edit-cell-ctrl-btn
-                                  edit-cell-ctrl-btn-edit">
-                        <div class="icon">
-                          <i class="fa fa-times"></i>
-                        </div>
-                        <span class="text">Delete</span>
+                      <span class="text">Edit</span>
+                    </div>
+                    <div class="edit-cell-ctrl-btn
+                                edit-cell-ctrl-btn-edit">
+                      <div class="icon">
+                        <i class="fa fa-times"></i>
                       </div>
+                      <span class="text">Delete</span>
                     </div>
                   </div>
                 </div>
@@ -193,27 +192,23 @@
           </div>
 
           {# MOVE LAYER #}
-{#          <div class="move-layer hidden">#}
-{#            {% for row in section.n_rows|times %}#}
-{#              {% for col in section.n_columns|times %}#}
-{#                <div class="cell#}
-{#                            cell--layer-move#}
-{#                            {% insert_cell_class col row section.cell_set.all %}#}
-{#                            cell--w-1#}
-{#                            cell--h-1#}
-{#                            cell--x-{{ col }}#}
-{#                            cell--y-{{ row }}"#}
-{#                     data-section="{{ section.pk }}"#}
-{#                     data-x="{{ col }}"#}
-{#                     data-y="{{ row }}">#}
-{#                </div>#}
-{#              {% endfor %}#}
-{#            {% endfor %}#}
-{#            <div class="cell moving-cell"#}
-{#                 data-section="{{ section.pk }}">#}
-{##}
-{#            </div>#}
-{#          </div>#}
+          <div class="move-layer hidden">
+            {% for row in section.n_rows|times %}
+              {% for col in section.n_columns|times %}
+                <div class="cell
+                            cell--layer-move
+                            cell--w-1
+                            cell--h-1
+                            cell--x-{{ col }}
+                            cell--y-{{ row }}"
+                     data-section-id="{{ section.pk }}"
+                     data-x="{{ col }}"
+                     data-y="{{ row }}">
+                </div>
+              {% endfor %}
+            {% endfor %}
+            </div>
+          </div>
         {% endif %}
       </div>
     </div>
@@ -309,7 +304,7 @@
                 </div>
               </div>
               <div class="sidebar-item-option right">
-                <form method="post" action="{% url 'section_update_visibility' website.subdomain page.pk section.pk %}" class="js-ajax-form">
+                <form method="post" action="{% url 'section_update_visibility' section.pk %}" class="js-ajax-form">
                   {% csrf_token %}
                   <input type="hidden" name="is_visible" value="{% if section.is_visible %}False{% else %}True{% endif %}" />
                   <button class="sidebar-option-btn" type="submit">
@@ -328,7 +323,7 @@
             <ul class="cell-list">
               {% for cell in section.cell_set.all %}
                 <li class="cell-list-item"
-                    data-section="{{ section.pk }}"
+                    data-section-id="{{ section.pk }}"
                     data-cell-id="{{ cell.pk }}">
                   <div class="sidebar-item">
                     <div class="sidebar-item-option left">
@@ -342,7 +337,7 @@
                       </div>
                     </div>
                     <div class="sidebar-item-option right">
-                      <form method="post" action="{% url 'cell_update_visibility' website.subdomain page.pk section.pk cell.pk %}" class="js-ajax-form">
+                      <form method="post" action="{% url 'cell_update_visibility' cell.pk %}" class="js-ajax-form">
                         {% csrf_token %}
                         <input type="hidden" name="is_visible" value="{% if cell.is_visible %}False{% else %}True{% endif %}" />
                         <button class="sidebar-option-btn" type="submit">
@@ -382,7 +377,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form method="POST" action="{% url 'section_create' website.subdomain page.pk %}" class="form-horizontal">
+        <form method="POST" action="{% url 'section_create' %}" class="form-horizontal">
           <div class="modal-body">
               {% csrf_token %}
               {% bootstrap_form section_create_form %}

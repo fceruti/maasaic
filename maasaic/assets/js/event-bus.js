@@ -1,6 +1,9 @@
 // This is called after document ready and after every ajax success / failure
 var HTML_INJECTED = 'HTML_INJECTED'
 
+// AppState
+var STATE_CHANGED = 'STATE_CHANGED';
+
 // Cells
 var CELL_MODAL_REQUEST = 'CELL_MODAL_REQUEST';
 

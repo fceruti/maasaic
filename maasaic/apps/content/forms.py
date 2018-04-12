@@ -285,6 +285,14 @@ class CellCreateForm(forms.ModelForm):
             cell.save()
 
 
+class CellPositionForm(forms.ModelForm):
+    class Meta:
+        model = Cell
+        fields = ['x', 'y']
+
+    # TODO: validate out of bounds
+
+
 class SectionVisibilityForm(forms.ModelForm):
     class Meta:
         model = Section

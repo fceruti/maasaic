@@ -13,6 +13,7 @@ from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import ListView
+from maasaic.apps.content.forms import CellPositionForm
 from django.views.generic import RedirectView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
@@ -330,26 +331,33 @@ class CellCreateView(CreateView, PageBaseView):
     model = Cell
     form_class = CellCreateForm
 
-    @cached_property
-    def section(self):
-        return get_object_or_404(Section, pk=self.kwargs['section_pk'])
+    def form_valid(self, form):
+        cell = form.save(commit=True)
+        url = reverse('page_update', args=[cell.section.page.website.subdomain,
+                                           cell.section.page.pk])
 
-    # def form_valid(self, form):
-    #     cell = form.save(commit=False)
-    #     cell.section = self.section
-    #     cell.save()
-    #     url =
-    #     return HttpResponseRedirect(url)
-    def get_success_url(self):
-        return reverse('page_update', args=[self.website.subdomain,
-                                            self.page.pk])
+        return HttpResponseRedirect(url)
 
-class CellVisibilityUpdateView(UpdateView):
-    form_class = CellVisibilityForm
+
+class BaseCellUpdateView(UpdateView, PageBaseView):
     http_method_names = ['post']
 
-    def get_object(self, queryset=None):
-        return get_object_or_404(Cell, pk=self.kwargs['cell_pk'])
+    def get_success_url(self):
+        cell = self.get_object()
+        return reverse('page_update', args=[cell.section.page.website.subdomain,
+                                            cell.section.page.pk])
+
+    def form_invalid(self, form):
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class CellPositionUpdateView(BaseCellUpdateView):
+    form_class = CellPositionForm
+    model = Cell
+
+
+class CellVisibilityUpdateView(BaseCellUpdateView):
+    form_class = CellVisibilityForm
 
     def get_success_url(self):
         cell = self.get_object()
