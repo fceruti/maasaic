@@ -377,3 +377,12 @@ class CellVisibilityUpdateView(BaseCellUpdateView):
     def form_invalid(self, form):
         messages.error(self.request, form.errors)
         return HttpResponseRedirect(redirect_to=self.get_success_url())
+
+
+class CellDeleteView(DeleteView):
+    model = Cell
+
+    def get_success_url(self):
+        cell = self.get_object()
+        return reverse('page_update', args=[cell.section.page.website.subdomain,
+                                            cell.section.page.pk])

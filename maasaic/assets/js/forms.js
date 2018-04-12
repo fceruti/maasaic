@@ -16,6 +16,9 @@ function performPost(url, data) {
     if(isPosting === false){
         EventBus.fire(WAITING_SERVER_RESPONSE_STARTED);
         isPosting = true;
+        if(!data.hasOwnProperty('csrfmiddlewaretoken')){
+            data['csrfmiddlewaretoken'] = csrfmiddlewaretoken;
+        }
         $.ajax({
           type: "POST",
           url: url,

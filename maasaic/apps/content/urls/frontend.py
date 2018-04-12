@@ -20,6 +20,9 @@ from django.contrib import admin
 from django.urls import include
 from django.urls import path
 
+from maasaic.apps.content.views.frontend import CellCreateView
+from maasaic.apps.content.views.frontend import CellDeleteView
+from maasaic.apps.content.views.frontend import CellPositionUpdateView
 from maasaic.apps.content.views.frontend import CellVisibilityUpdateView
 from maasaic.apps.content.views.frontend import HomeView
 from maasaic.apps.content.views.frontend import PageConfigView
@@ -38,8 +41,6 @@ from maasaic.apps.content.views.frontend import WebsiteCreateView
 from maasaic.apps.content.views.frontend import WebsiteDetailView
 from maasaic.apps.content.views.frontend import WebsiteListView
 from maasaic.apps.content.views.frontend import WebsitePageAttrView
-from maasaic.apps.content.views.frontend import CellCreateView
-from maasaic.apps.content.views.frontend import CellPositionUpdateView
 
 base_urls = sys.modules[settings.ROOT_URLCONF].urlpatterns
 
@@ -47,6 +48,7 @@ cells_urls = [
     path('create', CellCreateView.as_view(), name='cell_create'),
     path('<int:pk>/move', CellPositionUpdateView.as_view(), name='cell_update_move'),
     path('<int:pk>/visibility', CellVisibilityUpdateView.as_view(), name='cell_update_visibility'),
+    path('<int:pk>/delete', CellDeleteView.as_view(), name='cell_delete'),
 ]
 
 sections_urls = [

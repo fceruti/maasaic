@@ -295,8 +295,7 @@ function doMoveCell(cell){
 function stopMoveCell(cell){
     var url = '/cells/' + moveOptions['cellId'] + '/move';
     var data = {'x': parseInt($(cell).attr('data-x')),
-                'y': parseInt($(cell).attr('data-y')),
-                'csrfmiddlewaretoken': csrfmiddlewaretoken};
+                'y': parseInt($(cell).attr('data-y'))};
     performPost(url, data);
     clearMoveArea();
     clearMoveOptions();
@@ -364,3 +363,17 @@ function bindMoveCellEvents() {
 }
 
 EventBus.subscribe(HTML_INJECTED, bindMoveCellEvents);
+
+/*******************************************************************************
+* Delete cell
+*******************************************************************************/
+function bindDeleteCellEvents() {
+    $('.edit-cell-ctrl-btn-delete').mousedown(function(){
+        $cell = $(this).closest('.cell.cell--layer-edit');
+        var cellId = $cell.attr('data-cell-id');
+        var url = '/cells/' + cellId + '/delete'
+        performPost(url, {});
+    });
+}
+
+EventBus.subscribe(HTML_INJECTED, bindDeleteCellEvents);
