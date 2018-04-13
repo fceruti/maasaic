@@ -63,7 +63,7 @@
 
         {# VIEW LAYER #}
         <div class="view-layer">
-          {% for cell in section.visible_cells %}
+          {% for cell in section.visible_cells|slice:"::-1" %}
             <div class="cell
                         cell--layer-view
                         cell--w-{{ cell.w }}
@@ -106,7 +106,7 @@
                  data-section-id="{{ section.pk }}">
               <div class="insert-cell-btn
                           js-insert-cell-btn"
-                   data-cell-type="text">
+                   data-cell-type="TEXT">
                 <div class="icon">
                   <i class="fa fa-font"></i>
                 </div>
@@ -114,7 +114,7 @@
               </div>
               <div class="insert-cell-btn
                           js-insert-cell-btn"
-                   data-cell-type="image">
+                   data-cell-type="IMAGE">
                 <div class="icon">
                   <i class="fa fa-camera"></i>
                 </div>
@@ -122,7 +122,7 @@
               </div>
               <div class="insert-cell-btn no-margin-right
                           js-insert-cell-btn"
-                   data-cell-type="video">
+                   data-cell-type="VIDEO">
                 <div class="icon">
                   <i class="fa fa-youtube"></i>
                 </div>
@@ -130,7 +130,7 @@
               </div>
               <div class="insert-cell-btn
                           js-insert-cell-btn"
-                   data-cell-type="clone">
+                   data-cell-type="CLONE">
                 <div class="icon">
                   <i class="fa fa-clone"></i>
                 </div>
@@ -138,7 +138,7 @@
               </div>
               <div class="insert-cell-btn
                           js-insert-cell-btn"
-                   data-cell-type="iframe">
+                   data-cell-type="IFRAME">
                 <div class="icon">
                   <i class="fa fa-code"></i>
                 </div>
@@ -149,7 +149,7 @@
 
           {# EDIT LAYER #}
           <div class="edit-layer">
-            {% for cell in section.editable_cells %}
+            {% for cell in section.editable_cells|slice:"::-1" %}
               <div class="cell
                           cell--layer-edit
                           cell--w-{{ cell.w }}
@@ -289,12 +289,12 @@
           Add <i class="fa fa-plus"></i>
         </button>
       </h3>
-      <ul class="section-list">
+      <ul class="section-list" id="js-section-list">
         {% for section in page.section_set.all %}
-          <li>
+          <li class="section-list-item" data-section-id="{{ section.pk }}">
             <div class="sidebar-item">
               <div class="sidebar-item-option left">
-                <div class="sidebar-option-btn bordered grab">
+                <div class="sidebar-option-btn bordered grab drag-handle">
                   <i class="fa fa-reorder"></i>
                 </div>
               </div>
@@ -320,14 +320,14 @@
             </div>
 
             {# Cells #}
-            <ul class="cell-list">
+            <ul class="cell-list" data-section-id="{{ section.pk }}">
               {% for cell in section.cell_set.all %}
                 <li class="cell-list-item"
                     data-section-id="{{ section.pk }}"
                     data-cell-id="{{ cell.pk }}">
                   <div class="sidebar-item {% if not cell.is_visible %}not-visible{% endif %}">
                     <div class="sidebar-item-option left">
-                      <div class="sidebar-option-btn bordered grab">
+                      <div class="sidebar-option-btn bordered grab drag-handle">
                         <i class="fa fa-reorder"></i>
                       </div>
                     </div>
@@ -347,7 +347,7 @@
                       </form>
                     </div>
                     <div class="sidebar-item-content">
-                      <h2 class="name">{% cell_type_icon cell %} | {{ cell.text|truncatechars:12 }}</h2>
+                      <h2 class="name">{% cell_type_icon cell %} | {{ cell.short_text|truncatechars:12 }}</h2>
                       <h3 class="description"><span class="coordinate">x:</span> {{ cell.x }}, <span class="coordinate">y:</span> {{ cell.y }}, <span class="coordinate">w:</span> {{ cell.w }}, <span class="coordinate">h:</span> {{ cell.h }}</h3>
                     </div>
                   </div>
@@ -391,7 +391,7 @@
     </div>
   </div>
 
-  {# TEXT CELL #}
+  {# INSERT CELL MODAL #}
   <div class="modal" tabindex="-1" role="dialog" id="insert-cell-modal">
     <div class="modal-dialog modal-huge" role="document">
       <div class="modal-content"></div>

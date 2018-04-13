@@ -194,7 +194,6 @@ class Section(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('page', 'order')
         ordering = 'order',
 
     def __str__(self):
@@ -202,11 +201,13 @@ class Section(models.Model):
 
     def visible_cells(self):
         return self.cell_set\
-            .filter(is_visible=True)
+            .filter(is_visible=True)\
+            .order_by('order')
 
     def editable_cells(self):
         return self.cell_set\
-            .filter(is_visible=True)
+            .filter(is_visible=True) \
+            .order_by('order')
 
     @property
     def cell_default_padding(self):
@@ -228,6 +229,7 @@ class Cell(models.Model):
                                     on_delete=models.CASCADE)
     cell_type = models.CharField(max_length=255, choices=Type.choices())
     is_visible = models.BooleanField(default=True)
+    order = models.IntegerField(default=0)
 
     x = models.PositiveIntegerField(
         help_text='Number of cells',
@@ -243,13 +245,16 @@ class Cell(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = 'order',
+
     def __str__(self):
         return '%s: %s (w: %s, h:%s, x: %s, y: %s)' % \
                (self.section_id, self.cell_type,
                 self.w, self.h, self.x, self.y)
 
-    def text(self):
-
+    @property
+    def short_text(self):
         if self.cell_type == self.Type.TEXT:
             if self.content:
                 dom = pq(self.content)

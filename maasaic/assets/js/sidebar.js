@@ -1,11 +1,28 @@
 
 function onCellHoverStart(sectionId, cellId) {
-    console.log(onCellHoverStart, sectionId, cellId)
     $('.cell-list-item[data-section-id="' + sectionId + '"][data-cell-id="' + cellId + '"] .sidebar-item').addClass('hover');
 }
 
 function onCellHoverEnd(sectionId, cellId) {
     $('.cell-list-item[data-section-id="' + sectionId + '"][data-cell-id="' + cellId + '"] .sidebar-item').removeClass('hover');
+}
+
+function onCellDragNDropEnd(evt) {
+    var itemEl = evt.item;  // dragged HTMLElement
+    if(evt.newIndex == evt.oldIndex) return;
+    var cellId = $(itemEl).attr('data-cell-id');
+    var url = '/cells/' + cellId + '/order'
+    var data = {'order': evt.newIndex};
+    performPost(url, data);
+}
+
+function onSectionDragNDropEnd(evt) {
+    var itemEl = evt.item;  // dragged HTMLElement
+    if(evt.newIndex == evt.oldIndex) return;
+    var cellId = $(itemEl).attr('data-section-id');
+    var url = '/sections/' + cellId + '/order'
+    var data = {'order': evt.newIndex};
+    performPost(url, data);
 }
 
 function bindSidebarEvents() {
@@ -23,6 +40,24 @@ function bindSidebarEvents() {
             EventBus.fire(CELL_HOVERING_END, sectionId, cellId);
         }
     );
+
+    Sortable.create($('#js-section-list')[0], {
+        handle: '.drag-handle',
+        dataIdAttr: 'data-section-id',
+        animation: 150,
+        onEnd: onSectionDragNDropEnd,
+        draggable: '.section-list-item'
+    });
+
+    $('.cell-list').each(function(){
+        Sortable.create($(this)[0], {
+            handle: '.drag-handle',
+            dataIdAttr: 'data-cell-id',
+            draggable: '.cell-list-item',
+            animation: 150,
+            onEnd: onCellDragNDropEnd
+        });
+    });
 }
 
 EventBus.subscribe(HTML_INJECTED, bindSidebarEvents);

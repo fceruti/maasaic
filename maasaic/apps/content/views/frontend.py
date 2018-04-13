@@ -13,16 +13,18 @@ from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import ListView
-from maasaic.apps.content.forms import CellPositionForm
 from django.views.generic import RedirectView
 from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 
 from maasaic.apps.content.forms import CellCreateForm
+from maasaic.apps.content.forms import CellOrderForm
+from maasaic.apps.content.forms import CellPositionForm
 from maasaic.apps.content.forms import CellVisibilityForm
 from maasaic.apps.content.forms import PageCreateForm
 from maasaic.apps.content.forms import PageUpdateForm
 from maasaic.apps.content.forms import SectionCreateForm
+from maasaic.apps.content.forms import SectionOrderForm
 from maasaic.apps.content.forms import SectionVisibilityForm
 from maasaic.apps.content.forms import UserCreateForm
 from maasaic.apps.content.forms import UserLoginForm
@@ -308,6 +310,20 @@ class SectionCreateView(CreateView):
         return HttpResponseRedirect(url)
 
 
+class SectionOrderUpdateView(UpdateView):
+    form_class = SectionOrderForm
+    http_method_names = ['post']
+    model = Section
+
+    def get_success_url(self):
+        section = self.get_object()
+        return reverse('page_update', args=[section.page.website.subdomain,
+                                            section.page.pk])
+
+    def form_invalid(self, form):
+        return HttpResponseRedirect(self.get_success_url())
+
+
 class SectionVisibilityUpdateView(UpdateView):
     form_class = SectionVisibilityForm
     http_method_names = ['post']
@@ -364,6 +380,10 @@ class CellPositionUpdateView(BaseCellUpdateView):
 
 class CellVisibilityUpdateView(BaseCellUpdateView):
     form_class = CellVisibilityForm
+
+
+class CellOrderUpdateView(BaseCellUpdateView):
+    form_class = CellOrderForm
 
 
 class CellDeleteView(DeleteView):

@@ -189,7 +189,7 @@ function onInsertCellBtnClicked(target) {
 
     var cellObj = {
         id: null,
-        cellType: 'TEXT',
+        cellType: cellType,
         sectionId: sectionId,
         x: x, y: y, w: w, h: h,
         content: '',

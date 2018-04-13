@@ -54,9 +54,9 @@ class UserLoginForm(forms.Form):
 
 class UserCreateForm(forms.Form):
     subdomain = forms.CharField(max_length=255, help_text='This will be the url to your website. Also your login nickname,')
-    name = forms.CharField(max_length=255)
+    name = forms.CharField(max_length=255, label='Site name')
     email = forms.EmailField(required=False, help_text='Optional. We don\'t really care about sending you emails. It\'s just in case you forget your password. If you don\'t put one and you loose it. You are screwed. Well, not really, life goes on, it\'s just that you just won\'t be able to edit your site anymore.')
-    password = forms.CharField(max_length=255, widget=forms.PasswordInput, help_text='Try not to put something like "asdf" and then compaint about getting "hacked".')
+    password = forms.CharField(max_length=255, widget=forms.PasswordInput, help_text='Try not to put something like "asdf" and then compain about getting "hacked".')
 
     def clean_subdomain(self):
         subdomain = self.cleaned_data['subdomain'].lower()
@@ -271,6 +271,39 @@ class SectionVisibilityForm(forms.ModelForm):
         fields = ['is_visible']
 
 
+class SectionOrderForm(forms.ModelForm):
+    class Meta:
+        model = Section
+        fields = ['order']
+
+    def save(self, commit=True):
+        section = super(SectionOrderForm, self).save(commit=False)
+        from_order = Section.objects.get(pk=section.pk).order
+        to_order = section.order
+
+        section.save()
+
+        if from_order < to_order:
+            other_sections = Section.objects \
+                .filter(page=section.page) \
+                .filter(order__gte=from_order) \
+                .filter(order__lte=to_order) \
+                .exclude(pk=section.pk)
+            for other_section in other_sections:
+                other_section.order -= 1
+                other_section.save()
+        else:
+            other_sections = Section.objects \
+                .filter(page=section.page) \
+                .filter(order__lte=from_order) \
+                .filter(order__gte=to_order) \
+                .exclude(pk=section.pk)
+            for other_section in other_sections:
+                other_section.order += 1
+                other_section.save()
+        return section
+
+
 # ------------------------------------------------------------------------------
 # Cell forms
 # ------------------------------------------------------------------------------
@@ -292,8 +325,11 @@ class CellCreateForm(forms.ModelForm):
             'padding': self.cleaned_data['css_padding'],
             'background': self.cleaned_data['css_background']
         }
-        if commit:
-            cell.save()
+        cell.order = 0
+        for other_cell in Cell.objects.filter(section=cell.section):
+            other_cell.order += 1
+            other_cell.save()
+        cell.save()
         return cell
 
 
@@ -307,3 +343,37 @@ class CellVisibilityForm(forms.ModelForm):
     class Meta:
         model = Cell
         fields = ['is_visible']
+
+
+class CellOrderForm(forms.ModelForm):
+    class Meta:
+        model = Cell
+        fields = ['order']
+
+    def save(self, commit=True):
+        cell = super(CellOrderForm, self).save(commit=False)
+        from_order = Cell.objects.get(pk=cell.pk).order
+        to_order = cell.order
+
+        cell.save()
+
+        if from_order < to_order:
+            other_cells = Cell.objects \
+                .filter(section=cell.section) \
+                .filter(order__gte=from_order) \
+                .filter(order__lte=to_order) \
+                .exclude(pk=cell.pk)
+            for other_cell in other_cells:
+                other_cell.order -= 1
+                other_cell.save()
+        else:
+            other_cells = Cell.objects \
+                .filter(section=cell.section) \
+                .filter(order__lte=from_order) \
+                .filter(order__gte=to_order) \
+                .exclude(pk=cell.pk)
+            for other_cell in other_cells:
+                other_cell.order += 1
+                other_cell.save()
+
+        return cell

@@ -25,9 +25,13 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
     } else {
         formUrl = '/cells/' + cellObj['id'] + '/update';
     }
+    $('#insert-cell-modal .modal-dialog')
+        .removeClass('modal-huge')
+        .removeClass('modal-lg');
 
     if(cellObj['cellType'] == 'TEXT') {
         // Initialize modal
+        $('#insert-cell-modal .modal-dialog').addClass('modal-huge');
         var modalHtml =
             '<div class="modal-header">' +
                 '<h5 class="modal-title"><i class="fa fa-font"></i> New Text cell</h5>' +
@@ -104,6 +108,50 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
         });
 
         // TODO: Bind ajax form
+
+        return
+    }
+    if(cellObj['cellType'] == 'IMAGE') {
+        console.log('HERE!')
+        // Initialize modal
+        $('#insert-cell-modal .modal-dialog').addClass('modal-lg');
+        var modalHtml =
+            '<div class="modal-header">' +
+                '<h5 class="modal-title"><i class="fa fa-camera"></i> New Image cell</h5>' +
+                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span>' +
+                '</button>' +
+            '</div>' +
+            '<div class="modal-body">' +
+                '<ul class="nav nav-tabs" id="myTab" role="tablist">'+
+                    '<li class="nav-item">'+
+                        '<a class="nav-link active" data-toggle="tab" href="#insert-image-gallery" role="tab" aria-controls="home" aria-selected="true"><i class="fa fa-picture-o"></i>  My Gallery</a>'+
+                    '</li>'+
+                    '<li class="nav-item">'+
+                        '<a class="nav-link" data-toggle="tab" href="#insert-image-unsplash" role="tab"><i class="fa fa-camera-retro"></i> Unsplash</a>'+
+                    '</li>'+
+                    '<li class="nav-item">'+
+                        '<a class="nav-link" data-toggle="tab" href="#insert-image-google" role="tab"><i class="fa fa-google"></i> Google search</a>'+
+                    '</li>'+
+                    '<li class="nav-item">'+
+                        '<a class="nav-link" data-toggle="tab" href="#insert-image-upload" role="tab"><i class="fa fa-cloud-upload"></i> Upload</a>'+
+                    '</li>'+
+                '</ul>'+
+                '<div class="tab-content" id="myTabContent">'+
+                    '<div class="tab-pane fade show active" id="insert-image-gallery" role="tabpanel">My Gallery</div>'+
+                    '<div class="tab-pane fade"             id="insert-image-unsplash" role="tabpanel">Unsplash</div>'+
+                    '<div class="tab-pane fade"             id="insert-image-google" role="tabpanel">Google</div>'+
+                    '<div class="tab-pane fade"             id="insert-image-upload" role="tabpanel">Upload</div>'+
+                '</div>'+
+            '</div>' +
+            '<div class="modal-footer">' +
+                '<button type="button" class="btn btn-link text-danger" data-dismiss="modal">Cancel</button>' +
+                '<button type="submit" class="btn btn-success" id="modal-btn"><i class="fa fa-plus-circle"></i> Create image cell</button>' +
+            '</div>';
+        $('#insert-cell-modal .modal-content').html(modalHtml);
+        $('#insert-cell-modal').modal('show');
+
+        return
     }
 }
 
