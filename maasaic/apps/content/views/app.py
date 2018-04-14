@@ -1,21 +1,18 @@
 from django.contrib import messages
-from django.contrib.auth import login
-from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 from django.db.models import Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views import View
-from django.db import transaction
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import ListView
 from django.views.generic import RedirectView
-from django.views.generic import TemplateView
 from django.views.generic import UpdateView
 
 from maasaic.apps.content.forms import CellCreateForm
@@ -23,16 +20,14 @@ from maasaic.apps.content.forms import CellOrderForm
 from maasaic.apps.content.forms import CellPositionForm
 from maasaic.apps.content.forms import CellVisibilityForm
 from maasaic.apps.content.forms import PageCreateForm
+from maasaic.apps.content.forms import PagePublishForm
 from maasaic.apps.content.forms import PageUpdateForm
 from maasaic.apps.content.forms import SectionCreateForm
 from maasaic.apps.content.forms import SectionOrderForm
 from maasaic.apps.content.forms import SectionVisibilityForm
-from maasaic.apps.content.forms import WebsitePublishForm
-from maasaic.apps.content.forms import PagePublishForm
-from maasaic.apps.content.forms import UserCreateForm
-from maasaic.apps.content.forms import UserLoginForm
 from maasaic.apps.content.forms import WebsiteConfigForm
 from maasaic.apps.content.forms import WebsiteCreateForm
+from maasaic.apps.content.forms import WebsitePublishForm
 from maasaic.apps.content.models import Cell
 from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Section
@@ -284,10 +279,6 @@ class PagePublishView(UpdateView, WebsiteDetailView):
         return HttpResponseRedirect(url)
 
 
-
-
-
-
 # ------------------------------------------------------------------------------
 # Page base
 # ------------------------------------------------------------------------------
@@ -319,7 +310,10 @@ class SectionCreateView(CreateView):
         section = form.save(commit=False)
         max_order = Section.objects.filter(page=section.page)\
             .aggregate(Max('order'))['order__max']
-        section.order = max_order + 1
+        if max_order:
+            section.order = max_order + 1
+        else:
+            section.order = 0
         section.save()
         url = reverse('page_update', args=[section.page.website.subdomain,
                                            section.page.pk])

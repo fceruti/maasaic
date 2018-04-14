@@ -5,7 +5,7 @@
 {% load content %}
 {% load bootstrap4 %}
 
-{% block title %}{{ page.title }} | {{ website.name }}{% endblock %}
+{% block title %}{% if page_edit_on %}EDIT: {% endif %}{{ page.title }}{% endblock %}
 
 {% block body_class %}{% if page_edit_on %}body-edit-page{% endif %}{% endblock %}
 

@@ -17,8 +17,8 @@
     <thead>
       <th>Title</th>
       <th>Url</th>
-      <th>Status</th>
       <th>Description</th>
+      <th>Status</th>
       <th colspan="4">Actions</th>
     </thead>
     <tbody>
@@ -27,12 +27,9 @@
           <tr>
             <td>{{ page.title }}</td>
             <td><a href="{{ page.public_url }}" target="_blank">{{ page.public_url }}</a></td>
+            <td>{{ page.description }}</td>
             <td style="white-space: nowrap">
               {% if page.is_visible %}<i class="fa fa-circle text-success"></i>&nbsp;Live{% else %}<i class="fa fa-circle text-danger"></i>&nbsp;Offline{% endif %}</label>
-            </td>
-            <td>{{ page.description }}</td>
-            <td>
-              <a href="{% url 'page_update' website.subdomain page.edit_page.pk %}" target="_blank" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Edit page</a>
             </td>
             <td>
               <form method="POST" action="{% url 'page_publish' website.subdomain page.pk %}" class="form-inline">
@@ -47,10 +44,13 @@
               </form>
             </td>
             <td>
+              <a href="{% url 'page_update' website.subdomain page.edit_page.pk %}" target="_blank" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> Edit page</a>
+            </td>
+            <td>
               <a href="{% url 'page_config' website.subdomain page.pk %}" class="btn btn-link btn-sm"><i class="fa fa-cog"></i> Config</a>
             </td>
             <td>
-              <form method="post" action="{% url 'page_delete' website.subdomain page.pk %}">
+              <form method="post" action="{% url 'page_delete' website.subdomain page.pk %}" onSubmit="return confirm('Are you sure? There's no turning back');">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-link text-danger btn-sm"><i class="fa fa-remove"></i> delete</button>
               </form>

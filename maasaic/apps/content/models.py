@@ -127,7 +127,7 @@ class Website(models.Model):
 
     @cached_property
     def live_pages(self):
-        return self.page_set.filter(mode=Page.Mode.LIVE)
+        return self.page_set.filter(mode=Page.Mode.LIVE).order_by('path')
 
 
 class Page(models.Model):
