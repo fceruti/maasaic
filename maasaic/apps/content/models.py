@@ -6,6 +6,7 @@ from django.contrib.postgres.fields import JSONField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils.functional import cached_property
+from django.utils.text import slugify
 from image_cropping import ImageCropField
 from image_cropping import ImageRatioField
 
@@ -41,13 +42,16 @@ with open(variables_path, 'r') as f:
 def favicon_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = 'favicon.%s' % ext
-    return os.path.join('img', instance.slug, filename)
+    return os.path.join(instance.subdomain, 'favicons', filename)
 
 
 def image_path(instance, filename):
     ext = filename.split('.')[-1]
-    filename = 'image_%s.%s' % (instance.pk, ext)
-    return os.path.join('img', instance.slug, filename)
+    if instance.name:
+        new_filename = '%s.%s' % (slugify(instance.name), ext)
+    else:
+        new_filename = filename
+    return os.path.join(instance.website.subdomain, 'img', new_filename)
 
 
 # ------------------------------------------------------------------------------
@@ -134,7 +138,7 @@ class Page(models.Model):
     target_page = models.OneToOneField('self', null=True, blank=True,
                                        on_delete=models.CASCADE,
                                        related_name='edit_page')
-    is_visible = models.CharField(max_length=255)
+    is_visible = models.BooleanField(default=False)
     mode = models.CharField(max_length=255, choices=Mode.choices())
     title = models.CharField(max_length=255)
     path = models.CharField(max_length=255, null=True, blank=True)
@@ -237,3 +241,13 @@ class Cell(models.Model):
         return '%s: %s (w: %s, h:%s, x: %s, y: %s)' % \
                (self.section_id, self.cell_type,
                 self.w, self.h, self.x, self.y)
+
+
+class UploadedImage(models.Model):
+    website = models.ForeignKey(Website, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=image_path)
+    name = models.CharField(max_length=255, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
+    height = models.IntegerField()
+    width = models.IntegerField()
+    size = models.IntegerField()

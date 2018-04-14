@@ -170,12 +170,12 @@ class PageCreateForm(forms.ModelForm):
 
     def clean_path(self):
         path = self.cleaned_data['path']
-        if path:
+        if path and path != '/':
             if path[0] == '/':
                 path = path[1:]
-            if path[-1] == '/':
+            if path and path[-1] == '/':
                 path = path[:-1]
-            if path == '':
+            if path and path == '':
                 path = '/'
         else:
             path = '/'
@@ -213,12 +213,12 @@ class PageUpdateForm(PageCreateForm):
 
     def clean_path(self):
         path = self.cleaned_data['path']
-        if path:
+        if path and path != '/':
             if path[0] == '/':
                 path = path[1:]
-            if path[-1] == '/':
+            if path and path[-1] == '/':
                 path = path[:-1]
-            if path == '':
+            if path and path == '':
                 path = '/'
         else:
             path = '/'

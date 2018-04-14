@@ -14,11 +14,11 @@ class SubdomainMiddleware:
 
         if domain == settings.DEFAULT_SITE_DOMAIN:
             if subdomain in ['', 'www']:
-                url_conf_path = 'maasaic.apps.content.urls.frontend'
-            else:
                 url_conf_path = 'maasaic.apps.content.urls.app'
+            else:
+                url_conf_path = 'maasaic.apps.content.urls.page'
         else:
-            url_conf_path = 'maasaic.apps.content.urls.app'
+            url_conf_path = 'maasaic.apps.content.urls.page'
         request.urlconf = url_conf_path
         request.domain = domain
         request.subdomain = subdomain
