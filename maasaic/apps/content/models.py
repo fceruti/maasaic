@@ -8,7 +8,6 @@ from django.db import models
 from django.utils.functional import cached_property
 from image_cropping import ImageCropField
 from image_cropping import ImageRatioField
-from pyquery import PyQuery as pq
 
 from maasaic.apps.users.models import User
 from maasaic.apps.utils.models import Choices
@@ -155,12 +154,6 @@ class Page(models.Model):
     def __str__(self):
         return '%s | %s' % (self.website.name, self.title)
 
-    def get_page_width(self):
-        if self.page_width:
-            return self.page_width
-        else:
-            return self.website.page_width
-
     @property
     def public_url(self):
         return urljoin(self.website.public_url, self.path)
@@ -209,14 +202,6 @@ class Section(models.Model):
             .filter(is_visible=True) \
             .order_by('order')
 
-    @property
-    def cell_default_padding(self):
-        return '20px'
-
-    @property
-    def cell_default_bg_color(self):
-        return 'transparent'
-
 
 class Cell(models.Model):
     class Type(Choices):
@@ -252,14 +237,3 @@ class Cell(models.Model):
         return '%s: %s (w: %s, h:%s, x: %s, y: %s)' % \
                (self.section_id, self.cell_type,
                 self.w, self.h, self.x, self.y)
-
-    @property
-    def short_text(self):
-        if self.cell_type == self.Type.TEXT:
-            if self.content:
-                dom = pq(self.content)
-                return dom.text()
-            else:
-                return '(empty)'
-
-

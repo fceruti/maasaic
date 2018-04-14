@@ -35,12 +35,14 @@ function getSectionCellProperties(sectionId) {
     var cellHeight = parseInt($section.attr('data-cell_height')),
         totalWidth = parseInt($section.attr('data-width')),
         totalCols = parseInt($section.attr('data-n_columns')),
-        defaultPadding = $section.attr('data-cell_padding'),
-        defaultBgColor = $section.attr('data-cell_bg_color');
+        defaultPadding = $section.attr('data-cell_default_padding'),
+        defaultMargin = $section.attr('data-cell_default_margin'),
+        defaultBgColor = $section.attr('data-cell_default_bg_color');
 
     return {'colWidth': totalWidth / totalCols,
             'rowHeight': cellHeight,
             'defaultPadding': defaultPadding,
+            'defaultMargin': defaultMargin,
             'defaultBackground': defaultBgColor};
 }
 

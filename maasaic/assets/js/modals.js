@@ -6,6 +6,7 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
     var cellWidth = sectionCellProperties['colWidth'] * cellObj['w'],
         cellHeight = sectionCellProperties['rowHeight'] * cellObj['h'],
         defaultPadding = sectionCellProperties['defaultPadding'],
+        defaultMargin = sectionCellProperties['defaultMargin'],
         defaultBackground = sectionCellProperties['defaultBackground'];
 
     // Initial values
@@ -13,9 +14,13 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
     if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('background')){
         initialBackground = cellObj['css']['background'];
     }
-    var initialPadding= defaultPadding;
+    var initialPadding = defaultPadding;
     if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('padding')){
         initialPadding = cellObj['css']['padding'];
+    }
+    var initialMargin = defaultMargin;
+    if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('margin')){
+        initialMargin = cellObj['css']['margin'];
     }
 
     // Form url
@@ -76,7 +81,7 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
                 ['color', ['color']],
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['height', ['height']],
-                ['custom', ['padding', 'backgroundColor']],
+                ['custom', ['margin', 'padding', 'backgroundColor']],
             ],
             fontNames: fontNames,
             lineHeights: ['0.5', '0.8', '1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
@@ -90,13 +95,27 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
             'height': cellHeight + 'px',
             'width': cellWidth + 'px',
             'margin': '20px auto',
-            'border': '1px solid #333',
-            'background': initialBackground});
+            'border': '1px solid #333'});
         $('.note-statusbar').css({'display': 'none'});
+
+        $noteWrapper = $('<div></div>')
+        $noteWrapper.addClass('note-editable-wrapper');
+        var noteWrapperStyle = window['utils']['get_position_dict_from_margin'](defaultMargin);
+        noteWrapperStyle['position'] = 'absolute';
+        noteWrapperStyle['background'] = initialBackground;
+        $noteWrapper.css(noteWrapperStyle);
+        $('.note-editable').wrap($noteWrapper);
+
+        // Margin plugin
+        $('#summernote-margin-input').attr('value', initialMargin)
+        $('#summernote-margin-input').on('keyup', function(){
+            var newPositions = window['utils']['get_position_dict_from_margin']($(this).val());
+            $('.note-editable-wrapper').css(newPositions);
+        });
 
         // Padding plugin
         $('.note-editable').css({'padding': initialPadding});
-        $('#summernote-padding-input').attr('value', initialPadding);
+        $('#summernote-padding-input').attr('value', initialPadding);;
         $('#summernote-padding-input').on('keyup', function(){
             $('.note-editable').css({'padding': $(this).val()});
         });
@@ -112,7 +131,6 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
         return
     }
     if(cellObj['cellType'] == 'IMAGE') {
-        console.log('HERE!')
         // Initialize modal
         $('#insert-cell-modal .modal-dialog').addClass('modal-lg');
         var modalHtml =

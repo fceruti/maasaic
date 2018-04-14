@@ -11,6 +11,8 @@ from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import SASS_VARIABLES
 from maasaic.apps.content.models import Section
 from maasaic.apps.content.models import Website
+from maasaic.apps.content.utils import get_margin_string_from_position
+from maasaic.apps.content.utils import get_position_dict_from_margin
 from maasaic.apps.users.models import User
 
 path_pattern = re.compile('^([/\w+-.]*)$')
@@ -308,22 +310,30 @@ class SectionOrderForm(forms.ModelForm):
 # Cell forms
 # ------------------------------------------------------------------------------
 class CellCreateForm(forms.ModelForm):
-
     css_padding = forms.CharField()
+    css_margin = forms.CharField()
     css_background = forms.CharField()
 
     class Meta:
         model = Cell
         fields = ['section', 'cell_type', 'x', 'y', 'w', 'h', 'content']
 
-    # TODO: clean_css_padding
+    def clean_padding(self):
+        position = get_position_dict_from_margin(self.cleaned_data['css_padding'])
+        return get_margin_string_from_position(position)
+
+    def clean_margin(self):
+        position = get_position_dict_from_margin(self.cleaned_data['css_margin'])
+        return get_margin_string_from_position(position)
+
     # TODO: clean_css_background
 
     def save(self, commit=True):
         cell = super(CellCreateForm, self).save(commit=False)
         cell.css = {
             'padding': self.cleaned_data['css_padding'],
-            'background': self.cleaned_data['css_background']
+            'background': self.cleaned_data['css_background'],
+            'margin': self.cleaned_data['css_margin'],
         }
         cell.order = 0
         for other_cell in Cell.objects.filter(section=cell.section):

@@ -2,7 +2,7 @@
 
 {% load static %}
 {% load times %}
-{% load cells %}
+{% load content %}
 {% load bootstrap4 %}
 
 {% block title %}{{ page.title }} | {{ website.name }}{% endblock %}
@@ -52,14 +52,15 @@
          data-order="{{ section.order }}"
          data-n_columns="{{ section.n_columns }}"
          data-cell_height="{{ section.cell_height }}"
-         data-cell_padding="{{ section.cell_default_padding }}"
-         data-cell_bg_color="{{ section.cell_default_bg_color }}"
-         data-width="{{ page.page_width }}"
+         data-cell_default_padding="{% section_cell_default_padding section %}"
+         data-cell_default_margin="{% section_cell_default_margin section %}"
+         data-cell_default_bg_color="{% section_cell_default_background section %}"
+         data-width="{% page_width page %}"
          data-name="{{ section.name }}"
          data-slug="{{ section.slug }}"
          data-section-id="{{ section.pk }}">
       <div class="section-inner"
-           style="width: {{ page.get_page_width }}px">
+           style="width: {% page_width page %}px">
 
         {# VIEW LAYER #}
         <div class="view-layer">
@@ -70,15 +71,18 @@
                         cell--h-{{ cell.h }}
                         cell--x-{{ cell.x }}
                         cell--y-{{ cell.y }}"
-                 style="background: {{ cell.css.background }}"
                  data-section-id="{{ section.pk }}"
                  data-type="{{ cell.cell_type }}"
                  data-w="{{ cell.w }}"
                  data-h="{{ cell.h }}"
                  data-x="{{ cell.x }}"
                  data-y="{{ cell.y }}">
-              <div class="cell-inner" style="margin: {{ cell.css.padding }}">
-                {{ cell.content|safe }}
+              <div class="cell-inner-margin" style="{% cell_inner_style_background cell %} {% cell_inner_style_margin_position cell %}">
+                <div class="cell-inner-padding" style="{% cell_inner_style_padding cell %}">
+                  <div class="cell-inner">
+                    {{ cell.content|safe }}
+                  </div>
+                </div>
               </div>
             </div>
           {% endfor %}
@@ -159,6 +163,10 @@
                    data-cell-id="{{ cell.pk }}"
                    data-section-id="{{ section.pk }}"
                    data-type="{{ cell.cell_type }}"
+                   data-margin="{{ cell.css.margin }}"
+                   data-padding="{{ cell.css.padding }}"
+                   data-position="{{ cell.position_css }}"
+                   data-background="{{ cell.css.background }}"
                    data-w="{{ cell.w }}"
                    data-h="{{ cell.h }}"
                    data-x="{{ cell.x }}"
@@ -347,7 +355,7 @@
                       </form>
                     </div>
                     <div class="sidebar-item-content">
-                      <h2 class="name">{% cell_type_icon cell %} | {{ cell.short_text|truncatechars:12 }}</h2>
+                      <h2 class="name">{% cell_type_icon cell %} | {% cell_short_text cell %}</h2>
                       <h3 class="description"><span class="coordinate">x:</span> {{ cell.x }}, <span class="coordinate">y:</span> {{ cell.y }}, <span class="coordinate">w:</span> {{ cell.w }}, <span class="coordinate">h:</span> {{ cell.h }}</h3>
                     </div>
                   </div>

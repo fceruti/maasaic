@@ -17,7 +17,7 @@
     /**
      * @param {Object} context - context object has status of editor.
      */
-    'padding': function(context) {
+    'margin': function(context) {
       var self = this;
 
       // ui has renders to build ui elements.
@@ -25,11 +25,11 @@
       var ui = $.summernote.ui;
 
       // add hello button
-      context.memo('button.padding', function() {
+      context.memo('button.margin', function() {
         // create button
         var button = ui.button({
           container: context.options.container,
-          contents: 'Padding: <input type="text" id="summernote-padding-input" name="css_padding"/>',
+          contents: 'Margin: <input type="text" id="summernote-margin-input" name="css_margin"/>',
         });
 
         // create jQuery object from button instance.

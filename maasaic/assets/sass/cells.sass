@@ -2,6 +2,10 @@
 @import 'mixins'
 
 .cell
+  &.cell--layer-view
+    position: relative
+    .cell-inner-margin
+      position: absolute
   &.cell--layer-edit
     @include transition(border,background 0.2s)
     @include box-sizing(border-box)
