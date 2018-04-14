@@ -19,6 +19,18 @@
       <div class="media-body">
         <h1 style="margin: 5px 0 5px">{{ website.name }}</h1>
         <p class="lead"><a href="{{ website.domain }}" target="_blank">{{ website.domain }}</a></p>
+        <p class="lead">
+        <form method="POST" action="{% url 'website_publish' website.subdomain %}" class="form-inline">
+          {% csrf_token %}
+          <label><b>Status:</b>&nbsp;{% if website.is_visible %}<i class="fa fa-circle text-success"></i>&nbsp;Live{% else %}<i class="fa fa-circle text-danger"></i>&nbsp;Offline{% endif %}</label>&nbsp;
+          {% if website.is_visible %}
+            <input type="hidden" name="is_visible" value="False" />
+            <input type="submit" value="Take offline" class="btn btn-danger btn-sm"/>
+          {% else %}
+            <input type="hidden" name="is_visible" value="True" />
+            <input type="submit" value="Go live" class="btn btn-success btn-sm" />
+          {% endif %}
+        </form>
       </div>
     </div>
     <br/>

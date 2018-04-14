@@ -135,6 +135,13 @@ class WebsiteConfigForm(forms.ModelForm):
         self.fields['subdomain'].widget.attrs['readonly'] = True
 
 
+class WebsitePublishForm(forms.ModelForm):
+    class Meta:
+        model = Website
+        fields = ['is_visible']
+
+
+
 class PageCreateForm(forms.ModelForm):
     class Meta:
         model = Page
@@ -235,6 +242,12 @@ class PageUpdateForm(PageCreateForm):
             err_msg = 'The path "%s" is already in use for this page' % path
             raise forms.ValidationError(err_msg)
         return path
+
+
+class PagePublishForm(forms.ModelForm):
+    class Meta:
+        model = Page
+        fields = ['is_visible']
 
 
 class SectionCreateForm(forms.ModelForm):

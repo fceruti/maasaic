@@ -150,6 +150,7 @@ class Page(models.Model):
     class Meta:
         unique_together = ('website', 'path', 'mode')
 
+    @property
     def visible_sections(self):
         return self.section_set\
             .filter(is_visible=True)\
@@ -171,8 +172,6 @@ class Page(models.Model):
 
 class Section(models.Model):
     page = models.ForeignKey(Page, on_delete=models.CASCADE)
-    target_section = models.ForeignKey('self', null=True, blank=True,
-                                       on_delete=models.CASCADE)
     order = models.IntegerField(default=1)
     is_visible = models.BooleanField(default=True)
     n_columns = models.PositiveIntegerField(
@@ -190,17 +189,30 @@ class Section(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def get_attr_dict(self):
+        return {
+            'order': self.order,
+            'n_columns': self.n_columns,
+            'n_rows': self.n_rows,
+            'cell_height': self.cell_height,
+            'css': self.css,
+            'name': self.name,
+            'html_id': self.html_id,
+        }
+
     class Meta:
         ordering = 'order',
 
     def __str__(self):
         return '%s #%s' % (self.page, self.order)
 
+    @property
     def visible_cells(self):
         return self.cell_set\
             .filter(is_visible=True)\
             .order_by('order')
 
+    @property
     def editable_cells(self):
         return self.cell_set\
             .filter(is_visible=True) \
@@ -214,8 +226,6 @@ class Cell(models.Model):
         IFRAME = 'IFRAME'
 
     section = models.ForeignKey(Section, on_delete=models.CASCADE)
-    target_cell = models.ForeignKey('self', null=True, blank=True,
-                                    on_delete=models.CASCADE)
     cell_type = models.CharField(max_length=255, choices=Type.choices())
     is_visible = models.BooleanField(default=True)
     order = models.IntegerField(default=0)
@@ -233,6 +243,18 @@ class Cell(models.Model):
     css = JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_attr_dict(self):
+        return {
+            'cell_type': self.cell_type,
+            'order': self.order,
+            'x': self.x,
+            'y': self.y,
+            'w': self.w,
+            'h': self.h,
+            'content': self.content,
+            'css': self.css,
+        }
 
     class Meta:
         ordering = 'order',

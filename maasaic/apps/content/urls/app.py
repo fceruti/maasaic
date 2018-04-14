@@ -29,6 +29,7 @@ from maasaic.apps.content.views.app import PageConfigView
 from maasaic.apps.content.views.app import PageCreateView
 from maasaic.apps.content.views.app import PageDeleteView
 from maasaic.apps.content.views.app import PageListView
+from maasaic.apps.content.views.app import PagePublishView
 from maasaic.apps.content.views.app import PageUpdateView
 from maasaic.apps.content.views.app import SectionCreateView
 from maasaic.apps.content.views.app import SectionOrderUpdateView
@@ -39,6 +40,7 @@ from maasaic.apps.content.views.app import WebsiteCreateView
 from maasaic.apps.content.views.app import WebsiteDetailView
 from maasaic.apps.content.views.app import WebsiteListView
 from maasaic.apps.content.views.app import WebsitePageAttrView
+from maasaic.apps.content.views.app import WebsitePublishView
 from maasaic.apps.content.views.frontend import HomeView
 from maasaic.apps.content.views.frontend import UserCreateView
 from maasaic.apps.content.views.frontend import UserLoginView
@@ -73,11 +75,13 @@ urlpatterns = [
     path('sites/<str:subdomain>/config', WebsiteConfigView.as_view(), name='website_config'),
     path('sites/<str:subdomain>/default-page-attrs', WebsitePageAttrView.as_view(), name='website_page_attr'),
     path('sites/<str:subdomain>/default-cell-attrs', WebsiteCellAttrView.as_view(), name='website_cell_attr'),
+    path('sites/<str:subdomain>/publish', WebsitePublishView.as_view(), name='website_publish'),
     path('sites/<str:subdomain>/pages', PageListView.as_view(), name='page_list'),
     path('sites/<str:subdomain>/pages/create', PageCreateView.as_view(), name='page_create'),
     path('sites/<str:subdomain>/pages/<int:pk>/config', PageConfigView.as_view(), name='page_config'),
     path('sites/<str:subdomain>/pages/<int:pk>/update', PageUpdateView.as_view(), name='page_update'),
     path('sites/<str:subdomain>/pages/<int:pk>/delete', PageDeleteView.as_view(), name='page_delete'),
+    path('sites/<str:subdomain>/pages/<int:pk>/publish', PagePublishView.as_view(), name='page_publish'),
 
     path('sections/', include(sections_urls)),
     path('cells/', include(cells_urls)),

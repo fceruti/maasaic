@@ -8,6 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views import View
+from django.db import transaction
 from django.views.generic import CreateView
 from django.views.generic import DeleteView
 from django.views.generic import DetailView
@@ -26,6 +27,8 @@ from maasaic.apps.content.forms import PageUpdateForm
 from maasaic.apps.content.forms import SectionCreateForm
 from maasaic.apps.content.forms import SectionOrderForm
 from maasaic.apps.content.forms import SectionVisibilityForm
+from maasaic.apps.content.forms import WebsitePublishForm
+from maasaic.apps.content.forms import PagePublishForm
 from maasaic.apps.content.forms import UserCreateForm
 from maasaic.apps.content.forms import UserLoginForm
 from maasaic.apps.content.forms import WebsiteConfigForm
@@ -122,6 +125,27 @@ class WebsiteCellAttrView(WebsiteDetailBase, UpdateView):
     slug_field = 'subdomain'
     slug_url_kwarg = 'subdomain'
     current_tab = 'cell_attr'
+
+
+class WebsitePublishView(WebsiteDetailBase, UpdateView):
+    form_class = WebsitePublishForm
+    model = Website
+    slug_field = 'subdomain'
+    slug_url_kwarg = 'subdomain'
+
+    def form_valid(self, form):
+        form.save()
+        is_visible = form.cleaned_data['is_visible']
+        if is_visible:
+            msg = 'Yeey! Now %s is live ;)' % self.website.domain
+        else:
+            msg = 'Done. %s is now offline.' % self.website.domain
+        messages.success(self.request, msg)
+        url = reverse('page_list', args=[self.website.subdomain])
+        return HttpResponseRedirect(url)
+
+    def form_invalid(self, form):
+        return self.form_valid(form)
 
 
 # ------------------------------------------------------------------------------
@@ -223,8 +247,45 @@ class PageDeleteView(DeleteView, WebsiteDetailBase):
         return response
 
 
-class PagePublishView(WebsiteDetailView):
-    pass
+class PagePublishView(UpdateView, WebsiteDetailView):
+    form_class = PagePublishForm
+    model = Page
+
+    def get_object(self):
+        return get_object_or_404(Page,
+                                 pk=self.kwargs['pk'],
+                                 mode=Page.Mode.LIVE)
+
+    def form_valid(self, form):
+        if form.cleaned_data['is_visible']:
+            with transaction.atomic():
+                page = form.save()
+                Section.objects.filter(page=page).delete()
+                visible_sections = list(page.edit_page.visible_sections)
+                for edit_section in visible_sections:
+                    section_attr = edit_section.get_attr_dict()
+                    section_attr['page'] = page
+                    section_attr['is_visible'] = True
+                    live_section = Section.objects.create(**section_attr)
+                    visible_cells = list(edit_section.visible_cells)
+                    for edit_cell in visible_cells:
+                        cell_attr = edit_cell.get_attr_dict()
+                        cell_attr['is_visible'] = True
+                        cell_attr['section'] = live_section
+                        cell = Cell.objects.create(**cell_attr)
+            messages.success(self.request, 'Page is live')
+        else:
+            page = form.save()
+            messages.success(self.request, 'Page is offline')
+
+        url = self.request.GET.get(
+            'next',
+            reverse('page_list', args=[self.website.subdomain]))
+        return HttpResponseRedirect(url)
+
+
+
+
 
 
 # ------------------------------------------------------------------------------
@@ -234,7 +295,9 @@ class PageBaseView(WebsiteDetailBase):
 
     @cached_property
     def page(self):
-        return get_object_or_404(Page, pk=self.kwargs['page_pk'])
+        return get_object_or_404(Page,
+                                 pk=self.kwargs['page_pk'],
+                                 mode=Page.Mode.EDIT)
 
     def get_success_url(self):
         return reverse('page_update', args=[self.website.subdomain, self.page.pk])

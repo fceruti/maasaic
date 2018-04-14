@@ -46,21 +46,20 @@ class PageView(TemplateView):
             web = get_object_or_404(Website, subdomain=self.request.subdomain)
         else:
             web = get_object_or_404(Website, private_domain=self.request.domain)
+        if not web.is_visible:
+            raise Http404
         return web
-
-    @cached_property
-    def pages(self):
-        return Website.objects.get(subdomain=self.request.subdomain)
 
     @cached_property
     def page(self):
         path = self.kwargs['url']
         if not path:
             path = '/'
-        return get_object_or_404(Page,
+        page = get_object_or_404(Page,
                                  website=self.website,
                                  path=path,
                                  mode=Page.Mode.LIVE)
+        return page
 
     def get_context_data(self, **kwargs):
         context = super(PageView, self).get_context_data(**kwargs)

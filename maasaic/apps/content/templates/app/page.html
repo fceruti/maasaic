@@ -229,7 +229,7 @@
     <div id="sidebar-inner">
       {# Website #}
       <h3 class="sidebar-title">
-        Website
+        Website <span class="sidebar-title-status">{% if website.is_visible %}<i class="fa fa-circle text-success"></i> Live{% else %}<i class="fa fa-circle text-danger"></i> Offline{% endif %}</span>
       </h3>
       <div class="sidebar-item">
         <div class="sidebar-item-option left">
@@ -261,7 +261,14 @@
 
       {# Page #}
       <h3 class="sidebar-title">
-        Page
+        <form method="POST" action="{% url 'page_publish' website.subdomain page.target_page.pk %}?next={{ request.path }}" class="">
+          {% csrf_token %}
+          <input type="hidden" name="is_visible" value="True" />
+          <button type="submit" class="title-btn">
+            Publish changes
+          </button>
+        </form>
+        Page <span class="sidebar-title-status">{% if page.target_page.is_visible %}<i class="fa fa-circle text-success"></i> Live{% else %}<i class="fa fa-circle text-danger"></i> Offline{% endif %}</span>
       </h3>
       <div class="sidebar-item">
         <div class="sidebar-item-option left">
@@ -286,8 +293,8 @@
           </a>
         </div>
         <div class="sidebar-item-content">
-          <h2 class="name">{{ page.title }}</h2>
-          <h3 class="description">{{ page.path }}</h3>
+          <h2 class="name" title="{{ page.title }}">{{ page.title|truncatechars:25 }}</h2>
+          <h3 class="description" title="{{ page.path }}">{{ page.path|truncatechars:20 }}</h3>
         </div>
       </div>
       {# Sections #}
