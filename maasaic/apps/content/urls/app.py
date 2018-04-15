@@ -46,8 +46,8 @@ from maasaic.apps.content.views.frontend import HomeView
 from maasaic.apps.content.views.frontend import UserCreateView
 from maasaic.apps.content.views.frontend import UserLoginView
 from maasaic.apps.content.views.frontend import UserLogoutView
+from maasaic.apps.content.views.app import ImageCreateView
 
-base_urls = sys.modules[settings.ROOT_URLCONF].urlpatterns
 
 cells_urls = [
     path('create', CellCreateView.as_view(), name='cell_create'),
@@ -79,6 +79,7 @@ urlpatterns = [
     path('sites/<str:subdomain>/default-cell-attrs', WebsiteCellAttrView.as_view(), name='website_cell_attr'),
     path('sites/<str:subdomain>/publish', WebsitePublishView.as_view(), name='website_publish'),
     path('sites/<str:subdomain>/pages', PageListView.as_view(), name='page_list'),
+    path('sites/<str:subdomain>/images', ImageCreateView.as_view(), name='image_create'),
     path('sites/<str:subdomain>/pages/create', PageCreateView.as_view(), name='page_create'),
     path('sites/<str:subdomain>/pages/<int:pk>/config', PageConfigView.as_view(), name='page_config'),
     path('sites/<str:subdomain>/pages/<int:pk>/update', PageUpdateView.as_view(), name='page_update'),
@@ -90,4 +91,8 @@ urlpatterns = [
 
     path('admin', admin.site.urls),
     path('nested_admin', include('nested_admin.urls')),
-] + base_urls
+]
+
+if settings.DEBUG:
+    base_urls = sys.modules[settings.ROOT_URLCONF].urlpatterns
+    urlpatterns += base_urls
