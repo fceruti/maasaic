@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'image_cropping',
     'bootstrap4',
+    'storages',
 
     # Custom apps
     'maasaic.apps.users',
@@ -148,7 +149,7 @@ STATICFILES_DIRS = [
     ASSETS_PATH,
     NODE_MODULES_PATH,
 ]
-STATIC_ROOT = root_path('static')
+
 MEDIA_ROOT = env('MEDIA_ROOT', default=None)
 COMPRESS_PRECOMPILERS = (
     ('text/coffeescript', 'coffee --compile --stdio'),
@@ -157,6 +158,7 @@ COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'sass --scss {infile} {outfile}'),
     ('text/stylus', 'stylus < {infile} > {outfile}'),
 )
+COMPRESS_ROOT = ASSETS_PATH
 COMPRESS_ENABLED = False
 COMPRESS_OFFLINE = False
 
