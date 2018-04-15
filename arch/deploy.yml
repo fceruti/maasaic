@@ -1,6 +1,6 @@
 ---
 - name: Fetch new code, install & migrate db
-  hosts: web_server,worker_server
+  hosts: web
 
   become: yes
   remote_user: ubuntu
