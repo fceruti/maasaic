@@ -41,6 +41,24 @@ def section_cell_default_background(section):
     return '#DDDDDD'
 
 
+@register.simple_tag()
+def section_cell_default_border(section):
+    # TODO: Implement section defaults
+    return 'none'
+
+
+@register.simple_tag()
+def section_cell_default_border_radius(section):
+    # TODO: Implement section defaults
+    return '0px'
+
+
+@register.simple_tag()
+def section_cell_default_shadow(section):
+    # TODO: Implement section defaults
+    return 'none'
+
+
 # ------------------------------------------------------------------------------
 # Cell
 # ------------------------------------------------------------------------------

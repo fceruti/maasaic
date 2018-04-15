@@ -27,7 +27,6 @@
   {# BEING: AJAX CONTAINER #}
   <div id="js-ajax-container">
 {% endif %}
-
 <div class="page"
      data-website-id="{{ page.website.id }}"
      data-website-pub_status="{{ page.website.pub_status }}"
@@ -54,7 +53,10 @@
          data-cell_height="{{ section.cell_height }}"
          data-cell_default_padding="{% section_cell_default_padding section %}"
          data-cell_default_margin="{% section_cell_default_margin section %}"
-         data-cell_default_bg_color="{% section_cell_default_background section %}"
+         data-cell_default_background="{% section_cell_default_background section %}"
+         data-cell_default_shadow="{% section_cell_default_shadow section %}"
+         data-cell_default_border="{% section_cell_default_border section %}"
+         data-cell_default_border_radius="{% section_cell_default_border_radius section %}"
          data-width="{% page_width page %}"
          data-name="{{ section.name }}"
          data-slug="{{ section.slug }}"
@@ -77,7 +79,7 @@
                  data-h="{{ cell.h }}"
                  data-x="{{ cell.x }}"
                  data-y="{{ cell.y }}">
-              <div class="cell-inner-margin" style="{% cell_inner_style_background cell %} {% cell_inner_style_margin_position cell %}">
+              <div class="cell-inner-margin" style="{% cell_inner_style_background cell %} {% cell_inner_style_margin_position cell %} border:{{ cell.css.border }}; border-radius: {{ cell.css.border_radius }}; box-shadow: {{ cell.css.box_shadow }}">
                 <div class="cell-inner-padding" style="{% cell_inner_style_padding cell %}">
                   <div class="cell-inner">
                     {{ cell.content|safe }}
@@ -413,6 +415,47 @@
     </div>
   </div>
 
+  {# CELL PROPERTIES #}
+  <div id="cell-properties-template" class="hidden">
+
+      <h5>Cell properties</h5>
+      <div class="row">
+        <div class="col">
+          <label>Background</label>
+          <div class="input-group colorpicker-component colorpicker-element">
+            <div class="input-group-prepend">
+              <span class="input-group-text input-group-addon"><i></i></span>
+            </div>
+            <input type="text" name="css_background" class="form-control input-sm"/>
+          </div>
+        </div>
+        <div class="col">
+          <label>Margin</label>
+          <input type="text" name="css_margin" class="form-control input-sm"/>
+        </div>
+        <div class="col">
+          <label>Padding</label>
+          <input type="text" name="css_padding" class="form-control input-sm"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <br/>
+          <label>Border</label>
+          <input type="text" name="css_border" class="form-control input-sm"/>
+        </div>
+        <div class="col">
+          <br/>
+          <label>Border radius</label>
+          <input type="text" name="css_border_radius" class="form-control input-sm"/>
+        </div>
+        <div class="col">
+          <br/>
+          <label>Shadow</label>
+          <input type="text" name="css_shadow" class="form-control input-sm"/>
+        </div>
+      </div>
+  </div>
 {% endif %}
 
 {# loading #}

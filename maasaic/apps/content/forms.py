@@ -141,7 +141,6 @@ class WebsitePublishForm(forms.ModelForm):
         fields = ['is_visible']
 
 
-
 class PageCreateForm(forms.ModelForm):
     class Meta:
         model = Page
@@ -326,6 +325,9 @@ class CellCreateForm(forms.ModelForm):
     css_padding = forms.CharField()
     css_margin = forms.CharField()
     css_background = forms.CharField()
+    css_border = forms.CharField()
+    css_border_radius = forms.CharField()
+    css_shadow = forms.CharField()
 
     class Meta:
         model = Cell
@@ -347,6 +349,9 @@ class CellCreateForm(forms.ModelForm):
             'padding': self.cleaned_data['css_padding'],
             'background': self.cleaned_data['css_background'],
             'margin': self.cleaned_data['css_margin'],
+            'border': self.cleaned_data['css_border'],
+            'border_radius': self.cleaned_data['css_border_radius'],
+            'box_shadow': self.cleaned_data['css_shadow'],
         }
         cell.order = 0
         for other_cell in Cell.objects.filter(section=cell.section):

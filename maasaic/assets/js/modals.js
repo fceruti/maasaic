@@ -1,26 +1,41 @@
 
 
-function onCellModalRequest(sectionCellProperties, cellObj) {
-    console.log('onCellModalRequest', sectionCellProperties, cellObj)
+function onCellModalRequest(cellProperties, cellObj) {
+    console.log('onCellModalRequest', cellProperties, cellObj)
 
-    var cellWidth = sectionCellProperties['colWidth'] * cellObj['w'],
-        cellHeight = sectionCellProperties['rowHeight'] * cellObj['h'],
-        defaultPadding = sectionCellProperties['defaultPadding'],
-        defaultMargin = sectionCellProperties['defaultMargin'],
-        defaultBackground = sectionCellProperties['defaultBackground'];
+    var cellWidth = cellProperties['colWidth'] * cellObj['w'],
+        cellHeight = cellProperties['rowHeight'] * cellObj['h'],
+        initialPadding = cellProperties['padding'],
+        initialMargin = cellProperties['margin'],
+        initialBackground = cellProperties['background'],
+        initialBorder = cellProperties['border'],
+        initialBorderRadius = cellProperties['borderRadius'],
+        initialShadow = cellProperties['shadow'];
 
     // Initial values
-    var initialBackground = defaultBackground;
+    var background = initialBackground;
     if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('background')){
-        initialBackground = cellObj['css']['background'];
+        background = cellObj['css']['background'];
     }
-    var initialPadding = defaultPadding;
+    var padding = initialPadding;
     if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('padding')){
-        initialPadding = cellObj['css']['padding'];
+        padding = cellObj['css']['padding'];
     }
-    var initialMargin = defaultMargin;
+    var margin = initialMargin;
     if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('margin')){
-        initialMargin = cellObj['css']['margin'];
+        margin = cellObj['css']['margin'];
+    }
+    var border = initialBorder;
+    if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('border')){
+        border = cellObj['css']['border'];
+    }
+    var borderRadius = initialBorderRadius;
+    if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('border-radius')){
+        borderRadius = cellObj['css']['border-radius'];
+    }
+    var shadow = initialShadow;
+    if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('shadow')){
+        shadow = cellObj['css']['shadow'];
     }
 
     // Form url
@@ -36,7 +51,16 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
 
     if(cellObj['cellType'] == 'TEXT') {
         // Initialize modal
-        $('#insert-cell-modal .modal-dialog').addClass('modal-huge');
+        if(cellWidth > 700){
+            $('#insert-cell-modal .modal-dialog').addClass('modal-huge');
+        } else {
+            if(cellWidth > 500) {
+            $('#insert-cell-modal .modal-dialog').addClass('modal-lg');
+            }
+        }
+
+
+        var cellProperties = $('#cell-properties-template').html();
         var modalHtml =
             '<div class="modal-header">' +
                 '<h5 class="modal-title"><i class="fa fa-font"></i> New Text cell</h5>' +
@@ -46,6 +70,8 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
             '</div>' +
             '<form class="ajax-form" method="POST" action="' + formUrl + '">' +
                 '<div class="modal-body">' +
+                    cellProperties +
+                    '<br/><h5>Content</h5>' +
                     '<div id="summernote"></div>' +
                     '<input    name="csrfmiddlewaretoken" value="' + csrfmiddlewaretoken + '"   type="hidden" />' +
                     '<input    name="id"                  value="' + cellObj['id'] + '"         type="hidden" />' +
@@ -81,7 +107,6 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
                 ['color', ['color']],
                 ['para', ['ul', 'ol', 'paragraph']],
                 ['height', ['height']],
-                ['custom', ['margin', 'padding', 'backgroundColor']],
             ],
             fontNames: fontNames,
             lineHeights: ['0.5', '0.8', '1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
@@ -100,30 +125,52 @@ function onCellModalRequest(sectionCellProperties, cellObj) {
 
         $noteWrapper = $('<div></div>')
         $noteWrapper.addClass('note-editable-wrapper');
-        var noteWrapperStyle = window['utils']['get_position_dict_from_margin'](defaultMargin);
+        var noteWrapperStyle = window['utils']['get_position_dict_from_margin'](margin);
         noteWrapperStyle['position'] = 'absolute';
-        noteWrapperStyle['background'] = initialBackground;
+        noteWrapperStyle['background'] = background;
+        noteWrapperStyle['shadow'] = shadow;
+        noteWrapperStyle['border'] = border;
+        noteWrapperStyle['borderRadius'] = borderRadius;
         $noteWrapper.css(noteWrapperStyle);
         $('.note-editable').wrap($noteWrapper);
+        $('.note-editable').css({'height': '100%'});
 
-        // Margin plugin
-        $('#summernote-margin-input').attr('value', initialMargin)
-        $('#summernote-margin-input').on('keyup', function(){
+        // Padding
+        $('.note-editable').css({'padding': padding});
+        $('.modal-body input[name=css_padding]').attr('value', padding);
+        $('.modal-body input[name=css_padding]').on('keyup', function(){
+            $('.note-editable').css({'padding': $(this).val()});
+        });
+
+        // Margin
+        $('.modal-body input[name=css_margin]').attr('value', margin)
+        $('.modal-body input[name=css_margin]').on('keyup', function(){
             var newPositions = window['utils']['get_position_dict_from_margin']($(this).val());
             $('.note-editable-wrapper').css(newPositions);
         });
 
-        // Padding plugin
-        $('.note-editable').css({'padding': initialPadding});
-        $('#summernote-padding-input').attr('value', initialPadding);;
-        $('#summernote-padding-input').on('keyup', function(){
-            $('.note-editable').css({'padding': $(this).val()});
+        // Background
+        $('.modal-body input[name=css_background]').parent().colorpicker({'color': background});
+        $('.modal-body input[name=css_background]').on('keyup', function(){
+            $('.note-editable-wrapper').css({'background': $(this).val()})
         });
 
-        // Background plugin
-        $('#summernote-bg-color-input').colorpicker({'color': initialBackground});
-        $('#summernote-bg-color-input').on('change', function(){
-            $('.note-editing-area').css({'background': $(this).val()})
+        // Border
+        $('.modal-body input[name=css_border]').attr('value', border);
+        $('.modal-body input[name=css_border]').on('keyup', function(){
+            $('.note-editable-wrapper').css({'border': $(this).val()})
+        });
+
+        // Border Radius
+        $('.modal-body input[name=css_border_radius]').attr('keyup', border);
+        $('.modal-body input[name=css_border_radius]').on('change', function(){
+            $('.note-editable-wrapper').css({'border-radius': $(this).val()})
+        });
+
+        // Border
+        $('.modal-body input[name=css_shadow]').attr('value', border);
+        $('.modal-body input[name=css_shadow]').on('change', function(){
+            $('.note-editable').css({'box-shadow': $(this).val()})
         });
 
         // TODO: Bind ajax form

@@ -35,15 +35,21 @@ function getSectionCellProperties(sectionId) {
     var cellHeight = parseInt($section.attr('data-cell_height')),
         totalWidth = parseInt($section.attr('data-width')),
         totalCols = parseInt($section.attr('data-n_columns')),
-        defaultPadding = $section.attr('data-cell_default_padding'),
-        defaultMargin = $section.attr('data-cell_default_margin'),
-        defaultBgColor = $section.attr('data-cell_default_bg_color');
+        padding = $section.attr('data-cell_default_padding'),
+        margin = $section.attr('data-cell_default_margin'),
+        background = $section.attr('data-cell_default_background'),
+        border = $section.attr('data-cell_default_border'),
+        borderRadius = $section.attr('data-cell_default_border_radius'),
+        shadow = $section.attr('data-cell_default_shadow');
 
     return {'colWidth': totalWidth / totalCols,
             'rowHeight': cellHeight,
-            'defaultPadding': defaultPadding,
-            'defaultMargin': defaultMargin,
-            'defaultBackground': defaultBgColor};
+            'padding': padding,
+            'margin': margin,
+            'background': background,
+            'border': border,
+            'borderRadius': borderRadius,
+            'shadow': shadow};
 }
 
 function getSectionParentsUrlParts(sectionId) {
