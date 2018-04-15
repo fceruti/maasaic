@@ -11,8 +11,6 @@ MIDDLEWARE += [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-ALLOWED_HOSTS = ['*']
-
 INTERNAL_IPS = ['localhost', '127.0.0.1', 'maasaic-local.com:8000', 'fceruti.maasaic-local.com:8000']
 
 COMPRESS_ENABLED = False
