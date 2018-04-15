@@ -1,5 +1,5 @@
 ---
-- name: Create bee directories
+- name: Create {{ project_name }} directories
   file:
     path="/{{ user }}/{{ project_name }}/{{ item }}"
     state=directory
@@ -35,6 +35,6 @@
 - name: "Connect environment vars to {{ user }} user"
   lineinfile:
     dest="/{{ user }}/.bashrc"
-    line='source "/{{ user }}/{{ project_name }}/.env'"
+    line='source "/{{ user }}/{{ project_name }}/.env"'
     insertafter='EOF'
     state=present

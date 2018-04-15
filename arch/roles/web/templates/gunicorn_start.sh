@@ -12,7 +12,7 @@ SOCKFILE=/{{ user }}/{{ project_name }}/run/gunicorn.sock
 RUNDIR=$(dirname $SOCKFILE)
 test -d $RUNDIR || mkdir -p $RUNDIR
 
-cd /web/bee/src/
+cd /{{ user }}/{{ project_name }}/src/
 
 exec /{{ user }}/{{ project_name }}/bin/gunicorn \
     --name "{{ project_name }}" \

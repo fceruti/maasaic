@@ -14,5 +14,8 @@ django-image-cropping==1.1.0
 # Statics
 django-compressor==2.2
 
+# Admin
+django-nested-admin==3.0.21
+
 # Others
 pyquery==1.4.0

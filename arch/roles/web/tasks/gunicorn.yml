@@ -1,7 +1,7 @@
 - name: Install gunicorn
   pip:
     name=gunicorn
-    virtualenv="/{{ user }}/{{ project_name }}""
+    virtualenv="/{{ user }}/{{ project_name }}"
   become: yes
   become_user: "{{ user }}"
 

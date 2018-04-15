@@ -10,7 +10,7 @@
   stat: path="/{{ user }}/{{ project_name }}/"
   register: venv_dir
 
-- name: Create virtualenv for bee-server
+- name: Create virtualenv for {{ project_name }}
   shell: "virtualenv /{{ user }}/{{ project_name}} --python=python3"
   when: venv_dir.stat.isdir is not defined
   become: yes
