@@ -10,6 +10,7 @@ from maasaic.apps.content.models import MAX_ROWS_KEY
 from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import SASS_VARIABLES
 from maasaic.apps.content.models import Section
+from maasaic.apps.content.models import UploadedImage
 from maasaic.apps.content.models import Website
 from maasaic.apps.content.utils import get_margin_string_from_position
 from maasaic.apps.content.utils import get_position_dict_from_margin
@@ -322,12 +323,12 @@ class SectionOrderForm(forms.ModelForm):
 # Cell forms
 # ------------------------------------------------------------------------------
 class CellCreateForm(forms.ModelForm):
-    css_padding = forms.CharField()
-    css_margin = forms.CharField()
-    css_background = forms.CharField()
-    css_border = forms.CharField()
-    css_border_radius = forms.CharField()
-    css_shadow = forms.CharField()
+    css_padding = forms.CharField(required=False)
+    css_margin = forms.CharField(required=False)
+    css_background = forms.CharField(required=False)
+    css_border = forms.CharField(required=False)
+    css_border_radius = forms.CharField(required=False)
+    css_shadow = forms.CharField(required=False)
 
     class Meta:
         model = Cell
@@ -420,3 +421,9 @@ class CellOrderForm(forms.ModelForm):
                 other_cell.save()
 
         return cell
+
+
+class UploadImageForm(forms.ModelForm):
+    class Meta:
+        model = UploadedImage
+        fields = ['image', 'name', 'description']

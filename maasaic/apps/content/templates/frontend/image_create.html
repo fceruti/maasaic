@@ -1,0 +1,18 @@
+<form method="POST" action="{% url 'image_create' website.subdomain %}" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Upload image" class="btn btn-success btn-sm"/>
+</form>
+<h5>My gallery</h5>
+{% if images %}
+  <div class="row">
+    {% for image in images %}
+      <div class="col col-3">
+        <img src="{{ MEDIA_URL }}{{ image.thumbnail_url }}" alt=""/>
+        <h3>{{ image.width }}x{{ image.height }} | {{ image.size|filesizeformat }}</h3>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="alert alert-info">You don't have images yet. Upload your first one and you'll see it here.</div>
+{% endif %}

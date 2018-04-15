@@ -14,6 +14,7 @@ from django.views.generic import FormView
 from django.views.generic import ListView
 from django.views.generic import RedirectView
 from django.views.generic import UpdateView
+from maasaic.apps.content.forms import UploadImageForm
 
 from maasaic.apps.content.forms import CellCreateForm
 from maasaic.apps.content.forms import CellOrderForm
@@ -33,7 +34,7 @@ from maasaic.apps.content.models import Cell
 from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Section
 from maasaic.apps.content.models import Website
-
+from maasaic.apps.content.models import UploadedImage
 
 # ------------------------------------------------------------------------------
 # Websites
@@ -375,7 +376,6 @@ class CellCreateView(CreateView, PageBaseView):
         cell = form.save(commit=True)
         url = reverse('page_update', args=[cell.section.page.website.subdomain,
                                            cell.section.page.pk])
-
         return HttpResponseRedirect(url)
 
 
@@ -415,3 +415,31 @@ class CellDeleteView(DeleteView):
         cell = self.get_object()
         return reverse('page_update', args=[cell.section.page.website.subdomain,
                                             cell.section.page.pk])
+
+
+# ------------------------------------------------------------------------------
+# Images
+# ------------------------------------------------------------------------------
+class ImageCreateView(CreateView, WebsiteDetailBase):
+    model = UploadedImage
+    form_class = UploadImageForm
+    template_name = 'frontend/image_create.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ImageCreateView, self).get_context_data(**kwargs)
+        context['website'] = self.website
+        context['images'] = UploadedImage.objects\
+            .filter(website=self.website)\
+            .order_by('created_at')
+        return context
+
+    def form_valid(self, form):
+        uploaded_image = form.save(commit=False)
+        uploaded_image.website = self.website
+        uploaded_image.size = uploaded_image.image.size
+        uploaded_image.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('image_create', args=[self.website.subdomain])
+

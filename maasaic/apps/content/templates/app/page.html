@@ -14,6 +14,7 @@
   {% if page_edit_on %}
   <script type="text/javascript">
     var csrfmiddlewaretoken = '{{ csrf_token }}';
+    var subdomain = '{{ website.subdomain }}';
   </script>
   {% endif %}
 {% endblock %}

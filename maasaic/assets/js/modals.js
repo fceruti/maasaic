@@ -194,6 +194,7 @@ function onCellModalRequest(cellProperties, cellObj) {
                 '</button>' +
             '</div>' +
             '<div class="modal-body">' +
+                '<h5>Select image</h5>' +
                 '<ul class="nav nav-tabs" id="myTab" role="tablist">'+
                     '<li class="nav-item">'+
                         '<a class="nav-link active" data-toggle="tab" href="#insert-image-gallery" role="tab" aria-controls="home" aria-selected="true"><i class="fa fa-picture-o"></i>  My Gallery</a>'+
@@ -204,15 +205,11 @@ function onCellModalRequest(cellProperties, cellObj) {
                     '<li class="nav-item">'+
                         '<a class="nav-link" data-toggle="tab" href="#insert-image-google" role="tab"><i class="fa fa-google"></i> Google search</a>'+
                     '</li>'+
-                    '<li class="nav-item">'+
-                        '<a class="nav-link" data-toggle="tab" href="#insert-image-upload" role="tab"><i class="fa fa-cloud-upload"></i> Upload</a>'+
-                    '</li>'+
                 '</ul>'+
                 '<div class="tab-content" id="myTabContent">'+
-                    '<div class="tab-pane fade show active" id="insert-image-gallery" role="tabpanel">My Gallery</div>'+
-                    '<div class="tab-pane fade"             id="insert-image-unsplash" role="tabpanel">Unsplash</div>'+
-                    '<div class="tab-pane fade"             id="insert-image-google" role="tabpanel">Google</div>'+
-                    '<div class="tab-pane fade"             id="insert-image-upload" role="tabpanel">Upload</div>'+
+                    '<div class="insert-image-modal-tab-pane tab-pane fade show active" id="insert-image-gallery"  role="tabpanel">My Gallery</div>'+
+                    '<div class="insert-image-modal-tab-pane tab-pane fade"             id="insert-image-unsplash" role="tabpanel">Unsplash</div>'+
+                    '<div class="insert-image-modal-tab-pane tab-pane fade"             id="insert-image-google"   role="tabpanel">Google</div>'+
                 '</div>'+
             '</div>' +
             '<div class="modal-footer">' +
@@ -220,9 +217,12 @@ function onCellModalRequest(cellProperties, cellObj) {
                 '<button type="submit" class="btn btn-success" id="modal-btn"><i class="fa fa-plus-circle"></i> Create image cell</button>' +
             '</div>';
         $('#insert-cell-modal .modal-content').html(modalHtml);
+        $.get('/sites/' + subdomain + '/images', function( data ) {
+            $('#insert-image-gallery').html( data );
+        });
+
         $('#insert-cell-modal').modal('show');
 
-        return
     }
 }
 

@@ -7,6 +7,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.text import slugify
+from easy_thumbnails.files import get_thumbnailer
 from image_cropping import ImageCropField
 from image_cropping import ImageRatioField
 
@@ -271,9 +272,17 @@ class Cell(models.Model):
 
 class UploadedImage(models.Model):
     website = models.ForeignKey(Website, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=image_path)
+    image = models.ImageField(upload_to=image_path,
+                              height_field='height',
+                              width_field='width')
     name = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     height = models.IntegerField()
     width = models.IntegerField()
     size = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def thumbnail_url(self):
+        options = {'size': (200, 200), 'crop': 'smart'}
+        return get_thumbnailer(self.image).get_thumbnail(options).url
