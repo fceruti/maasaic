@@ -16,6 +16,8 @@
 
     - name: Stop web supervisor
       service: name=supervisor state=stopped
+      become: yes
+      become_user: root
 
     - name: Migrate database
       shell: . /{{ user }}/{{ project_name }}/.env && /{{ user }}/{{ project_name }}/bin/python /{{ user }}/{{ project_name }}/src/manage.py migrate
@@ -24,6 +26,8 @@
 
     - name: Start web supervisor
       service: name=supervisor state=started
+      become: yes
+      become_user: root
 
     # - name: Remove maintenance file
     #   file: path='/web/bee/nginx_templates/maintenance.html' state=absent
