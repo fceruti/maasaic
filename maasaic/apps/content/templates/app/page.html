@@ -9,10 +9,6 @@
 
 {% block body_class %}{% if page_edit_on %}body-edit-page{% endif %}{% endblock %}
 
-{% block extra_css %}
-  <link href="{{ FONTS_URL }}" rel="stylesheet">
-{% endblock %}
-
 {% block extra_js %}
   {% include 'widgets/fonts.html' %}
   {% if page_edit_on %}
@@ -73,6 +69,7 @@
                         cell--h-{{ cell.h }}
                         cell--x-{{ cell.x }}
                         cell--y-{{ cell.y }}"
+                 data-cell-id="{{ cell.pk }}"
                  data-section-id="{{ section.pk }}"
                  data-type="{{ cell.cell_type }}"
                  data-w="{{ cell.w }}"
@@ -167,8 +164,11 @@
                    data-type="{{ cell.cell_type }}"
                    data-margin="{{ cell.css.margin }}"
                    data-padding="{{ cell.css.padding }}"
-                   data-position="{{ cell.position_css }}"
+                   data-position="{% cell_inner_style_margin_position cell %}"
                    data-background="{{ cell.css.background }}"
+                   data-border="{{ cell.css.border }}"
+                   data-border_radius="{{ cell.css.border_radius }}"
+                   data-shadow="{{ cell.css.box_shadow }}"
                    data-w="{{ cell.w }}"
                    data-h="{{ cell.h }}"
                    data-x="{{ cell.x }}"
@@ -176,21 +176,21 @@
                 <div class="edit-cell-ctrl">
                   <div class="edit-cell-ctrl-btns">
                     <div class="edit-cell-ctrl-btn
-                                edit-cell-ctrl-btn-move">
+                                js-edit-cell-ctrl-btn-move">
                       <div class="icon">
                         <i class="fa fa-arrows"></i>
                       </div>
                       <span class="text">Move</span>
                     </div>
                     <div class="edit-cell-ctrl-btn
-                                edit-cell-ctrl-btn-edit">
+                                js-edit-cell-ctrl-btn-edit">
                       <div class="icon">
                         <i class="fa fa-edit"></i>
                       </div>
                       <span class="text">Edit</span>
                     </div>
                     <div class="edit-cell-ctrl-btn
-                                edit-cell-ctrl-btn-delete">
+                                js-edit-cell-ctrl-btn-delete">
                       <div class="icon">
                         <i class="fa fa-times"></i>
                       </div>
@@ -307,7 +307,7 @@
         </button>
       </h3>
       <ul class="section-list" id="js-section-list">
-        {% for section in page.section_set.all %}
+        {% for section in page.all_cells %}
           <li class="section-list-item" data-section-id="{{ section.pk }}">
             <div class="sidebar-item">
               <div class="sidebar-item-option left">

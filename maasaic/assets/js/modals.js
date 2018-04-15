@@ -30,8 +30,8 @@ function onCellModalRequest(cellProperties, cellObj) {
         border = cellObj['css']['border'];
     }
     var borderRadius = initialBorderRadius;
-    if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('border-radius')){
-        borderRadius = cellObj['css']['border-radius'];
+    if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('borderRadius')){
+        borderRadius = cellObj['css']['borderRadius'];
     }
     var shadow = initialShadow;
     if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('shadow')){
@@ -39,11 +39,13 @@ function onCellModalRequest(cellProperties, cellObj) {
     }
 
     // Form url
-    var formUrl;
+    var formUrl, submitText;
     if (cellObj['id'] == null) {
         formUrl = '/cells/create';
+        submitText = 'Create cell';
     } else {
         formUrl = '/cells/' + cellObj['id'] + '/update';
+        submitText = 'Update cell';
     }
     $('#insert-cell-modal .modal-dialog')
         .removeClass('modal-huge')
@@ -85,7 +87,7 @@ function onCellModalRequest(cellProperties, cellObj) {
                 '</div>' +
                 '<div class="modal-footer">' +
                     '<button type="button" class="btn btn-link text-danger" data-dismiss="modal">Cancel</button>' +
-                    '<button type="submit" class="btn btn-success" id="modal-btn"><i class="fa fa-plus-circle"></i> Create text cell</button>' +
+                    '<button type="submit" class="btn btn-success" id="modal-btn">' + submitText + '</button>' +
                 '</div>' +
             '</form>';
         $('#insert-cell-modal .modal-content').html(modalHtml);
@@ -122,6 +124,11 @@ function onCellModalRequest(cellProperties, cellObj) {
             'margin': '20px auto',
             'border': '1px solid #333'});
         $('.note-statusbar').css({'display': 'none'});
+
+        if(cellObj['content'] != null && cellObj['content'] != undefined) {
+        console.log($(cellObj['content']))
+            $('#summernote').summernote('code', $(cellObj['content']));
+        }
 
         $noteWrapper = $('<div></div>')
         $noteWrapper.addClass('note-editable-wrapper');
@@ -162,13 +169,13 @@ function onCellModalRequest(cellProperties, cellObj) {
         });
 
         // Border Radius
-        $('.modal-body input[name=css_border_radius]').attr('keyup', border);
+        $('.modal-body input[name=css_border_radius]').attr('value', borderRadius);
         $('.modal-body input[name=css_border_radius]').on('change', function(){
             $('.note-editable-wrapper').css({'border-radius': $(this).val()})
         });
 
         // Border
-        $('.modal-body input[name=css_shadow]').attr('value', border);
+        $('.modal-body input[name=css_shadow]').attr('value', shadow);
         $('.modal-body input[name=css_shadow]').on('change', function(){
             $('.note-editable').css({'box-shadow': $(this).val()})
         });

@@ -360,7 +360,7 @@ function bindMoveCellEvents() {
         }
     })
 
-    $('.edit-cell-ctrl-btn-move').mousedown(function(){
+    $('.js-edit-cell-ctrl-btn-move').mousedown(function(){
         if(appState == STATE_VIEW){
             startMovingCell(this);
         }
@@ -395,10 +395,56 @@ function bindMoveCellEvents() {
 EventBus.subscribe(HTML_INJECTED, bindMoveCellEvents);
 
 /*******************************************************************************
+* Edit cell
+*******************************************************************************/
+function getCellCss($cell) {
+    var padding = $cell.attr('data-padding'),
+        margin = $cell.attr('data-margin'),
+        background = $cell.attr('data-background'),
+        border = $cell.attr('data-border'),
+        borderRadius = $cell.attr('data-border_radius'),
+        shadow = $cell.attr('data-shadow');
+
+    return {'padding': padding,
+            'margin': margin,
+            'background': background,
+            'border': border,
+            'borderRadius': borderRadius,
+            'shadow': shadow};
+}
+
+
+function bindEditCellEvents() {
+    $('.js-edit-cell-ctrl-btn-edit').mousedown(function(){
+        $cell = $(this).closest('.cell.cell--layer-edit');
+        var cellId = $cell.attr('data-cell-id');
+        var sectionId = $cell.attr('data-section-id');
+        var sectionCellProperties= getSectionCellProperties(sectionId);
+        var cellObj = {
+            id: cellId,
+            sectionId: sectionId,
+            cellType: $cell.attr('data-type'),
+            x: $cell.attr('data-x'),
+            y: $cell.attr('data-y'),
+            w: $cell.attr('data-w'),
+            h: $cell.attr('data-h'),
+            content: $('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner').html(),
+            css: getCellCss($cell)
+        };
+        console.log($('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner').html())
+        console.log('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner')
+        EventBus.fire(CELL_MODAL_REQUEST, sectionCellProperties, cellObj);
+    });
+}
+
+EventBus.subscribe(HTML_INJECTED, bindEditCellEvents);
+
+
+/*******************************************************************************
 * Delete cell
 *******************************************************************************/
 function bindDeleteCellEvents() {
-    $('.edit-cell-ctrl-btn-delete').mousedown(function(){
+    $('.js-edit-cell-ctrl-btn-delete').mousedown(function(){
         $cell = $(this).closest('.cell.cell--layer-edit');
         var cellId = $cell.attr('data-cell-id');
         var url = '/cells/' + cellId + '/delete'

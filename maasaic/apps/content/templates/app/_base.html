@@ -5,10 +5,11 @@
   <head>
     <title>{% block title %}Maasaic{% endblock %}</title>
     <meta charset="UTF-8">
+    <link href="{{ FONTS_URL }}" rel="stylesheet" type='text/css'>
     {% compress css file maasaic %}
       <link href="{% static 'sass/libs/reset.sass' %}" type="text/x-sass" rel="stylesheet"/>
+
       <link href="{% static 'bootstrap/dist/css/bootstrap.css' %}" type="text/css" rel="stylesheet"/>
-      <link href="{% static 'roboto-fontface/css/roboto/roboto-fontface.css' %}" type="text/css" rel="stylesheet"/>
       <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" type="text/css" rel="stylesheet"/>
       <link href="{% static 'summernote/dist/summernote-bs4.css' %}" type="text/css" rel="stylesheet"/>
       <link href="{% static 'bootstrap-colorpicker/dist/css/bootstrap-colorpicker.css' %}" type="text/css" rel="stylesheet">

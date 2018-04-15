@@ -343,9 +343,8 @@ class CellCreateForm(forms.ModelForm):
 
     # TODO: clean_css_background
 
-    def save(self, commit=True):
-        cell = super(CellCreateForm, self).save(commit=False)
-        cell.css = {
+    def get_css(self):
+        return {
             'padding': self.cleaned_data['css_padding'],
             'background': self.cleaned_data['css_background'],
             'margin': self.cleaned_data['css_margin'],
@@ -353,10 +352,26 @@ class CellCreateForm(forms.ModelForm):
             'border_radius': self.cleaned_data['css_border_radius'],
             'box_shadow': self.cleaned_data['css_shadow'],
         }
+
+    def save(self, commit=True):
+        cell = super(CellCreateForm, self).save(commit=False)
+        cell.css = self.get_css()
         cell.order = 0
         for other_cell in Cell.objects.filter(section=cell.section):
             other_cell.order += 1
             other_cell.save()
+        cell.save()
+        return cell
+
+
+class CellUpdateContentForm(CellCreateForm):
+    class Meta:
+        model = Cell
+        fields = ['content']
+
+    def save(self, commit=True):
+        cell = super(CellCreateForm, self).save(commit=False)
+        cell.css = self.get_css()
         cell.save()
         return cell
 

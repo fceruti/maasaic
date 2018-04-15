@@ -150,7 +150,7 @@ class Page(models.Model):
     class Meta:
         unique_together = ('website', 'path', 'mode')
 
-    @property
+    @cached_property
     def visible_sections(self):
         return self.section_set\
             .filter(is_visible=True)\
@@ -163,7 +163,7 @@ class Page(models.Model):
     def public_url(self):
         return urljoin(self.website.public_url, self.path)
 
-    @property
+    @cached_property
     def edit_page(self):
         if self.mode == self.Mode.LIVE:
             raise Exception
@@ -206,17 +206,18 @@ class Section(models.Model):
     def __str__(self):
         return '%s #%s' % (self.page, self.order)
 
-    @property
-    def visible_cells(self):
+    @cached_property
+    def all_cells(self):
         return self.cell_set\
-            .filter(is_visible=True)\
             .order_by('order')
 
-    @property
+    @cached_property
+    def visible_cells(self):
+        return [cell for cell in self.all_cells if cell.is_visible]
+
+    @cached_property
     def editable_cells(self):
-        return self.cell_set\
-            .filter(is_visible=True) \
-            .order_by('order')
+        return self.visible_cells
 
 
 class Cell(models.Model):

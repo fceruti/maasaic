@@ -18,6 +18,7 @@ from django.views.generic import UpdateView
 from maasaic.apps.content.forms import CellCreateForm
 from maasaic.apps.content.forms import CellOrderForm
 from maasaic.apps.content.forms import CellPositionForm
+from maasaic.apps.content.forms import CellUpdateContentForm
 from maasaic.apps.content.forms import CellVisibilityForm
 from maasaic.apps.content.forms import PageCreateForm
 from maasaic.apps.content.forms import PagePublishForm
@@ -203,7 +204,7 @@ class PageConfigView(WebsiteDetailBase, UpdateView):
 
 
 class PageUpdateView(DetailView, WebsiteDetailBase):
-    template_name = 'frontend/page_update.html'
+    template_name = 'app/page.html'
     model = Page
 
     def get_context_data(self, **kwargs):
@@ -218,10 +219,17 @@ class PageUpdateView(DetailView, WebsiteDetailBase):
         context['section_create_form'] = SectionCreateForm(page=page)
         return context
 
-    def get_object(self, queryset=None):
-        return get_object_or_404(Page,
+    @cached_property
+    def page(self):
+        page = get_object_or_404(Page,
                                  pk=self.kwargs['pk'],
                                  mode=Page.Mode.EDIT)
+        page.website = self.website
+        return page
+
+    def get_object(self, queryset=None):
+        return self.page
+
 
 
 class PageDeleteView(DeleteView, WebsiteDetailBase):
@@ -382,6 +390,10 @@ class BaseCellUpdateView(UpdateView, PageBaseView):
 
     def form_invalid(self, form):
         return HttpResponseRedirect(self.get_success_url())
+
+
+class CellContentUpdateView(BaseCellUpdateView):
+    form_class = CellUpdateContentForm
 
 
 class CellPositionUpdateView(BaseCellUpdateView):

@@ -20,6 +20,7 @@ from django.contrib import admin
 from django.urls import include
 from django.urls import path
 
+from maasaic.apps.content.views.app import CellContentUpdateView
 from maasaic.apps.content.views.app import CellCreateView
 from maasaic.apps.content.views.app import CellDeleteView
 from maasaic.apps.content.views.app import CellOrderUpdateView
@@ -54,6 +55,7 @@ cells_urls = [
     path('<int:pk>/visibility', CellVisibilityUpdateView.as_view(), name='cell_update_visibility'),
     path('<int:pk>/order', CellOrderUpdateView.as_view(), name='cell_update_order'),
     path('<int:pk>/delete', CellDeleteView.as_view(), name='cell_delete'),
+    path('<int:pk>/update', CellContentUpdateView.as_view(), name='cell_update'),
 ]
 
 sections_urls = [
