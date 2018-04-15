@@ -3,9 +3,9 @@
   hosts: web_server,worker_server
 
   become: yes
-  become_user: root
+  remote_user: ubuntu
 
   tasks:
-    - include: roles/bee-server/tasks/repo.yml
+    - include: roles/code/tasks/repo.yml
 
 - include: migrate_db.yml

@@ -19,3 +19,4 @@ django-nested-admin==3.0.21
 
 # Others
 pyquery==1.4.0
+django-bootstrap4==0.0.6

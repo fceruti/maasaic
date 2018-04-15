@@ -1,0 +1,31 @@
+---
+- name: Migrate database and restart
+  hosts: web
+
+  tasks:
+    # - name: Add maintenance file
+    #   become: yes
+    #   become_user: "{{ user }}"
+    #   copy:
+    #     remote_src: true
+    #     src: "/{{ user }}/{{ project_name }}/src/bee/templates/maintenance.html"
+    #     dest: "/{{ user }}/{{ project_name }}/nginx_templates/maintenance.html"
+    #     owner: "{{ user }}"
+    #     group: "{{ group }}"
+    #     mode: 0777
+
+    - name: Stop web supervisor
+      service: name=supervisor state=stopped
+
+    - name: Migrate database
+      shell: . /{{ user }}/{{ project_name }}/.env && /{{ user }}/{{ project_name }}/bin/python /{{ user }}/{{ project_name }}/src/manage.py migrate
+      become: yes
+      become_user: web
+
+    - name: Start web supervisor
+      service: name=supervisor state=started
+
+    # - name: Remove maintenance file
+    #   file: path='/web/bee/nginx_templates/maintenance.html' state=absent
+    #   when: "'web_server' in group_names"
+
