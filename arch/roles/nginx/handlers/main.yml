@@ -1,9 +1,15 @@
 ---
 - name: start nginx
   action: service name=nginx state=started
+  become: yes
+  become_user: root
 
 - name: restart nginx
   action: service name=nginx state=restarted
+  become: yes
+  become_user: root
 
 - name: reload nginx
   action: service name=nginx state=reloaded
+  become: yes
+  become_user: root
