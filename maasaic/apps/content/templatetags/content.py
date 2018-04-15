@@ -26,13 +26,13 @@ def page_width(page):
 @register.simple_tag()
 def section_cell_default_padding(section):
     # TODO: Implement section defaults
-    return '20px'
+    return '15px'
 
 
 @register.simple_tag()
 def section_cell_default_margin(section):
     # TODO: Implement section defaults
-    return '20px'
+    return '15px'
 
 
 @register.simple_tag()

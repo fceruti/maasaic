@@ -61,7 +61,6 @@ function onCellModalRequest(cellProperties, cellObj) {
             }
         }
 
-
         var cellProperties = $('#cell-properties-template').html();
         var modalHtml =
             '<div class="modal-header">' +
@@ -158,7 +157,7 @@ function onCellModalRequest(cellProperties, cellObj) {
 
         // Background
         $('.modal-body input[name=css_background]').parent().colorpicker({'color': background});
-        $('.modal-body input[name=css_background]').on('keyup', function(){
+        $('.modal-body input[name=css_background]').on('keyup change', function(){
             $('.note-editable-wrapper').css({'background': $(this).val()})
         });
 

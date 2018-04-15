@@ -307,7 +307,7 @@
         </button>
       </h3>
       <ul class="section-list" id="js-section-list">
-        {% for section in page.all_cells %}
+        {% for section in page.all_sections %}
           <li class="section-list-item" data-section-id="{{ section.pk }}">
             <div class="sidebar-item">
               <div class="sidebar-item-option left">
@@ -338,7 +338,7 @@
 
             {# Cells #}
             <ul class="cell-list" data-section-id="{{ section.pk }}">
-              {% for cell in section.cell_set.all %}
+              {% for cell in section.all_cells %}
                 <li class="cell-list-item"
                     data-section-id="{{ section.pk }}"
                     data-cell-id="{{ cell.pk }}">
@@ -417,44 +417,43 @@
 
   {# CELL PROPERTIES #}
   <div id="cell-properties-template" class="hidden">
-
-      <h5>Cell properties</h5>
-      <div class="row">
-        <div class="col">
-          <label>Background</label>
-          <div class="input-group colorpicker-component colorpicker-element">
-            <div class="input-group-prepend">
-              <span class="input-group-text input-group-addon"><i></i></span>
-            </div>
-            <input type="text" name="css_background" class="form-control input-sm"/>
+    <h5>Cell properties</h5>
+    <div class="row">
+      <div class="col">
+        <label>Background</label>
+        <div class="input-group colorpicker-component colorpicker-element">
+          <div class="input-group-prepend">
+            <span class="input-group-text input-group-addon"><i></i></span>
           </div>
-        </div>
-        <div class="col">
-          <label>Margin</label>
-          <input type="text" name="css_margin" class="form-control input-sm"/>
-        </div>
-        <div class="col">
-          <label>Padding</label>
-          <input type="text" name="css_padding" class="form-control input-sm"/>
+          <input type="text" name="css_background" class="form-control input-sm"/>
         </div>
       </div>
-      <div class="row">
-        <div class="col">
-          <br/>
-          <label>Border</label>
-          <input type="text" name="css_border" class="form-control input-sm"/>
-        </div>
-        <div class="col">
-          <br/>
-          <label>Border radius</label>
-          <input type="text" name="css_border_radius" class="form-control input-sm"/>
-        </div>
-        <div class="col">
-          <br/>
-          <label>Shadow</label>
-          <input type="text" name="css_shadow" class="form-control input-sm"/>
-        </div>
+      <div class="col">
+        <label>Margin</label>
+        <input type="text" name="css_margin" class="form-control input-sm"/>
       </div>
+      <div class="col">
+        <label>Padding</label>
+        <input type="text" name="css_padding" class="form-control input-sm"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col">
+        <br/>
+        <label>Border</label>
+        <input type="text" name="css_border" class="form-control input-sm"/>
+      </div>
+      <div class="col">
+        <br/>
+        <label>Border radius</label>
+        <input type="text" name="css_border_radius" class="form-control input-sm"/>
+      </div>
+      <div class="col">
+        <br/>
+        <label>Shadow</label>
+        <input type="text" name="css_shadow" class="form-control input-sm"/>
+      </div>
+    </div>
   </div>
 {% endif %}
 

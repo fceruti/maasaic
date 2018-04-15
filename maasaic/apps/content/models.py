@@ -151,10 +151,13 @@ class Page(models.Model):
         unique_together = ('website', 'path', 'mode')
 
     @cached_property
-    def visible_sections(self):
+    def all_sections(self):
         return self.section_set\
-            .filter(is_visible=True)\
             .order_by('order')
+
+    @cached_property
+    def visible_sections(self):
+        return [section for section in self.all_sections if section.is_visible]
 
     def __str__(self):
         return '%s | %s' % (self.website.name, self.title)
