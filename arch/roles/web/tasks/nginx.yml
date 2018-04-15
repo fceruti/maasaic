@@ -1,0 +1,15 @@
+- name: Add nginx configuration to available sites
+  template:
+    src="nginx_site.conf"
+    dest="/etc/nginx/sites-available/{{ project_name }}.conf"
+    mode=0644
+    owner="{{ user }}"
+    group="{{ group }}"
+
+- name: Create sym link to enabled sites
+  file:
+    src=/etc/nginx/sites-available/{{ project_name }}.conf
+    dest=/etc/nginx/sites-enabled/{{ project_name }}.conf
+    state=link
+  notify:
+    - reload nginx

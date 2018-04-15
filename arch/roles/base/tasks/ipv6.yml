@@ -1,0 +1,26 @@
+---
+- name: 'Prefer IPv4 when resolving names 1'
+  lineinfile:
+    dest='/etc/gai.conf'
+    line='precedence ::ffff:0:0/96  100'
+
+- name: 'Prefer IPv4 when resolving names 2'
+  lineinfile:
+    dest='/etc/gai.conf'
+    line='scopev4 ::ffff:169.254.0.0/112  2'
+
+- name: 'Prefer IPv4 when resolving names 3'
+  lineinfile:
+    dest='/etc/gai.conf'
+    line='scopev4 ::ffff:127.0.0.0/104    2'
+
+- name: 'Prefer IPv4 when resolving names 4'
+  lineinfile:
+    dest='/etc/gai.conf'
+    line='scopev4 ::ffff:0.0.0.0/96       14'
+
+- name: 'Force aptitude to use IPv4'
+  template:
+    src=aptitude_ipv4_force.conf
+    dest=/etc/apt/apt.conf.d/99force-ipv4
+    backup=yes

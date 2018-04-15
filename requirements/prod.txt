@@ -1,0 +1,5 @@
+-r common.txt
+
+# Amazon S3
+boto3==1.7.4
+django-storages==1.6.6

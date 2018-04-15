@@ -135,7 +135,8 @@ USE_TZ = True
 # ------------------------------------------------------------------------------
 # Static files
 # ------------------------------------------------------------------------------
-STATIC_URL = '/static/'
+STATIC_URL = env('STATIC_URL')
+MEDIA_URL = env('MEDIA_URL', default=None)
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -148,6 +149,7 @@ STATICFILES_DIRS = [
     NODE_MODULES_PATH,
 ]
 STATIC_ROOT = root_path('static')
+MEDIA_ROOT = env('MEDIA_ROOT', default=None)
 COMPRESS_PRECOMPILERS = (
     ('text/coffeescript', 'coffee --compile --stdio'),
     ('text/less', 'lessc {infile} {outfile}'),

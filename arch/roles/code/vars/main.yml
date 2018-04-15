@@ -1,0 +1,1 @@
+celery_broker_url: "amqp://{{ rabbitmq_user }}:{{ rabbitmq_password }}@{{ rabbitmq_ip }}:5672/{{ rabbitmq_vhost }}"

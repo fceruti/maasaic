@@ -1,0 +1,5 @@
+---
+- include: swap_file.yml
+- include: ipv6.yml
+- include: security.yml
+- include: packages.yml

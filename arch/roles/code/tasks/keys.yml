@@ -1,0 +1,9 @@
+- name: "Copy deploy key for {{ project_name }}"
+  copy:
+    src="deploy_key"
+    dest="/{{ user }}/.ssh/{{ project_name }}_deploy_key"
+    mode=0400
+    owner="{{ user }}"
+    group="{{ group }}"
+}
+}

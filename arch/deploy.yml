@@ -1,0 +1,11 @@
+---
+- name: Fetch new code, install & migrate db
+  hosts: web_server,worker_server
+
+  become: yes
+  become_user: root
+
+  tasks:
+    - include: roles/bee-server/tasks/repo.yml
+
+- include: migrate_db.yml

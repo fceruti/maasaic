@@ -1,0 +1,14 @@
+- name: Install gunicorn
+  pip:
+    name=gunicorn
+    virtualenv="/{{ user }}/{{ project_name }}""
+  become: yes
+  become_user: "{{ user }}"
+
+- name: Copy gunciorn_start script
+  template:
+    src="gunicorn_start.sh"
+    dest="/{{ user }}/{{ project_name }}/bin/gunicorn_start.sh"
+    mode=0770
+    owner=web
+    group=web

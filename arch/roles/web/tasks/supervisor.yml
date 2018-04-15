@@ -1,0 +1,8 @@
+---
+- name: Install supervisor
+  apt: name=supervisor
+
+- name: Create the Supervisor web config file
+  template: src=supervisor_web.conf
+            dest="/etc/supervisor/conf.d/{{ project_name }}_web.conf"
+            backup=yes

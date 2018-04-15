@@ -1,0 +1,33 @@
+- name: Install Nginx
+  apt: pkg=nginx state=installed
+  notify:
+    - start nginx
+
+- name: Remove default site nginx configuration
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: Add global nginx configuration
+  template:
+    src="nginx.conf"
+    dest="/etc/nginx/nginx.conf"
+    mode=0644
+    owner="{{ user }}"
+    group="{{ group }}"
+  notify:
+    - reload nginx
+
+- name: "Create {{ project_name }} ssl snippet"
+  template:
+    src="certs.conf"
+    dest="/etc/nginx/snippets/certs.conf"
+    mode=0644
+    owner="{{ user }}"
+    group="{{ group }}"
+
+- name: Create ssl params snippet
+  template:
+    src="ssl-params.conf"
+    dest="/etc/nginx/snippets/ssl-params.conf"
+    mode=0644
+    owner="{{ user }}"
+    group="{{ group }}"

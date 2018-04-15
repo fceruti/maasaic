@@ -1,0 +1,14 @@
+---
+- name: Configures web
+  hosts: web
+
+  become: yes
+  become_user: ubuntu
+
+  roles:
+    - base
+    - user
+    - code
+    - nginx
+    - web
+

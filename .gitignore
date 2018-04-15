@@ -2,5 +2,7 @@
 .cache
 .sass-cache
 *.sqlite3
+*.secret
 .pytest_cache
 node_modules
+arch/inventories

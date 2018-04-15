@@ -1,0 +1,40 @@
+---
+- name: Create bee directories
+  file:
+    path="/{{ user }}/{{ project_name }}/{{ item }}"
+    state=directory
+    owner="{{ user }}"
+    group="{{ group }}"
+    mode=0740
+  with_items:
+    - 'src'
+    - 'logs'
+    - 'media'
+    - 'nginx_templates'
+
+- name: Create logs directories
+  file: path="/{{ user }}/{{ project_name }}/logs/{{ item }}"
+        owner="{{ user }}"
+        group="{{ group }}"
+        mode=2740
+        state=directory
+  with_items:
+    - 'nginx'
+    - 'supervisor'
+    - 'gunicorn'
+    - 'django'
+
+- name: Write environment variables
+  template:
+    src="environment_vars.sh"
+    dest="/{{ user }}/{{ project_name }}/.env"
+    mode=0740
+    owner="{{ user }}"
+    group="{{ group }}"
+
+- name: "Connect environment vars to {{ user }} user"
+  lineinfile:
+    dest="/{{ user }}/.bashrc"
+    line='source "/{{ user }}/{{ project_name }}/.env'"
+    insertafter='EOF'
+    state=present

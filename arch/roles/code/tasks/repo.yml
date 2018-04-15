@@ -1,0 +1,18 @@
+- name: Fetch {{ git_repo }}#{{ git_branch }}
+  git:
+    repo={{ git_repo }}
+    version={{ git_branch }}
+    dest="/{{ user }}/{{ project_name }}/src/"
+    update=yes
+    accept_hostkey=true
+    key_file="/{{ user }}/.ssh/{{ project_name }}_deploy_key"
+    force=yes
+  become: yes
+  become_user: "{{ user }}"
+
+- name: Install requirements
+  pip:
+    requirements="/{{ user }}/{{ project_name }}/src/requirements/prod.txt"
+    virtualenv="/{{ user }}/{{ project_name }}"
+  become: yes
+  become_user: "{{ user }}"
