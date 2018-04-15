@@ -22,6 +22,6 @@ exec /{{ user }}/{{ project_name }}/bin/gunicorn \
     --user {{ user }} \
     --group {{ group }} \
     --bind unix:$SOCKFILE \
-    --error-logfile /var/logs/gunicorn/{{ project_name }}_error.log \
-    --access-logfile /var/logs/gunicorn/{{ project_name }}_access.log \
+    --error-logfile /var/log/gunicorn/{{ project_name }}_error.log \
+    --access-logfile /var/log/gunicorn/{{ project_name }}_access.log \
     {{ project_name }}.wsgi
