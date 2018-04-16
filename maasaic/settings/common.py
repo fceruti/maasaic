@@ -136,13 +136,24 @@ USE_TZ = True
 # ------------------------------------------------------------------------------
 # Static files
 # ------------------------------------------------------------------------------
-STATIC_URL = env('STATIC_URL')
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_LOCATION = env('AWS_LOCATION')
+
+STATIC_ROOT = root_path('static')
+STATIC_URL = '/static/'
 MEDIA_URL = env('MEDIA_URL', default=None)
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 )
+
 ASSETS_PATH = root_path('maasaic/assets')
 NODE_MODULES_PATH = root_path('node_modules')
 STATICFILES_DIRS = [
@@ -151,6 +162,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_ROOT = env('MEDIA_ROOT', default=None)
+STATICFILES_STORAGE = 'maasaic.apps.utils.storage_backends.CachedS3BotoStorage'
 COMPRESS_PRECOMPILERS = (
     ('text/coffeescript', 'coffee --compile --stdio'),
     ('text/less', 'lessc {infile} {outfile}'),
@@ -158,7 +170,6 @@ COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'sass --scss {infile} {outfile}'),
     ('text/stylus', 'stylus < {infile} > {outfile}'),
 )
-COMPRESS_ROOT = ASSETS_PATH
 COMPRESS_ENABLED = False
 COMPRESS_OFFLINE = False
 

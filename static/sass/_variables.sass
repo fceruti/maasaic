@@ -1,0 +1,117 @@
+// Structure
+$max-cols: 16
+$max-rows: 32
+$cell-heights: 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 180, 190, 200, 210, 220, 230, 240, 250
+
+// Colors
+$title-color: #212121
+$text-color: #464646
+$primary-color: #43b4cc
+
+// Fonts
+$font-family: 'Roboto', sans-serif
+$font-size: 14px
+
+// Z-Indexes
+
+$cell-view-layer-zindex: 100
+$cell-insert-layer-zindex: 200
+$cell-edit-layer-zindex: 300
+$cell-move-layer-zindex: 400
+$cell-moving-zindex: 500
+$cell-insert-layer-inserting-zindex: 320
+$insert-cell-ctrl-zindex: 350
+$edit-cell-ctrl-zindex: 350
+$sidebar-zindex: 600
+$sidebar-dropdown-zindex: 700
+$modal-zindex: 1000
+$loading-overlay-zindex: 2000
+
+// Insert cells
+$insert-cell-bg-hover: rgba($primary-color, 0.2)
+$insert-cell-border: 2px solid transparent
+$insert-cell-border-inserting: 1px solid rgba($primary-color, 0.6)
+$insert-cell-border-inserting-edge: 2px solid $primary-color
+
+// Insert cell controls
+$insert-cell-ctrl-height: 130px
+$insert-cell-ctrl-width: 180px
+$insert-cell-ctrl-bg: rgba(0, 0, 0, 0.8)
+$insert-cell-ctrl-shadow: 0 1px 2px rgba(0, 0, 0, 0.3)
+$insert-cell-ctrl-border-radius: 8px
+
+$insert-cell-ctrl-btn-text-color: rgba(255, 255, 255, 0.8)
+$insert-cell-ctrl-btn-font-size: 12px
+
+
+// Edit cells
+$edit-cell-bg-hover: rgba($primary-color, 0.2)
+$edit-cell-border: 2px solid transparent
+$edit-cell-border-hover: 2px solid $primary-color
+
+// Edit cell controls
+$edit-cell-ctrl-btns-height: 50px
+$edit-cell-ctrl-btns-padding: 5px 10px
+$edit-cell-ctrl-btns-bg: rgba(0, 0, 0, 0.8)
+$edit-cell-ctrl-btns-shadow: 0 1px 2px rgba(0, 0, 0, 0.3)
+$edit-cell-ctrl-btns-border-radius: 12px
+
+$edit-cell-ctrl-btn-height: 30px
+$edit-cell-ctrl-btn-width: 50px
+$edit-cell-ctrl-btn-icon-size: 20px
+$edit-cell-ctrl-btn-icon-height: 20px
+$edit-cell-ctrl-btn-icon-margin-bottom: 2px
+$edit-cell-ctrl-btn-text-size: 8px
+$edit-cell-ctrl-btn-color: rgba(255, 255, 255, 0.8)
+$edit-cell-ctrl-btn-color-hover: $primary-color
+
+
+// ******************************************************************
+// Sidebar
+// ******************************************************************
+
+// Sidebar: General
+$sidebar-width: 280px
+$sidebar-bg: 315deg, #fff 0%, #f5f5f5 74%
+$sidebar-box-shadow: -2px 4px 8px -4px rgba(0, 0, 0, 0.5)
+$sidebar-padding: 20px 15px
+
+$sidebar-base-color: #383842
+$sidebar-light-color: lighten($sidebar-base-color, 40%)
+$sidebar-base-color-2: darken($sidebar-base-color, 20%)
+$sidebar-light-color-2: darken($sidebar-light-color, 20%)
+
+$sidebar-font-size-small: 12px
+$sidebar-font-size-normal: 14px
+$sidebar-font-size-big: 16px
+
+// Sidebar: Subtitles
+$sidebar-title-font-size: 14px
+$sidebar-title-margin: 20px 0 15px
+$sidebar-title-color: $sidebar-base-color
+
+// Sidebar: Items
+$sidebar-item-vertical-padding: 4px
+$sidebar-item-height: 38px
+$sidebar-item-option-width: 30px
+$sidebar-item-color: $sidebar-base-color
+
+// Sidebar: Buttons
+$sidebar-btn-color: $sidebar-light-color
+$sidebar-btn-font-size: 16px
+$sidebar-bordered-btn-color-active: $primary-color
+$sidebar-bordered-btn-border-radius: 4px
+
+// Sidebar: dropdown
+$sidebar-dropdown-bg: #333
+$sidebar-dropdown-border-color: $sidebar-light-color-2
+$sidebar-dropdown-item-name-color: $sidebar-base-color
+$sidebar-dropdown-item-name-hover-color: $primary-color
+$sidebar-dropdown-item-desc-color: $sidebar-light-color
+$sidebar-dropdown-item-url-hover-color: darken($primary-color, 25%)
+
+
+// Loading
+$loading-overlay-bg: $primary-color
+$loading-overlay-color: white
+$loading-overlay-font-size: 16px

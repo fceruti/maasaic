@@ -1,0 +1,66 @@
+{
+  "_args": [
+    [
+      "bootbox.js@4.3.0",
+      "/Users/fceruti/dev/maasaic.com"
+    ]
+  ],
+  "_from": "bootbox.js@4.3.0",
+  "_id": "bootbox.js@4.3.0",
+  "_inBundle": false,
+  "_integrity": "sha1-sKPRqzs4EPFQnUm7eT6K4xC3d2w=",
+  "_location": "/bootbox.js",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "bootbox.js@4.3.0",
+    "name": "bootbox.js",
+    "escapedName": "bootbox.js",
+    "rawSpec": "4.3.0",
+    "saveSpec": null,
+    "fetchSpec": "4.3.0"
+  },
+  "_requiredBy": [],
+  "_resolved": "https://registry.npmjs.org/bootbox.js/-/bootbox.js-4.3.0.tgz",
+  "_spec": "4.3.0",
+  "_where": "/Users/fceruti/dev/maasaic.com",
+  "author": {
+    "name": "Nick Payne",
+    "email": "nick@kurai.co.uk"
+  },
+  "bugs": {
+    "url": "https://github.com/makeusabrew/bootbox/issues"
+  },
+  "description": "Wrappers for JavaScript alert(), confirm() and other flexible dialogs using the Bootstrap framework",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.6.3",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-karma": "~0.6.2",
+    "karma": "~0.10.1",
+    "karma-chai": "0.0.1",
+    "karma-coffee-preprocessor": "~0.1.0",
+    "karma-coverage": "~0.1.0",
+    "karma-junit-reporter": "~0.1.0",
+    "karma-mocha": "0.1.3",
+    "karma-phantomjs-launcher": "~0.1.0",
+    "mocha": "~1.12.0",
+    "sinon": "~1.7.3",
+    "sinon-chai": "~2.4.0"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "homepage": "https://github.com/makeusabrew/bootbox#readme",
+  "license": "MIT",
+  "name": "bootbox.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/makeusabrew/bootbox.git"
+  },
+  "scripts": {
+    "test": "karma start"
+  },
+  "version": "4.3.0"
+}
