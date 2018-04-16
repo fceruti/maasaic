@@ -1,0 +1,1 @@
+;$(document).ready(function(){EventBus.fire(HTML_INJECTED);});

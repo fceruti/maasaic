@@ -147,6 +147,7 @@ AWS_LOCATION = env('AWS_LOCATION')
 
 STATIC_ROOT = root_path('static')
 STATIC_URL = '/static/'
+COMPRESS_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 MEDIA_URL = env('MEDIA_URL', default=None)
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -162,6 +163,7 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_ROOT = env('MEDIA_ROOT', default=None)
+
 STATICFILES_STORAGE = 'maasaic.apps.utils.storage_backends.CachedS3BotoStorage'
 COMPRESS_PRECOMPILERS = (
     ('text/coffeescript', 'coffee --compile --stdio'),
@@ -170,6 +172,7 @@ COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'sass --scss {infile} {outfile}'),
     ('text/stylus', 'stylus < {infile} > {outfile}'),
 )
+
 COMPRESS_ENABLED = False
 COMPRESS_OFFLINE = False
 
