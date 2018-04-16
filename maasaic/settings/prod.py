@@ -3,7 +3,7 @@ from maasaic.settings.common import *
 
 DEFAULT_FILE_STORAGE = 'maasaic.apps.utils.storage_backends.S3MediaStorage'
 COMPRESS_STORAGE = STATICFILES_STORAGE
-STATIC_URL = 'https://%s.s3.amazonaws.com/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 COMPRESS_URL = STATIC_URL
 
 COMPRESS_ENABLED = True
