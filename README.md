@@ -18,10 +18,10 @@ ansible-playbook -i arch/inventories/prod/ -u ubuntu arch/deploy.yml
 
 ##### Compress static files
 ```
-python manage.py compress --settings=maasaic.settings.compress
+python manage.py compress --force
 ```
 
 ##### Upload to S3
 ```
-python manage.py collectstatic --settings=maasaic.settings.prod
+python manage.py collectstatic --settings=maasaic.settings.collect_static
 ```

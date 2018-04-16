@@ -162,6 +162,7 @@ STATICFILES_DIRS = [
     NODE_MODULES_PATH,
 ]
 
+COMPRESS_ROOT = ASSETS_PATH
 MEDIA_ROOT = env('MEDIA_ROOT', default=None)
 
 STATICFILES_STORAGE = 'maasaic.apps.utils.storage_backends.CachedS3BotoStorage'
