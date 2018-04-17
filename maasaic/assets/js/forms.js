@@ -25,7 +25,7 @@ function performPost(url, data) {
           data: data,
           success: function(response) {
             var newHtml = findInParsed(response, '#js-ajax-container');
-            $('#js-ajax-container').html(newHtml);
+            $('#js-ajax-container').html($(newHtml).html());
           },
           complete: function() {
             EventBus.fire(HTML_INJECTED);
