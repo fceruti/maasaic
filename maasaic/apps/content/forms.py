@@ -85,7 +85,7 @@ class UserCreateForm(forms.Form):
         except Website.DoesNotExist:
             pass
         try:
-            User.objects.get(nickname=subdomain)
+            User.objects.get(username=subdomain)
             msg = 'The domain %s.%s has already been taken. Try another one.' \
                   % (subdomain, settings.DEFAULT_SITE_DOMAIN)
             raise forms.ValidationError(msg)
@@ -102,7 +102,7 @@ class UserCreateForm(forms.Form):
         subdomain = self.cleaned_data['subdomain']
         with transaction.atomic():
             user = User.objects.create_user(
-                nickname=subdomain,
+                username=subdomain,
                 email=self.cleaned_data['email'],
                 password=self.cleaned_data['password'])
             website = Website.objects.create(
