@@ -12,3 +12,6 @@ pytest-env==0.6.2
 
 # Format
 flake8==3.5.0
+
+# Static
+Collectfast==0.6.2
