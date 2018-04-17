@@ -14,7 +14,6 @@ from django.views.generic import FormView
 from django.views.generic import ListView
 from django.views.generic import RedirectView
 from django.views.generic import UpdateView
-from maasaic.apps.content.forms import UploadImageForm
 
 from maasaic.apps.content.forms import CellCreateForm
 from maasaic.apps.content.forms import CellOrderForm
@@ -27,14 +26,16 @@ from maasaic.apps.content.forms import PageUpdateForm
 from maasaic.apps.content.forms import SectionCreateForm
 from maasaic.apps.content.forms import SectionOrderForm
 from maasaic.apps.content.forms import SectionVisibilityForm
+from maasaic.apps.content.forms import UploadImageForm
 from maasaic.apps.content.forms import WebsiteConfigForm
 from maasaic.apps.content.forms import WebsiteCreateForm
 from maasaic.apps.content.forms import WebsitePublishForm
 from maasaic.apps.content.models import Cell
 from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Section
-from maasaic.apps.content.models import Website
 from maasaic.apps.content.models import UploadedImage
+from maasaic.apps.content.models import Website
+
 
 # ------------------------------------------------------------------------------
 # Websites
@@ -79,10 +80,10 @@ class WebsiteDetailBase(LoginRequiredMixin, View):
         return self.website
 
     def get_context_data(self, *args, **kwargs):
-        context = super(WebsiteDetailBase, self).get_context_data(*args, **kwargs)
-        context['website'] = self.website
-        context['current_tab'] = self.current_tab
-        return context
+        ctx = super(WebsiteDetailBase, self).get_context_data(*args, **kwargs)
+        ctx['website'] = self.website
+        ctx['current_tab'] = self.current_tab
+        return ctx
 
 
 class WebsiteDetailView(RedirectView, WebsiteDetailBase):
@@ -232,7 +233,6 @@ class PageUpdateView(DetailView, WebsiteDetailBase):
         return self.page
 
 
-
 class PageDeleteView(DeleteView, WebsiteDetailBase):
     model = Page
 
@@ -276,7 +276,7 @@ class PagePublishView(UpdateView, WebsiteDetailView):
                         cell_attr = edit_cell.get_attr_dict()
                         cell_attr['is_visible'] = True
                         cell_attr['section'] = live_section
-                        cell = Cell.objects.create(**cell_attr)
+                        Cell.objects.create(**cell_attr)
             messages.success(self.request, 'Page is live')
         else:
             page = form.save()
@@ -295,12 +295,12 @@ class PageBaseView(WebsiteDetailBase):
 
     @cached_property
     def page(self):
-        return get_object_or_404(Page,
-                                 pk=self.kwargs['page_pk'],
-                                 mode=Page.Mode.EDIT)
+        kwargs = {'pk': self.kwargs['page_pk'], 'mode': Page.Mode.EDIT}
+        return get_object_or_404(Page, **kwargs)
 
     def get_success_url(self):
-        return reverse('page_update', args=[self.website.subdomain, self.page.pk])
+        args = [self.website.subdomain, self.page.pk]
+        return reverse('page_update', args=args)
 
 
 # ------------------------------------------------------------------------------
@@ -442,4 +442,3 @@ class ImageCreateView(CreateView, WebsiteDetailBase):
 
     def get_success_url(self):
         return reverse('image_create', args=[self.website.subdomain])
-

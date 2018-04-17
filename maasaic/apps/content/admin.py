@@ -16,7 +16,8 @@ class WebsiteAdmin(admin.ModelAdmin):
         model = Page
         extra = 0
 
-    list_display = ['name', 'subdomain', 'private_domain',  'user', 'created_at', 'updated_at']
+    list_display = ['name', 'subdomain', 'private_domain',  'user',
+                    'created_at', 'updated_at']
     inlines = [PageInline]
 
 

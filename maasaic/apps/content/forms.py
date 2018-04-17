@@ -56,10 +56,24 @@ class UserLoginForm(forms.Form):
 
 
 class UserCreateForm(forms.Form):
-    subdomain = forms.CharField(max_length=255, help_text='This will be the url to your website. Also your login nickname,')
+    HELP_TEXTS = {
+        'SUBDOMAIN': 'This will be the url to your website. '
+                     'Also your login nickname,',
+        'EMAIL': 'Optional. We don\'t really care about sending you emails. '
+                 'It\'s just in case you forget your password. If you don\'t '
+                 'put one and you loose it. You are screwed. Well, '
+                 'not really, life goes on, it\'s just that you just won\'t '
+                 'be able to edit your site anymore.',
+        'PASSWORD': 'Try not to put something like "asdf" and then compain '
+                    'about getting "hacked".'
+    }
+
+    subdomain = forms.CharField(max_length=255,
+                                help_text=HELP_TEXTS['SUBDOMAIN'])
     name = forms.CharField(max_length=255, label='Site name')
-    email = forms.EmailField(required=False, help_text='Optional. We don\'t really care about sending you emails. It\'s just in case you forget your password. If you don\'t put one and you loose it. You are screwed. Well, not really, life goes on, it\'s just that you just won\'t be able to edit your site anymore.')
-    password = forms.CharField(max_length=255, widget=forms.PasswordInput, help_text='Try not to put something like "asdf" and then compain about getting "hacked".')
+    email = forms.EmailField(required=False, help_text=HELP_TEXTS['EMAIL'])
+    password = forms.CharField(max_length=255, widget=forms.PasswordInput,
+                               help_text=HELP_TEXTS['PASSWORD'])
 
     def clean_subdomain(self):
         subdomain = self.cleaned_data['subdomain'].lower()
@@ -129,7 +143,8 @@ class WebsiteCreateForm(forms.ModelForm):
 class WebsiteConfigForm(forms.ModelForm):
     class Meta:
         model = Website
-        fields = ['subdomain', 'name', 'description', 'language', 'favicon', 'favicon_cropping']
+        fields = ['subdomain', 'name', 'description', 'language', 'favicon',
+                  'favicon_cropping']
 
     def __init__(self, *args, **kwargs):
         super(WebsiteConfigForm, self).__init__(*args, **kwargs)
@@ -150,9 +165,15 @@ class PageCreateForm(forms.ModelForm):
     def __init__(self, website, *args, **kwargs):
         self.website = website
         super(PageCreateForm, self).__init__(*args, **kwargs)
-        self.fields['path'].help_text = 'Url to this page. If you put "weird", then %s/weird will link to this page. Leave empty for root.' % website.public_url
-        self.fields['title'].help_text = 'This will be shown in the tab when a user visits, on google search results and social media shares.'
-        self.fields['description'].help_text = 'The same as with title, this is shown on search results and social media shares.'
+        self.fields['path'].help_text = \
+            'Url to this page. If you put "weird", then %s/weird will link ' \
+            'to this page. Leave empty for root.' % website.public_url
+        self.fields['title'].help_text = \
+            'This will be shown in the tab when a user visits, on google ' \
+            'search results and social media shares.'
+        self.fields['description'].help_text = \
+            'The same as with title, this is shown on search results and ' \
+            'social media shares.'
         self.fields['description'].widget.attrs['rows'] = 3
 
     def save(self, commit=True):
@@ -253,7 +274,8 @@ class PagePublishForm(forms.ModelForm):
 class SectionCreateForm(forms.ModelForm):
     class Meta:
         model = Section
-        fields = ['page', 'n_columns', 'n_rows', 'cell_height', 'name', 'html_id']
+        fields = ['page', 'n_columns', 'n_rows', 'cell_height', 'name',
+                  'html_id']
 
         help_texts = {
             'n_rows': 'Measured in cells. You can always change this '
@@ -335,12 +357,12 @@ class CellCreateForm(forms.ModelForm):
         fields = ['section', 'cell_type', 'x', 'y', 'w', 'h', 'content']
 
     def clean_padding(self):
-        position = get_position_dict_from_margin(self.cleaned_data['css_padding'])
-        return get_margin_string_from_position(position)
+        pos = get_position_dict_from_margin(self.cleaned_data['css_padding'])
+        return get_margin_string_from_position(pos)
 
     def clean_margin(self):
-        position = get_position_dict_from_margin(self.cleaned_data['css_margin'])
-        return get_margin_string_from_position(position)
+        pos = get_position_dict_from_margin(self.cleaned_data['css_margin'])
+        return get_margin_string_from_position(pos)
 
     # TODO: clean_css_background
 

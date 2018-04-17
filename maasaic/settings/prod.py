@@ -1,6 +1,9 @@
 from maasaic.settings.common import *
 
 
+# ------------------------------------------------------------------------------
+# Static files
+# ------------------------------------------------------------------------------
 STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 COMPRESS_URL = STATIC_URL
 

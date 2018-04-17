@@ -1,6 +1,9 @@
 from maasaic.settings.common import *
 
 
+# ------------------------------------------------------------------------------
+# Static files
+# ------------------------------------------------------------------------------
 STATICFILES_DIRS = [
     ('img', os.path.join(ASSETS_PATH, 'img')),
     ('CACHE', os.path.join(ASSETS_PATH, 'CACHE')),

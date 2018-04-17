@@ -97,14 +97,15 @@ class LanguageField(models.CharField):
 class Website(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_visible = models.BooleanField(default=False)
-    private_domain = models.CharField(max_length=255, unique=True, db_index=True, null=True, blank=True)
+    private_domain = models.CharField(max_length=255, unique=True,
+                                      db_index=True, null=True, blank=True)
     subdomain = models.CharField(max_length=255, unique=True, db_index=True)
     name = models.CharField(max_length=255, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     language = LanguageField()
     favicon = ImageCropField(upload_to=favicon_path, null=True, blank=True)
     favicon_cropping = ImageRatioField('favicon', '128x128')
-    page_width = models.PositiveIntegerField(default=1000, help_text='In pixels')
+    page_width = models.PositiveIntegerField(default=1000)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -143,7 +144,7 @@ class Page(models.Model):
     mode = models.CharField(max_length=255, choices=Mode.choices())
     title = models.CharField(max_length=255)
     path = models.CharField(max_length=255, null=True, blank=True)
-    page_width = models.PositiveIntegerField(null=True, blank=True, help_text='In pixels', default=1000)
+    page_width = models.PositiveIntegerField(null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

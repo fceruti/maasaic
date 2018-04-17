@@ -76,5 +76,3 @@ def get_margin_string_from_position(position: dict) -> str:
         else:
             tmpl = '{top}px {right}px {bottom}px {left}px'
     return tmpl.format(**position)
-
-

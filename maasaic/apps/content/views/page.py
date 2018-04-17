@@ -29,7 +29,7 @@ FONTS = [
     ["Slabo 27px", "'Slabo 27px', serif"],
     ["Cinzel", "'Cinzel', serif"],
 ]
-FONTS_URL = "https://fonts.googleapis.com/css?family=Amatic+SC|Cinzel|Covered+By+Your+Grace|Faster+One|IBM+Plex+Serif|Love+Ya+Like+A+Sister|Merriweather|Mina|Montserrat|Nanum+Brush+Script|Open+Sans|Oswald|Permanent+Marker|Poiret+One|Raleway|Rammetto+One|Roboto|Rock+Salt|Shadows+Into+Light+Two|Slabo+27px"
+FONTS_URL = "https://fonts.googleapis.com/css?family=Amatic+SC|Cinzel|Covered+By+Your+Grace|Faster+One|IBM+Plex+Serif|Love+Ya+Like+A+Sister|Merriweather|Mina|Montserrat|Nanum+Brush+Script|Open+Sans|Oswald|Permanent+Marker|Poiret+One|Raleway|Rammetto+One|Roboto|Rock+Salt|Shadows+Into+Light+Two|Slabo+27px"  # noqa
 
 
 class PageView(TemplateView):
