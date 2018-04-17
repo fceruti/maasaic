@@ -40,6 +40,11 @@ class UserLoginView(FormView):
     template_name = 'frontend/user_login.html'
     form_class = UserLoginForm
 
+    def form_valid(self, form):
+        """Security check complete. Log the user in."""
+        login(self.request, form.get_user())
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_form_kwargs(self):
         kw = super(UserLoginView, self).get_form_kwargs()
         kw['request'] = self.request,
