@@ -12,7 +12,7 @@
   when: nginx_status.stat.exists
 
 - name: Install certbot and generate cert
-  command: "{{ certbot_script }} certonly --noninteractive --agree-tos --standalone --email {{ certbot_admin_email }} -d {{ hostname }} -d www.{{ hostname }}"
+  command: "{{ certbot_script }} certonly --noninteractive --agree-tos --standalone --server https://acme-v02.api.letsencrypt.org/directory --email {{ certbot_admin_email }} -d {{ hostname }} -d *.{{ hostname }}"
   args:
     creates: "{{ certbot_output_dir }}"
 
