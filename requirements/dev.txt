@@ -1,6 +1,6 @@
 -r common.txt
 
-# Debugging
+# Dev tools
 django-debug-toolbar==1.9.1
 django-extensions==2.0.6
 
@@ -9,3 +9,6 @@ pytest==3.5.0
 pytest-django==3.1.2
 pytest-xdist==1.22.2
 pytest-env==0.6.2
+
+# Format
+flake8==3.5.0
