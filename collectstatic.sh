@@ -1,1 +1,1 @@
-python manage.py collectstatic --settings=maasaic.settings.collectstatic
+python manage.py collectstatic --settings=maasaic.settings.collectstatic -y

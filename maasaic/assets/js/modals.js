@@ -1,4 +1,3 @@
-(function(){
 
 function onCellModalRequest(cellProperties, cellObj) {
     console.log('onCellModalRequest', cellProperties, cellObj)
@@ -227,5 +226,3 @@ function onCellModalRequest(cellProperties, cellObj) {
 }
 
 EventBus.subscribe(CELL_MODAL_REQUEST, onCellModalRequest);
-
-})();

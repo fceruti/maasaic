@@ -1,9 +1,9 @@
 
-function onCellHoverStart(sectionId, cellId) {
+function onCellHoverStartSidebar(sectionId, cellId) {
     $('.cell-list-item[data-section-id="' + sectionId + '"][data-cell-id="' + cellId + '"] .sidebar-item').addClass('hover');
 }
 
-function onCellHoverEnd(sectionId, cellId) {
+function onCellHoverEndSidebar(sectionId, cellId) {
     $('.cell-list-item[data-section-id="' + sectionId + '"][data-cell-id="' + cellId + '"] .sidebar-item').removeClass('hover');
 }
 
@@ -61,5 +61,5 @@ function bindSidebarEvents() {
 }
 
 EventBus.subscribe(HTML_INJECTED, bindSidebarEvents);
-EventBus.subscribe(CELL_HOVERING_START, onCellHoverStart);
-EventBus.subscribe(CELL_HOVERING_END, onCellHoverEnd);
+EventBus.subscribe(CELL_HOVERING_START, onCellHoverStartSidebar);
+EventBus.subscribe(CELL_HOVERING_END, onCellHoverEndSidebar);
