@@ -348,17 +348,14 @@ class SectionVisibilityUpdateView(UpdateView):
     http_method_names = ['post']
 
     def get_object(self, queryset=None):
-        section = get_object_or_404(Section, pk=self.kwargs['section_pk'])
+        section = get_object_or_404(Section, pk=self.kwargs['pk'])
         return section
 
-    def get_success_url(self):
-        section = self.get_object()
-        url = section.page.absolute_path + '?edit=on'
-        return url
-
     def form_valid(self, form):
-        form.save(commit=True)
-        return HttpResponseRedirect(redirect_to=self.get_success_url())
+        section = form.save(commit=True)
+        url = reverse('page_update', args=[section.page.website.subdomain,
+                                           section.page.pk])
+        return HttpResponseRedirect(url)
 
     def form_invalid(self, form):
         messages.error(self.request, form.errors)
