@@ -7,3 +7,7 @@ from maasaic.settings.common import *
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = True
 COMPRESS_ROOT = ASSETS_PATH
+COMPRESS_FILTERS = {
+    'css': ['compressor.filters.css_default.CssAbsoluteFilter'],
+    'js': ['compressor.filters.jsmin.JSMinFilter']
+}

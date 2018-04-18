@@ -6,7 +6,7 @@
     <title>{% block title %}Maasaic{% endblock %}</title>
     <meta charset="UTF-8">
     <link href="{{ FONTS_URL }}" rel="stylesheet" type='text/css'>
-    {% compress css file maasaic %}
+    {% compress css file maasaic-app %}
       <link href="{% static 'sass/libs/reset.sass' %}" type="text/x-sass" rel="stylesheet"/>
       <link href="{% static 'bootstrap/dist/css/bootstrap.css' %}" type="text/css" rel="stylesheet"/>
       <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" type="text/css" rel="stylesheet"/>
@@ -22,7 +22,7 @@
     {% endcompress %}
     {% block extra_css %}{% endblock %}
 
-    {% compress js file maasaic %}
+    {% compress js file maasaic-app %}
       <script src="{% static 'jquery/dist/jquery.min.js' %}"  type="text/javascript"></script>
       <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}"  type="text/javascript"></script>
       <script src="{% static 'summernote/dist/summernote-bs4.min.js' %}"  type="text/javascript"></script>
