@@ -2,11 +2,11 @@
 @import 'mixins'
 
 .cell
+  overflow: hidden
   &.cell--layer-view
     position: relative
     .cell-inner-margin
       position: absolute
-      overflow: hidden
   &.cell--layer-edit
     @include transition(border,background 0.2s)
     @include box-sizing(border-box)
@@ -25,7 +25,7 @@
       z-index: $edit-cell-ctrl-zindex
       position: absolute
       top: -60px
-      right: 10px
+      left: 10px
 
       .edit-cell-ctrl-btns
         @include box-shadow($edit-cell-ctrl-btns-shadow)
@@ -63,14 +63,11 @@
     &.is-inserting
       background: $insert-cell-bg-hover
       border: $insert-cell-border-inserting
-    &.edge-top
-      border-top: $insert-cell-border-inserting-edge
-    &.edge-right
-      border-right: $insert-cell-border-inserting-edge
-    &.edge-bottom
-      border-bottom: $insert-cell-border-inserting-edge
-    &.edge-left
-      border-left: $insert-cell-border-inserting-edge
+
+    $sides: top right bottom left
+    @each $side in $sides
+      &.edge-#{$side}
+        border-#{$side}: $insert-cell-border-inserting-edge
 
   &.cell--layer-move
     &.is-moving
