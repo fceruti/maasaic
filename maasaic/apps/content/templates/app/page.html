@@ -66,6 +66,7 @@
           {% for cell in section.visible_cells|slice:"::-1" %}
             <div class="cell
                         cell--layer-view
+                        {% if page_edit_on %}no-select{% endif%}
                         cell--w-{{ cell.w }}
                         cell--h-{{ cell.h }}
                         cell--x-{{ cell.x }}

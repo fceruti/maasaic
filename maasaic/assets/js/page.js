@@ -360,10 +360,7 @@ function bindMoveCellEvents() {
     })
 
     $('.js-edit-cell-ctrl-btn-move').mousedown(function(){
-        if(appState == STATE_VIEW){
-            startMovingCell(this);
-        }
-
+        startMovingCell(this);
     });
     $('.cell--layer-move').mouseover(function(){
         if(appState == STATE_MOVE) {
