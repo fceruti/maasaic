@@ -31,6 +31,7 @@ from maasaic.apps.content.views.app import PageCreateView
 from maasaic.apps.content.views.app import PageDeleteView
 from maasaic.apps.content.views.app import PageListView
 from maasaic.apps.content.views.app import PagePublishView
+from maasaic.apps.content.views.app import PageResetView
 from maasaic.apps.content.views.app import PageUpdateView
 from maasaic.apps.content.views.app import SectionCreateView
 from maasaic.apps.content.views.app import SectionOrderUpdateView
@@ -85,6 +86,7 @@ urlpatterns = [
     path('sites/<str:subdomain>/pages/<int:pk>/update', PageUpdateView.as_view(), name='page_update'),
     path('sites/<str:subdomain>/pages/<int:pk>/delete', PageDeleteView.as_view(), name='page_delete'),
     path('sites/<str:subdomain>/pages/<int:pk>/publish', PagePublishView.as_view(), name='page_publish'),
+    path('sites/<str:subdomain>/pages/<int:pk>/reset', PageResetView.as_view(), name='page_reset'),
 
     path('sections/', include(sections_urls)),
     path('cells/', include(cells_urls)),

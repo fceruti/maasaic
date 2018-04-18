@@ -265,11 +265,17 @@
 
       {# Page #}
       <h3 class="sidebar-title">
-        <form method="POST" action="{% url 'page_publish' website.subdomain page.target_page.pk %}?next={{ request.path }}" class="">
+        <form method="POST" action="{% url 'page_publish' website.subdomain page.target_page.pk %}?next={{ request.path }}">
           {% csrf_token %}
           <input type="hidden" name="is_visible" value="True" />
           <button type="submit" class="title-btn">
-            Publish changes
+            Publish <i class="fa fa-check"></i>
+          </button>
+        </form>
+        <form method="POST" action="{% url 'page_reset' website.subdomain page.pk %}?next={{ request.path }}">
+          {% csrf_token %}
+          <button type="submit" class="title-btn" style="margin-right: 5px">
+            Reset <i class="fa fa-refresh"></i>
           </button>
         </form>
         Page <span class="sidebar-title-status">{% if page.target_page.is_visible %}<i class="fa fa-circle text-success"></i> Live{% else %}<i class="fa fa-circle text-danger"></i> Offline{% endif %}</span>

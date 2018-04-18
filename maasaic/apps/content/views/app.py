@@ -22,6 +22,7 @@ from maasaic.apps.content.forms import CellUpdateContentForm
 from maasaic.apps.content.forms import CellVisibilityForm
 from maasaic.apps.content.forms import PageCreateForm
 from maasaic.apps.content.forms import PagePublishForm
+from maasaic.apps.content.forms import PageResetForm
 from maasaic.apps.content.forms import PageUpdateForm
 from maasaic.apps.content.forms import SectionCreateForm
 from maasaic.apps.content.forms import SectionOrderForm
@@ -285,6 +286,39 @@ class PagePublishView(UpdateView, WebsiteDetailView):
         url = self.request.GET.get(
             'next',
             reverse('page_list', args=[self.website.subdomain]))
+        return HttpResponseRedirect(url)
+
+
+class PageResetView(FormView, WebsiteDetailView):
+    form_class = PageResetForm
+    model = Page
+
+    @cached_property
+    def page(self):
+        return get_object_or_404(Page,
+                                 pk=self.kwargs['pk'],
+                                 mode=Page.Mode.EDIT)
+
+    def get_object(self):
+        return self.page
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            Section.objects.filter(page=self.page).delete()
+            live_sections = list(self.page.target_page.section_set.all())
+            for live_section in live_sections:
+                section_attr = live_section.get_attr_dict()
+                section_attr['page'] = self.page
+                section_attr['is_visible'] = live_section.is_visible
+                edit_section = Section.objects.create(**section_attr)
+                live_cells = list(live_section.cell_set.all())
+                for live_cell in live_cells:
+                    cell_attr = live_cell.get_attr_dict()
+                    cell_attr['is_visible'] = live_cell.is_visible
+                    cell_attr['section'] = edit_section
+                    Cell.objects.create(**cell_attr)
+
+        url = reverse('page_update', args=[self.page.website.subdomain, self.page.pk])
         return HttpResponseRedirect(url)
 
 

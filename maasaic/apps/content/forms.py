@@ -271,6 +271,12 @@ class PagePublishForm(forms.ModelForm):
         fields = ['is_visible']
 
 
+class PageResetForm(forms.ModelForm):
+    class Meta:
+        model = Page
+        fields = []
+
+
 class SectionCreateForm(forms.ModelForm):
     class Meta:
         model = Section
