@@ -386,6 +386,8 @@ function bindMoveCellEvents() {
         clearMoveOptions();
     });
 
+    $('[data-toggle="tooltip"]').tooltip()
+
 }
 
 EventBus.subscribe(HTML_INJECTED, bindMoveCellEvents);

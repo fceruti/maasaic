@@ -233,8 +233,8 @@ class PageUpdateView(WebsiteDetailBase, PageUrlMixin, DetailView):
         from maasaic.apps.content.views.page import FONTS_URL
         context['FONTS'] = FONTS
         context['FONTS_URL'] = FONTS_URL
-        page = self.get_object()
-        context['section_create_form'] = SectionCreateForm(page=page)
+        context['section_create_form'] = SectionCreateForm(page=self.page)
+        context['show_borders'] = 'borders' not in self.request.GET
         return context
 
     def get_object(self, queryset=None):
