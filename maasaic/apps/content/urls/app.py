@@ -51,18 +51,41 @@ from maasaic.apps.content.views.app import ImageCreateView
 
 
 cells_urls = [
-    path('create', CellCreateView.as_view(), name='cell_create'),
-    path('<int:pk>/move', CellPositionUpdateView.as_view(), name='cell_update_move'),
-    path('<int:pk>/visibility', CellVisibilityUpdateView.as_view(), name='cell_update_visibility'),
-    path('<int:pk>/order', CellOrderUpdateView.as_view(), name='cell_update_order'),
-    path('<int:pk>/delete', CellDeleteView.as_view(), name='cell_delete'),
-    path('<int:pk>/update', CellContentUpdateView.as_view(), name='cell_update'),
+    path('/create', CellCreateView.as_view(), name='cell_create'),
+    path('/<int:pk>/move', CellPositionUpdateView.as_view(), name='cell_update_move'),
+    path('/<int:pk>/visibility', CellVisibilityUpdateView.as_view(), name='cell_update_visibility'),
+    path('/<int:pk>/order', CellOrderUpdateView.as_view(), name='cell_update_order'),
+    path('/<int:pk>/delete', CellDeleteView.as_view(), name='cell_delete'),
+    path('/<int:pk>/update', CellContentUpdateView.as_view(), name='cell_update'),
 ]
 
 sections_urls = [
-    path('create', SectionCreateView.as_view(), name='section_create'),
-    path('<int:pk>/visibility', SectionVisibilityUpdateView.as_view(), name='section_update_visibility'),
-    path('<int:pk>/order', SectionOrderUpdateView.as_view(), name='section_update_order'),
+    path('/create', SectionCreateView.as_view(), name='section_create'),
+    path('/<int:pk>/visibility', SectionVisibilityUpdateView.as_view(), name='section_update_visibility'),
+    path('/<int:pk>/order', SectionOrderUpdateView.as_view(), name='section_update_order'),
+]
+
+pages_urls = [
+    path('', PageListView.as_view(), name='page_list'),
+    path('/create', PageCreateView.as_view(), name='page_create'),
+    path('/<int:pk>/config', PageConfigView.as_view(), name='page_config'),
+    path('/<int:pk>/update', PageUpdateView.as_view(), name='page_update'),
+    path('/<int:pk>/delete', PageDeleteView.as_view(), name='page_delete'),
+    path('/<int:pk>/publish', PagePublishView.as_view(), name='page_publish'),
+    path('/<int:pk>/reset', PageResetView.as_view(), name='page_reset'),
+]
+
+sites_urls = [
+    path('', WebsiteListView.as_view(), name='website_list'),
+    path('/create', WebsiteCreateView.as_view(), name='website_create'),
+    path('/<str:subdomain>', WebsiteDetailView.as_view(), name='website_detail'),
+    path('/<str:subdomain>/config', WebsiteConfigView.as_view(), name='website_config'),
+    path('/<str:subdomain>/page-attrs', WebsitePageAttrView.as_view(), name='website_page_attr'),
+    path('/<str:subdomain>/cell-attrs', WebsiteCellAttrView.as_view(), name='website_cell_attr'),
+    path('/<str:subdomain>/publish', WebsitePublishView.as_view(), name='website_publish'),
+    path('/<str:subdomain>/images', ImageCreateView.as_view(), name='image_create'),
+
+    path('/<str:subdomain>/pages', include(pages_urls)),
 ]
 
 
@@ -71,25 +94,10 @@ urlpatterns = [
     path('register', UserCreateView.as_view(), name='user_create'),
     path('login', UserLoginView.as_view(), name='login'),
     path('logout', UserLogoutView.as_view(), name='logout'),
-    path('sites', WebsiteListView.as_view(), name='website_list'),
-    path('sites/create', WebsiteCreateView.as_view(), name='website_create'),
 
-    path('sites/<str:subdomain>', WebsiteDetailView.as_view(), name='website_detail'),
-    path('sites/<str:subdomain>/config', WebsiteConfigView.as_view(), name='website_config'),
-    path('sites/<str:subdomain>/default-page-attrs', WebsitePageAttrView.as_view(), name='website_page_attr'),
-    path('sites/<str:subdomain>/default-cell-attrs', WebsiteCellAttrView.as_view(), name='website_cell_attr'),
-    path('sites/<str:subdomain>/publish', WebsitePublishView.as_view(), name='website_publish'),
-    path('sites/<str:subdomain>/pages', PageListView.as_view(), name='page_list'),
-    path('sites/<str:subdomain>/images', ImageCreateView.as_view(), name='image_create'),
-    path('sites/<str:subdomain>/pages/create', PageCreateView.as_view(), name='page_create'),
-    path('sites/<str:subdomain>/pages/<int:pk>/config', PageConfigView.as_view(), name='page_config'),
-    path('sites/<str:subdomain>/pages/<int:pk>/update', PageUpdateView.as_view(), name='page_update'),
-    path('sites/<str:subdomain>/pages/<int:pk>/delete', PageDeleteView.as_view(), name='page_delete'),
-    path('sites/<str:subdomain>/pages/<int:pk>/publish', PagePublishView.as_view(), name='page_publish'),
-    path('sites/<str:subdomain>/pages/<int:pk>/reset', PageResetView.as_view(), name='page_reset'),
-
-    path('sections/', include(sections_urls)),
-    path('cells/', include(cells_urls)),
+    path('sites', include(sites_urls)),
+    path('sections', include(sections_urls)),
+    path('cells', include(cells_urls)),
 
     path('admin', admin.site.urls),
     path('nested_admin', include('nested_admin.urls')),

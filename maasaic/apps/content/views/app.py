@@ -41,6 +41,47 @@ from maasaic.apps.content.models import Website
 # ------------------------------------------------------------------------------
 # Websites
 # ------------------------------------------------------------------------------
+class WebsiteUrlMixin(object):
+    @cached_property
+    def website(self):
+        return get_object_or_404(Website,
+                                 subdomain=self.kwargs['subdomain'],
+                                 user=self.request.user)
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(WebsiteUrlMixin, self).get_context_data(*args, **kwargs)
+        ctx['website'] = self.website
+        return ctx
+
+
+class PageUrlMixin(object):
+    mode = None
+
+    @cached_property
+    def page(self):
+        kwargs = {'pk': self.kwargs['pk']}
+        if self.mode:
+            kwargs['mode'] = self.mode
+        return get_object_or_404(Page, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(PageUrlMixin, self).get_context_data(*args, **kwargs)
+        ctx['page'] = self.page
+        return ctx
+
+
+class CurrentTabMixin(object):
+    current_tab = None
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super(CurrentTabMixin, self).get_context_data(*args, **kwargs)
+        ctx['current_tab'] = self.current_tab
+        return ctx
+
+
+# ------------------------------------------------------------------------------
+# Websites
+# ------------------------------------------------------------------------------
 class WebsiteListView(LoginRequiredMixin, ListView):
     template_name = 'frontend/website_list.html'
     context_object_name = 'websites'
@@ -68,26 +109,14 @@ class WebsiteCreateView(LoginRequiredMixin, FormView):
         return HttpResponseRedirect(url)
 
 
-class WebsiteDetailBase(LoginRequiredMixin, View):
-    current_tab = None
-
-    @cached_property
-    def website(self):
-        return get_object_or_404(Website,
-                                 subdomain=self.kwargs['subdomain'],
-                                 user=self.request.user)
+class WebsiteDetailBase(LoginRequiredMixin, CurrentTabMixin,
+                        WebsiteUrlMixin, View):
 
     def get_object(self):
         return self.website
 
-    def get_context_data(self, *args, **kwargs):
-        ctx = super(WebsiteDetailBase, self).get_context_data(*args, **kwargs)
-        ctx['website'] = self.website
-        ctx['current_tab'] = self.current_tab
-        return ctx
 
-
-class WebsiteDetailView(RedirectView, WebsiteDetailBase):
+class WebsiteDetailView(WebsiteDetailBase, RedirectView):
     model = Website
     slug_field = 'subdomain'
     slug_url_kwarg = 'subdomain'
@@ -152,7 +181,6 @@ class WebsitePublishView(WebsiteDetailBase, UpdateView):
 # ------------------------------------------------------------------------------
 class PageListView(WebsiteDetailBase, DetailView):
     template_name = 'frontend/page_list.html'
-    form_class = WebsiteConfigForm
     model = Website
     slug_field = 'subdomain'
     slug_url_kwarg = 'subdomain'
@@ -164,16 +192,11 @@ class PageListView(WebsiteDetailBase, DetailView):
         return context
 
 
-class PageCreateView(CreateView, WebsiteDetailBase):
+class PageCreateView(WebsiteDetailBase, CreateView):
     template_name = 'frontend/page_create.html'
     model = Page
     form_class = PageCreateForm
     current_tab = 'pages'
-
-    def get_form_kwargs(self, *args, **kwargs):
-        kw = super(PageCreateView, self).get_form_kwargs(*args, **kwargs)
-        kw['website'] = self.website
-        return kw
 
     def form_valid(self, form):
         form.save()
@@ -182,17 +205,12 @@ class PageCreateView(CreateView, WebsiteDetailBase):
         return HttpResponseRedirect(url)
 
 
-class PageConfigView(WebsiteDetailBase, UpdateView):
+class PageConfigView(WebsiteDetailBase, PageUrlMixin, UpdateView):
     template_name = 'frontend/page_config.html'
     model = Page
     current_tab = 'pages'
     context_object_name = 'page'
     form_class = PageUpdateForm
-
-    def get_form_kwargs(self, *args, **kwargs):
-        kw = super(PageConfigView, self).get_form_kwargs(*args, **kwargs)
-        kw['website'] = self.website
-        return kw
 
     def form_valid(self, form):
         form.save()
@@ -201,19 +219,16 @@ class PageConfigView(WebsiteDetailBase, UpdateView):
         return HttpResponseRedirect(url)
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Page,
-                                 pk=self.kwargs['pk'],
-                                 mode=Page.Mode.LIVE)
+        return self.page
 
 
-class PageUpdateView(DetailView, WebsiteDetailBase):
+class PageUpdateView(WebsiteDetailBase, PageUrlMixin, DetailView):
     template_name = 'app/page.html'
     model = Page
 
     def get_context_data(self, **kwargs):
         context = super(PageUpdateView, self).get_context_data(**kwargs)
         context['page_edit_on'] = True
-        context['website'] = self.website
         from maasaic.apps.content.views.page import FONTS
         from maasaic.apps.content.views.page import FONTS_URL
         context['FONTS'] = FONTS
@@ -222,25 +237,15 @@ class PageUpdateView(DetailView, WebsiteDetailBase):
         context['section_create_form'] = SectionCreateForm(page=page)
         return context
 
-    @cached_property
-    def page(self):
-        page = get_object_or_404(Page,
-                                 pk=self.kwargs['pk'],
-                                 mode=Page.Mode.EDIT)
-        page.website = self.website
-        return page
-
     def get_object(self, queryset=None):
         return self.page
 
 
-class PageDeleteView(DeleteView, WebsiteDetailBase):
+class PageDeleteView(DeleteView, PageUrlMixin, WebsiteDetailBase):
     model = Page
 
     def get_object(self, queryset=None):
-        return get_object_or_404(Page,
-                                 pk=self.kwargs['pk'],
-                                 mode=Page.Mode.LIVE)
+        self.page
 
     def get_success_url(self):
         return reverse('page_list', args=[self.website.subdomain])
@@ -252,14 +257,10 @@ class PageDeleteView(DeleteView, WebsiteDetailBase):
         return response
 
 
-class PagePublishView(UpdateView, WebsiteDetailView):
+class PagePublishView(UpdateView, PageUrlMixin, WebsiteDetailView):
     form_class = PagePublishForm
     model = Page
-
-    def get_object(self):
-        return get_object_or_404(Page,
-                                 pk=self.kwargs['pk'],
-                                 mode=Page.Mode.LIVE)
+    mode = Page.Mode.LIVE
 
     def form_valid(self, form):
         if form.cleaned_data['is_visible']:
@@ -289,15 +290,10 @@ class PagePublishView(UpdateView, WebsiteDetailView):
         return HttpResponseRedirect(url)
 
 
-class PageResetView(FormView, WebsiteDetailView):
+class PageResetView(FormView, PageUrlMixin, WebsiteDetailBase):
     form_class = PageResetForm
     model = Page
-
-    @cached_property
-    def page(self):
-        return get_object_or_404(Page,
-                                 pk=self.kwargs['pk'],
-                                 mode=Page.Mode.EDIT)
+    mode = Page.Mode.EDIT
 
     def get_object(self):
         return self.page
@@ -323,24 +319,9 @@ class PageResetView(FormView, WebsiteDetailView):
 
 
 # ------------------------------------------------------------------------------
-# Page base
-# ------------------------------------------------------------------------------
-class PageBaseView(WebsiteDetailBase):
-
-    @cached_property
-    def page(self):
-        kwargs = {'pk': self.kwargs['page_pk'], 'mode': Page.Mode.EDIT}
-        return get_object_or_404(Page, **kwargs)
-
-    def get_success_url(self):
-        args = [self.website.subdomain, self.page.pk]
-        return reverse('page_update', args=args)
-
-
-# ------------------------------------------------------------------------------
 # Sections
 # ------------------------------------------------------------------------------
-class SectionCreateView(CreateView):
+class SectionCreateView(CreateView, LoginRequiredMixin):
     form_class = SectionCreateForm
     template_name = 'frontend/section_create.html'
 
@@ -363,7 +344,7 @@ class SectionCreateView(CreateView):
         return HttpResponseRedirect(url)
 
 
-class SectionOrderUpdateView(UpdateView):
+class SectionOrderUpdateView(UpdateView, LoginRequiredMixin):
     form_class = SectionOrderForm
     http_method_names = ['post']
     model = Section
@@ -377,7 +358,7 @@ class SectionOrderUpdateView(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class SectionVisibilityUpdateView(UpdateView):
+class SectionVisibilityUpdateView(UpdateView, LoginRequiredMixin):
     form_class = SectionVisibilityForm
     http_method_names = ['post']
 
@@ -399,7 +380,7 @@ class SectionVisibilityUpdateView(UpdateView):
 # ------------------------------------------------------------------------------
 # Cells
 # ------------------------------------------------------------------------------
-class CellCreateView(CreateView, PageBaseView):
+class CellCreateView(CreateView, LoginRequiredMixin):
     model = Cell
     form_class = CellCreateForm
 
@@ -410,7 +391,7 @@ class CellCreateView(CreateView, PageBaseView):
         return HttpResponseRedirect(url)
 
 
-class BaseCellUpdateView(UpdateView, PageBaseView):
+class BaseCellUpdateView(UpdateView, LoginRequiredMixin):
     http_method_names = ['post']
     model = Cell
 
@@ -439,7 +420,7 @@ class CellOrderUpdateView(BaseCellUpdateView):
     form_class = CellOrderForm
 
 
-class CellDeleteView(DeleteView):
+class CellDeleteView(DeleteView, LoginRequiredMixin):
     model = Cell
 
     def get_success_url(self):
@@ -451,14 +432,13 @@ class CellDeleteView(DeleteView):
 # ------------------------------------------------------------------------------
 # Images
 # ------------------------------------------------------------------------------
-class ImageCreateView(CreateView, WebsiteDetailBase):
+class ImageCreateView(CreateView, WebsiteUrlMixin, LoginRequiredMixin):
     model = UploadedImage
     form_class = UploadImageForm
     template_name = 'frontend/image_create.html'
 
     def get_context_data(self, **kwargs):
         context = super(ImageCreateView, self).get_context_data(**kwargs)
-        context['website'] = self.website
         context['images'] = UploadedImage.objects\
             .filter(website=self.website)\
             .order_by('created_at')

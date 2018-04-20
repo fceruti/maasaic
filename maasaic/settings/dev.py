@@ -12,6 +12,7 @@ MIDDLEWARE += [
 ]
 
 INTERNAL_IPS = ['localhost', '127.0.0.1', 'maasaic-local.com:8000', 'fceruti.maasaic-local.com:8000']
+JQUERY_URL = None
 
 COMPRESS_ENABLED = True
 COMPRESS_OFFLINE = False
