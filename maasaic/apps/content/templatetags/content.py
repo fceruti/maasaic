@@ -1,12 +1,33 @@
+import hashlib
+
 from django import template
 from django.utils.text import mark_safe
 from pyquery import PyQuery as pq
 
 from maasaic.apps.content.models import Cell
+from maasaic.apps.content.models import Page
+from maasaic.apps.content.models import Section
 from maasaic.apps.content.utils import get_position_dict_from_margin
 from maasaic.apps.content.utils import get_position_string_from_position
 
 register = template.Library()
+
+
+# ------------------------------------------------------------------------------
+# Utils
+# ------------------------------------------------------------------------------
+CLASS_HASH_FIELDS = {
+    Page: ['title', 'path', 'page_width', 'description'],
+    Section: ['order', 'n_columns', 'n_rows', 'cell_height', 'css', 'name',
+              'html_id'],
+    Cell: ['cell_type', 'x', 'y', 'w', 'h', 'content', 'css'],
+}
+
+
+def get_obj_hash(obj):
+    str_repr = ','.join([str(getattr(obj, field_acc))
+                         for field_acc in CLASS_HASH_FIELDS[type(obj)]])
+    return hashlib.md5(str_repr.encode('utf-8')).hexdigest()
 
 
 # ------------------------------------------------------------------------------
@@ -18,6 +39,37 @@ def page_width(page):
         return page.page_width
     else:
         return page.website.page_width
+
+
+@register.simple_tag()
+def has_page_changed(edit_page):
+    live_page = edit_page.target_page
+    assert edit_page.mode == Page.Mode.EDIT
+    assert live_page.mode == Page.Mode.LIVE
+
+    try:
+        assert get_obj_hash(edit_page) == get_obj_hash(live_page)
+    except AssertionError:
+        return True
+
+    edit_sections = edit_page.visible_sections
+    live_sections = live_page.visible_sections
+
+    try:
+        assert set(get_obj_hash(section) for section in edit_sections)  == \
+               set(get_obj_hash(section) for section in live_sections)
+    except AssertionError:
+        return True
+
+    edit_cells_hashes = set()
+    live_cells_hashes = set()
+    for section in edit_sections:
+        for cell in section.visible_cells:
+            edit_cells_hashes.add(get_obj_hash(cell))
+    for section in live_sections:
+        for cell in section.visible_cells:
+            live_cells_hashes.add(get_obj_hash(cell))
+    return live_cells_hashes != edit_cells_hashes
 
 
 # ------------------------------------------------------------------------------

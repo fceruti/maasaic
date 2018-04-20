@@ -266,13 +266,24 @@
 
       {# Page #}
       <h3 class="sidebar-title">
-        <form method="POST" action="{% url 'page_publish' website.subdomain page.target_page.pk %}?next={{ request.path }}">
-          {% csrf_token %}
-          <input type="hidden" name="is_visible" value="True" />
-          <button type="submit" class="title-btn" data-toggle="tooltip" data-placement="top" title="Make all your changes visible to the world">
-            Publish <i class="fa fa-check"></i>
-          </button>
-        </form>
+        {% has_page_changed page as page_changed %}
+        {% if page_changed %}
+          <form method="POST" action="{% url 'page_publish' website.subdomain page.target_page.pk %}?next={{ request.path }}">
+            {% csrf_token %}
+            <input type="hidden" name="is_visible" value="True" />
+            <button type="submit" class="title-btn" data-toggle="tooltip" data-placement="top" title="Make all your changes visible to the world.">
+              <i class="fa fa-check"></i> Publish
+            </button>
+          </form>
+          <div class="sidebar-item-option right">
+            <form method="POST" action="{% url 'page_reset' website.subdomain page.pk %}?next={{ request.path }}" data-toggle="tooltip" data-placement="top" title="Go back to last published version.">
+              {% csrf_token %}
+              <button type="submit" class="title-btn" style="margin-right: 10px">
+                <i class="fa fa-undo"></i> Undo
+              </button>
+            </form>
+          </div>
+        {% endif %}
         Page <span class="sidebar-title-status">{% if page.target_page.is_visible %}<i class="fa fa-circle text-success"></i> Live{% else %}<i class="fa fa-circle text-danger"></i> Offline{% endif %}</span>
       </h3>
       <div class="sidebar-item">
@@ -301,14 +312,6 @@
           <a class="sidebar-option-btn" href="{% url 'page_update' website.subdomain page.pk %}{% if show_borders %}?borders=false{% endif%}" data-toggle="tooltip" data-placement="top" title="{% if show_borders %}Hide guidelines{% else %}Show guidelines{% endif%}">
             <i class="fa fa-table"></i>
           </a>
-        </div>
-        <div class="sidebar-item-option right">
-          <form method="POST" action="{% url 'page_reset' website.subdomain page.pk %}?next={{ request.path }}" data-toggle="tooltip" data-placement="top" title="Go back to last published version.">
-            {% csrf_token %}
-            <button type="submit" class="sidebar-option-btn">
-              <i class="fa fa-refresh"></i>
-            </button>
-          </form>
         </div>
         <div class="sidebar-item-content">
           <h2 class="name" title="{{ page.title }}">{{ page.title|truncatechars:25 }}</h2>
