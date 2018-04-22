@@ -409,15 +409,50 @@
           </button>
         </div>
         <form method="POST" action="{% url 'section_create' %}" class="form-horizontal">
+          {% csrf_token %}
+          {{ section_create_form.page }}
           <div class="modal-body">
-              {% csrf_token %}
-              {% bootstrap_form section_create_form %}
+            <div class="grid">
+              <div class="row">
+                <div class="col">
+                  {% bootstrap_field section_create_form.name %}
+                </div>
+                <div class="col">
+                  {% bootstrap_field section_create_form.html_id %}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  {% bootstrap_field section_create_form.section_n_cols %}
+                </div>
+                <div class="col">
+                  {% bootstrap_field section_create_form.section_n_rows %}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  {% bootstrap_field section_create_form.section_background %}
+                </div>
+                <div class="col">
+                  {% bootstrap_field section_create_form.section_padding_top %}
+                </div>
+                <div class="col">
+                  {% bootstrap_field section_create_form.section_padding_bottom %}
+                </div>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
+            <a class="btn btn-link mr-auto" href="{% url 'website_defaults' website.subdomain %}" target="_blank">Change default attributes</a>
             <button type="button" class="btn btn-link text-danger" data-dismiss="modal">Cancel</button>
             <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Create section</button>
           </div>
         </form>
+        <script>
+          $(document).ready(function() {
+            $('#id_section_background').colorpicker();
+          });
+        </script>
       </div>
     </div>
   </div>

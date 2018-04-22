@@ -166,22 +166,27 @@ site_props = {
         'scope': SiteDefaultProp.Scope.SECTION,
         'name': 'n_cols', 'type': 'int', 'default': 5,
         'min': 1, 'max': SASS_VARIABLES[MAX_COLS_KEY],
+        'label_name': '# Columns',
         'help_text': 'Measured in cells. Must be a number between 1 and %s.'
                      % SASS_VARIABLES[MAX_COLS_KEY]},
     'n_rows': {
         'scope': SiteDefaultProp.Scope.SECTION,
         'name': 'n_rows', 'type': 'int', 'default': 5,
         'min': 1, 'max': SASS_VARIABLES[MAX_ROWS_KEY],
+        'label_name': '# Rows',
         'help_text': 'Measured in cells. Must be a number between 1 and %s.'
                      % SASS_VARIABLES[MAX_ROWS_KEY]},
     'sec_background': {
         'scope': SiteDefaultProp.Scope.SECTION,
+        'label_name': 'Background',
         'name': 'background', 'type': 'str', 'default': '#FFFFFF'},
     'sec_padding-top': {
         'scope': SiteDefaultProp.Scope.SECTION,
+        'label_name': 'Padding top',
         'name': 'padding_top', 'type': 'str', 'default': '0px'},
     'sec_padding-bottom': {
         'scope': SiteDefaultProp.Scope.SECTION,
+        'label_name': 'Padding bottom',
         'name': 'padding_bottom', 'type': 'str', 'default': '0px'},
 
     'color': {
@@ -394,10 +399,17 @@ class SectionCreateForm(forms.ModelForm):
         self.fields['page'].initial = page
         self.fields['page'].widget = forms.HiddenInput()
 
+        if not self.fields['name'].initial:
+            section_n = page.section_set.count() + 1
+            self.fields['name'].initial = 'Section #%s' % section_n
+            self.fields['html_id'].initial = 'section_%s' % section_n
+
         for prop in site_props.values():
             if prop['scope'] != SiteDefaultProp.Scope.SECTION:
                 continue
             field_attr = {}
+            if 'label_name' in prop:
+                field_attr['label'] = prop['label_name']
             if 'help_text' in prop:
                 field_attr['help_text'] = prop['help_text']
             try:
