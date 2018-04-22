@@ -31,8 +31,7 @@ function getCell(layer, sectionId, x, y) {
 
 function getSectionCellProperties(sectionId) {
     var $section = $('.section[data-section-id=' + sectionId + ']')
-    var cellHeight = parseInt($section.attr('data-cell_height')),
-        totalWidth = parseInt($section.attr('data-width')),
+    var totalWidth = parseInt($section.attr('data-width')),
         totalCols = parseInt($section.attr('data-n_columns')),
         padding = $section.attr('data-cell_default_padding'),
         margin = $section.attr('data-cell_default_margin'),
@@ -40,7 +39,7 @@ function getSectionCellProperties(sectionId) {
         border = $section.attr('data-cell_default_border'),
         borderRadius = $section.attr('data-cell_default_border_radius'),
         shadow = $section.attr('data-cell_default_shadow');
-
+    var cellHeight = totalWidth / totalCols;
     return {'colWidth': totalWidth / totalCols,
             'rowHeight': cellHeight,
             'padding': padding,

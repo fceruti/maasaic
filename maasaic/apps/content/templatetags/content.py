@@ -7,6 +7,8 @@ from pyquery import PyQuery as pq
 from maasaic.apps.content.models import Cell
 from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Section
+from maasaic.apps.content.models import SiteDefaultProp
+from maasaic.apps.content.forms import site_props
 from maasaic.apps.content.utils import get_position_dict_from_margin
 from maasaic.apps.content.utils import get_position_string_from_position
 
@@ -68,38 +70,74 @@ def has_page_changed(edit_page):
 # ------------------------------------------------------------------------------
 @register.simple_tag()
 def section_cell_default_padding(section):
-    # TODO: Implement section defaults
-    return '15px'
+    try:
+        prop = SiteDefaultProp.objects.get(
+            site=section.page.website,
+            scope=SiteDefaultProp.Scope.CELL,
+            prop='padding')
+        return prop.value
+    except SiteDefaultProp.DoesNotExist:
+        return site_props['padding']['default']
 
 
 @register.simple_tag()
 def section_cell_default_margin(section):
-    # TODO: Implement section defaults
-    return '15px'
+    try:
+        prop = SiteDefaultProp.objects.get(
+            site=section.page.website,
+            scope=SiteDefaultProp.Scope.CELL,
+            prop='margin')
+        return prop.value
+    except SiteDefaultProp.DoesNotExist:
+        return site_props['margin']['default']
 
 
 @register.simple_tag()
 def section_cell_default_background(section):
-    # TODO: Implement section defaults
-    return '#DDDDDD'
+    try:
+        prop = SiteDefaultProp.objects.get(
+            site=section.page.website,
+            scope=SiteDefaultProp.Scope.CELL,
+            prop='background')
+        return prop.value
+    except SiteDefaultProp.DoesNotExist:
+        return site_props['background']['default']
 
 
 @register.simple_tag()
 def section_cell_default_border(section):
-    # TODO: Implement section defaults
-    return 'none'
+    try:
+        prop = SiteDefaultProp.objects.get(
+            site=section.page.website,
+            scope=SiteDefaultProp.Scope.CELL,
+            prop='border')
+        return prop.value
+    except SiteDefaultProp.DoesNotExist:
+        return site_props['border']['default']
 
 
 @register.simple_tag()
 def section_cell_default_border_radius(section):
-    # TODO: Implement section defaults
-    return '0px'
+    try:
+        prop = SiteDefaultProp.objects.get(
+            site=section.page.website,
+            scope=SiteDefaultProp.Scope.CELL,
+            prop='border_radius')
+        return prop.value
+    except SiteDefaultProp.DoesNotExist:
+        return site_props['border_radius']['default']
 
 
 @register.simple_tag()
 def section_cell_default_shadow(section):
-    # TODO: Implement section defaults
-    return 'none'
+    try:
+        prop = SiteDefaultProp.objects.get(
+            site=section.page.website,
+            scope=SiteDefaultProp.Scope.CELL,
+            prop='box_shadow')
+        return prop.value
+    except SiteDefaultProp.DoesNotExist:
+        return site_props['box_shadow']['default']
 
 
 # ------------------------------------------------------------------------------

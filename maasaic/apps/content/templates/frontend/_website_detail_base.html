@@ -42,10 +42,7 @@
         <a class="nav-link{% if current_tab == 'config' %} active{% endif %}" href="{% url 'website_config' website.subdomain %}"><i class="fa fa-cog"></i> Configuration</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link{% if current_tab == 'page_attr' %} active{% endif %}" href="{% url 'website_page_attr' website.subdomain %}"><i class="fa fa-sliders"></i> Pages default attributes</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link{% if current_tab == 'cell_attr' %} active{% endif %}" href="{% url 'website_cell_attr' website.subdomain %}"><i class="fa fa-paint-brush"></i> Cells default attributes</a>
+        <a class="nav-link{% if current_tab == 'defaults' %} active{% endif %}" href="{% url 'website_defaults' website.subdomain %}"><i class="fa fa-sliders"></i> Default values</a>
       </li>
     </ul>
     <br/>

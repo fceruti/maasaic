@@ -26,6 +26,7 @@ from maasaic.apps.content.views.app import CellDeleteView
 from maasaic.apps.content.views.app import CellOrderUpdateView
 from maasaic.apps.content.views.app import CellPositionUpdateView
 from maasaic.apps.content.views.app import CellVisibilityUpdateView
+from maasaic.apps.content.views.app import ImageCreateView
 from maasaic.apps.content.views.app import PageConfigView
 from maasaic.apps.content.views.app import PageCreateView
 from maasaic.apps.content.views.app import PageDeleteView
@@ -36,19 +37,16 @@ from maasaic.apps.content.views.app import PageUpdateView
 from maasaic.apps.content.views.app import SectionCreateView
 from maasaic.apps.content.views.app import SectionOrderUpdateView
 from maasaic.apps.content.views.app import SectionVisibilityUpdateView
-from maasaic.apps.content.views.app import WebsiteCellAttrView
 from maasaic.apps.content.views.app import WebsiteConfigView
 from maasaic.apps.content.views.app import WebsiteCreateView
 from maasaic.apps.content.views.app import WebsiteDetailView
 from maasaic.apps.content.views.app import WebsiteListView
-from maasaic.apps.content.views.app import WebsitePageAttrView
+from maasaic.apps.content.views.app import WebsitePageDefaultsView
 from maasaic.apps.content.views.app import WebsitePublishView
 from maasaic.apps.content.views.frontend import HomeView
 from maasaic.apps.content.views.frontend import UserCreateView
 from maasaic.apps.content.views.frontend import UserLoginView
 from maasaic.apps.content.views.frontend import UserLogoutView
-from maasaic.apps.content.views.app import ImageCreateView
-
 
 cells_urls = [
     path('/create', CellCreateView.as_view(), name='cell_create'),
@@ -80,8 +78,7 @@ sites_urls = [
     path('/create', WebsiteCreateView.as_view(), name='website_create'),
     path('/<str:subdomain>', WebsiteDetailView.as_view(), name='website_detail'),
     path('/<str:subdomain>/config', WebsiteConfigView.as_view(), name='website_config'),
-    path('/<str:subdomain>/page-attrs', WebsitePageAttrView.as_view(), name='website_page_attr'),
-    path('/<str:subdomain>/cell-attrs', WebsiteCellAttrView.as_view(), name='website_cell_attr'),
+    path('/<str:subdomain>/defaults', WebsitePageDefaultsView.as_view(), name='website_defaults'),
     path('/<str:subdomain>/publish', WebsitePublishView.as_view(), name='website_publish'),
     path('/<str:subdomain>/images', ImageCreateView.as_view(), name='image_create'),
 

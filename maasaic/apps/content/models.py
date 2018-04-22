@@ -272,3 +272,16 @@ class UploadedImage(models.Model):
     def thumbnail_url(self):
         options = {'size': (200, 200), 'crop': 'smart'}
         return get_thumbnailer(self.image).get_thumbnail(options).url
+
+
+class SiteDefaultProp(models.Model):
+    class Scope(Choices):
+        SECTION = 'SECTION'
+        CELL = 'CELL'
+    site = models.ForeignKey(Website, on_delete=models.CASCADE)
+    scope = models.CharField(max_length=255, choices=Scope.choices())
+    prop = models.CharField(max_length=255)
+    value = models.CharField(max_length=255, null=True, blank=True)
+
+    class Meta:
+        unique_together = ('site', 'scope', 'prop')

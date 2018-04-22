@@ -15,10 +15,17 @@ from maasaic.apps.content.models import Website
 from maasaic.apps.content.utils import get_margin_string_from_position
 from maasaic.apps.content.utils import get_position_dict_from_margin
 from maasaic.apps.users.models import User
+from maasaic.apps.content.models import SiteDefaultProp
+from maasaic.apps.content.models import SASS_VARIABLES
+from maasaic.apps.content.models import MAX_COLS_KEY
+from maasaic.apps.content.models import MAX_ROWS_KEY
 
 path_pattern = re.compile('^([/\w+-.]*)$')
 
 
+# ------------------------------------------------------------------------------
+# Users
+# ------------------------------------------------------------------------------
 class UserLoginForm(forms.Form):
     subdomain = forms.CharField(max_length=255)
     password = forms.CharField(max_length=255, widget=forms.PasswordInput)
@@ -112,6 +119,9 @@ class UserCreateForm(forms.Form):
         return website
 
 
+# ------------------------------------------------------------------------------
+# Websites
+# ------------------------------------------------------------------------------
 class WebsiteCreateForm(forms.ModelForm):
     class Meta:
         model = Website
@@ -151,12 +161,97 @@ class WebsiteConfigForm(forms.ModelForm):
         self.fields['subdomain'].widget.attrs['readonly'] = True
 
 
+site_props = {
+    'n_cols': {
+        'scope': SiteDefaultProp.Scope.SECTION,
+        'name': 'n_cols', 'type': 'int', 'default': 5,
+        'min': 1, 'max': SASS_VARIABLES[MAX_COLS_KEY]},
+    'n_rows': {
+        'scope': SiteDefaultProp.Scope.SECTION,
+        'name': 'n_rows', 'type': 'int', 'default': 5,
+        'min': 1, 'max': SASS_VARIABLES[MAX_ROWS_KEY]},
+    'sec_background': {
+        'scope': SiteDefaultProp.Scope.SECTION,
+        'name': 'background', 'type': 'str', 'default': '#FFFFFF'},
+    'sec_padding-top': {
+        'scope': SiteDefaultProp.Scope.SECTION,
+        'name': 'padding_top', 'type': 'str', 'default': '0px'},
+    'sec_padding-bottom': {
+        'scope': SiteDefaultProp.Scope.SECTION,
+        'name': 'padding_bottom', 'type': 'str', 'default': '0px'},
+
+    'color': {
+        'scope': SiteDefaultProp.Scope.CELL,
+        'name': 'color', 'type': 'str', 'default': '#111111'},
+    'background': {
+        'scope': SiteDefaultProp.Scope.CELL,
+        'name': 'background', 'type': 'str', 'default': '#FFFFFF'},
+    'margin': {
+        'scope': SiteDefaultProp.Scope.CELL,
+        'name': 'margin', 'type': 'str', 'default': '15px'},
+    'padding': {
+        'scope': SiteDefaultProp.Scope.CELL,
+        'name': 'padding', 'type': 'str', 'default': '15px'},
+    'border': {
+        'scope': SiteDefaultProp.Scope.CELL,
+        'name': 'border', 'type': 'str', 'default': 'none'},
+    'border_radius': {
+        'scope': SiteDefaultProp.Scope.CELL,
+        'name': 'border_radius', 'type': 'str', 'default': 'none'},
+    'box_shadow': {
+        'scope': SiteDefaultProp.Scope.CELL,
+        'name': 'box_shadows', 'type': 'str', 'default': 'none'},
+}
+
+
+def get_key_for_prop(prop):
+    return '%s_%s' % (prop['scope'].lower(), prop['name'])
+
+
+class WebsiteDefaultsForm(forms.Form):
+    def __init__(self, website, *args, **kwargs):
+        self.website = website
+        super(WebsiteDefaultsForm, self).__init__(*args, **kwargs)
+
+        for prop in site_props.values():
+            field_attr = {}
+            try:
+                section_default_prop = SiteDefaultProp.objects.get(
+                    site=self.website, scope=prop['scope'], prop=prop['name'])
+                field_attr['initial'] = section_default_prop.value
+            except SiteDefaultProp.DoesNotExist:
+                field_attr['initial'] = prop['default']
+            if prop['type'] == 'int':
+                field_class = forms.IntegerField
+                if 'min' in prop:
+                    field_attr['min_value'] = prop['min']
+                if 'max' in prop:
+                    field_attr['max_value'] = prop['max']
+            elif prop['type'] == 'str':
+                field_class = forms.CharField
+            else:
+                raise Exception
+
+            self.fields[get_key_for_prop(prop)] = field_class(**field_attr)
+
+    def save(self, commit=False):
+        for prop in site_props.values():
+            val = self.cleaned_data[get_key_for_prop(prop)]
+            SiteDefaultProp.objects.update_or_create(site=self.website,
+                                                     prop=prop['name'],
+                                                     scope=prop['scope'],
+                                                     defaults={'value': val})
+
+
 class WebsitePublishForm(forms.ModelForm):
     class Meta:
         model = Website
         fields = ['is_visible']
 
 
+# ------------------------------------------------------------------------------
+# Pages
+# ------------------------------------------------------------------------------
 class PageCreateForm(forms.ModelForm):
     class Meta:
         model = Page
@@ -277,6 +372,9 @@ class PageResetForm(forms.ModelForm):
         fields = []
 
 
+# ------------------------------------------------------------------------------
+# Sections
+# ------------------------------------------------------------------------------
 class SectionCreateForm(forms.ModelForm):
     class Meta:
         model = Section

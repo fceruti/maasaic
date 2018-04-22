@@ -30,6 +30,7 @@ from maasaic.apps.content.forms import SectionVisibilityForm
 from maasaic.apps.content.forms import UploadImageForm
 from maasaic.apps.content.forms import WebsiteConfigForm
 from maasaic.apps.content.forms import WebsiteCreateForm
+from maasaic.apps.content.forms import WebsiteDefaultsForm
 from maasaic.apps.content.forms import WebsitePublishForm
 from maasaic.apps.content.models import Cell
 from maasaic.apps.content.models import Page
@@ -137,22 +138,25 @@ class WebsiteConfigView(WebsiteDetailBase, UpdateView):
         return reverse('website_detail', args=[self.website.subdomain])
 
 
-class WebsitePageAttrView(WebsiteDetailBase, UpdateView):
-    template_name = 'frontend/website_detail_page_attr.html'
-    form_class = WebsiteConfigForm
+class WebsitePageDefaultsView(WebsiteDetailBase, FormView):
+    template_name = 'frontend/website_detail_defaults.html'
+    form_class = WebsiteDefaultsForm
     model = Website
     slug_field = 'subdomain'
     slug_url_kwarg = 'subdomain'
-    current_tab = 'page_attr'
+    current_tab = 'defaults'
 
+    def get_form_kwargs(self):
+        kw = super(WebsitePageDefaultsView, self).get_form_kwargs()
+        kw['website'] = self.website
+        return kw
 
-class WebsiteCellAttrView(WebsiteDetailBase, UpdateView):
-    template_name = 'frontend/website_detail_cell_attr.html'
-    form_class = WebsiteConfigForm
-    model = Website
-    slug_field = 'subdomain'
-    slug_url_kwarg = 'subdomain'
-    current_tab = 'cell_attr'
+    def form_valid(self, form):
+        form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('website_defaults', args=[self.website.subdomain])
 
 
 class WebsitePublishView(WebsiteDetailBase, UpdateView):
