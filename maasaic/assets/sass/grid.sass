@@ -62,6 +62,7 @@
                 top: $cell_width * ($sec_row_n - 1) * 1px
           @for $row_n from 1 through $max-rows
             &.section--#{$row_n}-rows
-              height: $cell_width * $row_n * 1px
+              .section-inner
+                height: $cell_width * $row_n * 1px
               .wrapper
                 height: $cell_width * $row_n * 1px

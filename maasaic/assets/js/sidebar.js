@@ -58,6 +58,22 @@ function bindSidebarEvents() {
             onEnd: onCellDragNDropEnd
         });
     });
+
+    $('.js-sidebar-option-btn-edit').click(function(){
+        $section = $('.section[data-section-id="' + $(this).attr('data-section-id') + '"]')
+        var sectionAttr = {
+            id: $section.attr('data-section-id'),
+            name: $section.attr('data-name'),
+            htmlId: $section.attr('data-html_id'),
+            nRows: $section.attr('data-n_rows'),
+            nCols: $section.attr('data-n_cols'),
+            cssBackground: $section.attr('data-css_background'),
+            cssPaddingTop: $section.attr('data-css_padding_top'),
+            cssPaddingBottom: $section.attr('data-css_padding_bottom')
+        }
+
+        EventBus.fire(SECTION_MODAL_REQUEST, sectionAttr);
+    });
 }
 
 EventBus.subscribe(HTML_INJECTED, bindSidebarEvents);

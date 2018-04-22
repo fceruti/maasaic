@@ -183,11 +183,11 @@ site_props = {
     'sec_padding-top': {
         'scope': SiteDefaultProp.Scope.SECTION,
         'label_name': 'Padding top',
-        'name': 'padding_top', 'type': 'str', 'default': '0px'},
+        'name': 'padding_top', 'type': 'str', 'default': '30px'},
     'sec_padding-bottom': {
         'scope': SiteDefaultProp.Scope.SECTION,
         'label_name': 'Padding bottom',
-        'name': 'padding_bottom', 'type': 'str', 'default': '0px'},
+        'name': 'padding_bottom', 'type': 'str', 'default': '30px'},
 
     'color': {
         'scope': SiteDefaultProp.Scope.CELL,
@@ -434,8 +434,8 @@ class SectionCreateForm(forms.ModelForm):
     def get_css(self):
         return {
             'background': self.cleaned_data['section_background'],
-            'padding-top': self.cleaned_data['section_padding_top'],
-            'padding-bottom': self.cleaned_data['section_padding_bottom'],
+            'padding_top': self.cleaned_data['section_padding_top'],
+            'padding_bottom': self.cleaned_data['section_padding_bottom'],
         }
 
     def save(self, commit=True):

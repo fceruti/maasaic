@@ -40,10 +40,12 @@
     <div class="section
                 section--{{ section.n_columns }}-cols
                 section--{{ section.n_rows }}-rows"
-         style="{% for key, val in section.css.items %}{{ key }}:{{ val }};{% endfor %}"
+         style="
+          background: {{ section.css.background}};
+          padding-top: {{ section.css.padding_top }};
+          padding-bottom: {{ section.css.padding_bottom }}
+         "
          data-order="{{ section.order }}"
-         data-n_columns="{{ section.n_columns }}"
-         data-n_rows="{{ section.n_rows }}"
          data-cell_default_padding="{% section_cell_default_padding section %}"
          data-cell_default_margin="{% section_cell_default_margin section %}"
          data-cell_default_background="{% section_cell_default_background section %}"
@@ -52,7 +54,12 @@
          data-cell_default_border_radius="{% section_cell_default_border_radius section %}"
          data-width="{{ page.width }}"
          data-name="{{ section.name }}"
-         data-slug="{{ section.slug }}"
+         data-html_id="{{ section.html_id }}"
+         data-n_rows="{{ section.n_rows }}"
+         data-n_columns="{{ section.n_columns}}"
+         data-css_background="{{ section.css.background }}"
+         data-css_padding_top="{{ section.css.padding_top }}"
+         data-css_padding_bottom="{{ section.css.padding_bottom }}"
          data-section-id="{{ section.pk }}">
       <div class="section-inner {% if show_borders %}show-borders{% endif %}">
 
@@ -330,7 +337,9 @@
                 </div>
               </div>
               <div class="sidebar-item-option right">
-                <div class="sidebar-option-btn">
+                <div class="sidebar-option-btn
+                            js-sidebar-option-btn-edit"
+                     data-section-id="{{ section.id }}">
                   <i class="fa fa-edit"></i>
                 </div>
               </div>
@@ -454,6 +463,13 @@
           });
         </script>
       </div>
+    </div>
+  </div>
+
+  {# EDIT SECTION MODAL #}
+  <div class="modal" tabindex="-1" role="dialog" id="edit-section-modal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content"></div>
     </div>
   </div>
 

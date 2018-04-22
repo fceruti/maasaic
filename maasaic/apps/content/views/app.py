@@ -348,6 +348,23 @@ class SectionCreateView(CreateView, LoginRequiredMixin):
         return HttpResponseRedirect(url)
 
 
+class SectionUpdateView(UpdateView, LoginRequiredMixin):
+    form_class = SectionCreateForm
+    model = Section
+    template_name = 'frontend/section_create.html'
+
+    def get_form_kwargs(self):
+        kw = super(SectionUpdateView, self).get_form_kwargs()
+        kw['page'] = Page.objects.get(id=self.request.POST['page'])
+        return kw
+
+    def form_valid(self, form):
+        section = form.save()
+        url = reverse('page_update', args=[section.page.website.subdomain,
+                                           section.page.pk])
+        return HttpResponseRedirect(url)
+
+
 class SectionOrderUpdateView(UpdateView, LoginRequiredMixin):
     form_class = SectionOrderForm
     http_method_names = ['post']

@@ -225,4 +225,27 @@ function onCellModalRequest(cellProperties, cellObj) {
     }
 }
 
+function onSectionModalRequest(sectionAttr) {
+    var $createModal = $($('#create-section-modal').html());
+    console.log(sectionAttr)
+    $createModal.find('.modal-title').text('Edit section')
+    $createModal.find('form').attr('action', '/sections/' + sectionAttr['id'] + '/update');;
+    $createModal.find('input[name=name]').attr('value', sectionAttr['name']);
+    $createModal.find('input[name=html_id]').attr('value', sectionAttr['htmlId']);
+    $createModal.find('input[name=section_n_rows]').attr('value', sectionAttr['nRows']);
+    $createModal.find('input[name=section_n_cols]').attr('value', sectionAttr['nCols']);
+    $createModal.find('input[name=section_background]').attr('value', sectionAttr['cssBackground']);
+    $createModal.find('input[name=section_padding_top]').attr('value', sectionAttr['cssPaddingTop']);
+    $createModal.find('input[name=section_padding_bottom]').attr('value', sectionAttr['cssPaddingBottom']);
+    $createModal.find('.btn-success').text('Save changes')
+
+
+    $('#edit-section-modal').html($createModal)
+    $('#edit-section-modal').modal('show');
+
+    $('#edit-section-modal').find('input[name=section_background]').colorpicker();
+}
+
+
 EventBus.subscribe(CELL_MODAL_REQUEST, onCellModalRequest);
+EventBus.subscribe(SECTION_MODAL_REQUEST, onSectionModalRequest);
