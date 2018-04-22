@@ -165,11 +165,15 @@ site_props = {
     'n_cols': {
         'scope': SiteDefaultProp.Scope.SECTION,
         'name': 'n_cols', 'type': 'int', 'default': 5,
-        'min': 1, 'max': SASS_VARIABLES[MAX_COLS_KEY]},
+        'min': 1, 'max': SASS_VARIABLES[MAX_COLS_KEY],
+        'help_text': 'Measured in cells. Must be a number between 1 and %s.'
+                     % SASS_VARIABLES[MAX_COLS_KEY]},
     'n_rows': {
         'scope': SiteDefaultProp.Scope.SECTION,
         'name': 'n_rows', 'type': 'int', 'default': 5,
-        'min': 1, 'max': SASS_VARIABLES[MAX_ROWS_KEY]},
+        'min': 1, 'max': SASS_VARIABLES[MAX_ROWS_KEY],
+        'help_text': 'Measured in cells. Must be a number between 1 and %s.'
+                     % SASS_VARIABLES[MAX_ROWS_KEY]},
     'sec_background': {
         'scope': SiteDefaultProp.Scope.SECTION,
         'name': 'background', 'type': 'str', 'default': '#FFFFFF'},
@@ -378,29 +382,57 @@ class PageResetForm(forms.ModelForm):
 class SectionCreateForm(forms.ModelForm):
     class Meta:
         model = Section
-        fields = ['page', 'n_columns', 'n_rows', 'name',
-                  'html_id']
+        fields = ['page', 'name', 'html_id']
 
         help_texts = {
-            'n_rows': 'Measured in cells. You can always change this '
-                      'number in the future.',
             'name': 'Mainly for you to recognize this section.',
             'html_id': 'Optional, useful when you want to create inside links.'
-        }
-        labels = {
-            'n_columns': '# of columns',
-            'n_rows': '# of rows',
         }
 
     def __init__(self, page, *args, **kwargs):
         super(SectionCreateForm, self).__init__(*args, **kwargs)
         self.fields['page'].initial = page
         self.fields['page'].widget = forms.HiddenInput()
-        self.fields['n_rows'].initial = '5'
-        max_cols = SASS_VARIABLES[MAX_ROWS_KEY]
-        self.fields['n_columns'].help_text = \
-            'Measured in cells. Must be a number between 1 and %s. Please' \
-            ' note that you cannot change this value in the future.' % max_cols,
+
+        for prop in site_props.values():
+            if prop['scope'] != SiteDefaultProp.Scope.SECTION:
+                continue
+            field_attr = {}
+            if 'help_text' in prop:
+                field_attr['help_text'] = prop['help_text']
+            try:
+                section_default_prop = SiteDefaultProp.objects.get(
+                    site=page.website, scope=prop['scope'], prop=prop['name'])
+                field_attr['initial'] = section_default_prop.value
+            except SiteDefaultProp.DoesNotExist:
+                field_attr['initial'] = prop['default']
+            if prop['type'] == 'int':
+                field_class = forms.IntegerField
+                if 'min' in prop:
+                    field_attr['min_value'] = prop['min']
+                if 'max' in prop:
+                    field_attr['max_value'] = prop['max']
+            elif prop['type'] == 'str':
+                field_class = forms.CharField
+            else:
+                raise Exception
+
+            self.fields[get_key_for_prop(prop)] = field_class(**field_attr)
+
+    def get_css(self):
+        return {
+            'background': self.cleaned_data['section_background'],
+            'padding-top': self.cleaned_data['section_padding_top'],
+            'padding-bottom': self.cleaned_data['section_padding_bottom'],
+        }
+
+    def save(self, commit=True):
+        section = super(SectionCreateForm, self).save(commit=False)
+        section.n_rows = self.cleaned_data['section_n_rows']
+        section.n_columns = self.cleaned_data['section_n_cols']
+        section.css = self.get_css()
+        section.save()
+        return section
 
 
 class SectionVisibilityForm(forms.ModelForm):

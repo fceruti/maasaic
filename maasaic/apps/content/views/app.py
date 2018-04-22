@@ -331,7 +331,7 @@ class SectionCreateView(CreateView, LoginRequiredMixin):
 
     def get_form_kwargs(self):
         kw = super(SectionCreateView, self).get_form_kwargs()
-        kw['page'] = None
+        kw['page'] = Page.objects.get(id=self.request.POST['page'])
         return kw
 
     def form_valid(self, form):

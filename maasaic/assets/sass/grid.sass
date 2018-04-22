@@ -44,7 +44,8 @@
 
   @each $page_width in $page-widths
     &.page--width-#{$page_width}
-      width:  $page_width * 1px
+      .section-inner
+        width:  $page_width * 1px
       @for $col_n from 1 through $max-cols
         $cell_width: $page_width / $col_n
         .section.section--#{$col_n}-cols
