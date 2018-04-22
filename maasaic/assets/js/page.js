@@ -311,10 +311,10 @@ function doMoveCell(cell){
     var x = parseInt($(cell).attr('data-x')),
         y = parseInt($(cell).attr('data-y'));
 
-
+    var sectionId = $(cell).attr('data-section-id');
     for(var i = 0; i < moveOptions['w']; i++) {
         for(var j = 0; j < moveOptions['h']; j++) {
-            $('.cell--layer-move[data-x=' + (x + i) + '][data-y=' + (y + j) + ']')
+            $('.cell--layer-move[data-x=' + (x + i) + '][data-y=' + (y + j) + '][data-section-id=' + sectionId +  ']')
                 .addClass('is-moving')
         }
     }
