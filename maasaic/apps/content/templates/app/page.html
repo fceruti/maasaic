@@ -24,42 +24,37 @@
   {# BEING: AJAX CONTAINER #}
   <div id="js-ajax-container">
 {% endif %}
-<div class="page"
+<div class="page
+            page--width-{{ page.width }}"
      data-website-id="{{ page.website.id }}"
-     data-website-pub_status="{{ page.website.pub_status }}"
      data-website-subdomain="{{ page.website.subdomain }}"
      data-website-name="{{ page.website.name }}"
      data-website-description="{{ page.website.description }}"
      data-website-language="{{ page.website.language }}"
-     data-website-page_width="{{ page.website.page_width }}"
      data-page-id="{{ page.pk }}"
-     data-pub_status="{{ page.pub_status }}"
-     data-name="{{ page.name }}"
+     data-title="{{ page.title }}"
      data-path="{{ page.path }}"
-     data-page_width="{{ page.page_width }}"
+     data-width="{{ page.width }}"
      data-description="{{ page.description }}">
   {% for section in page.visible_sections %}
     <div class="section
-                section--{{ section.n_columns }}-columns
-                section--{{ section.n_rows }}-rows
-                section--{{ section.cell_height }}-height"
+                section--{{ section.n_columns }}-cols
+                section--{{ section.n_rows }}-rows"
          style="{% for key, val in section.css.items %}{{ key }}:{{ val }};{% endfor %}"
-         data-pub_status="{{ section.pub_status }}"
          data-order="{{ section.order }}"
          data-n_columns="{{ section.n_columns }}"
-         data-cell_height="{{ section.cell_height }}"
+         data-n_rows="{{ section.n_rows }}"
          data-cell_default_padding="{% section_cell_default_padding section %}"
          data-cell_default_margin="{% section_cell_default_margin section %}"
          data-cell_default_background="{% section_cell_default_background section %}"
          data-cell_default_shadow="{% section_cell_default_shadow section %}"
          data-cell_default_border="{% section_cell_default_border section %}"
          data-cell_default_border_radius="{% section_cell_default_border_radius section %}"
-         data-width="{% page_width page %}"
+         data-width="{{ page.width }}"
          data-name="{{ section.name }}"
          data-slug="{{ section.slug }}"
          data-section-id="{{ section.pk }}">
-      <div class="section-inner {% if show_borders %}show-borders{% endif %}"
-           style="width: {% page_width page %}px">
+      <div class="section-inner {% if show_borders %}show-borders{% endif %}">
 
         {# VIEW LAYER #}
         <div class="view-layer">

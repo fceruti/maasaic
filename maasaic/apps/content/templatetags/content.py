@@ -17,9 +17,8 @@ register = template.Library()
 # Utils
 # ------------------------------------------------------------------------------
 CLASS_HASH_FIELDS = {
-    Page: ['title', 'path', 'page_width', 'description'],
-    Section: ['order', 'n_columns', 'n_rows', 'cell_height', 'css', 'name',
-              'html_id'],
+    Page: ['title', 'path', 'width', 'description'],
+    Section: ['order', 'n_columns', 'n_rows', 'css', 'name', 'html_id'],
     Cell: ['cell_type', 'x', 'y', 'w', 'h', 'content', 'css'],
 }
 
@@ -33,14 +32,6 @@ def get_obj_hash(obj):
 # ------------------------------------------------------------------------------
 # Page
 # ------------------------------------------------------------------------------
-@register.simple_tag()
-def page_width(page):
-    if page.page_width:
-        return page.page_width
-    else:
-        return page.website.page_width
-
-
 @register.simple_tag()
 def has_page_changed(edit_page):
     live_page = edit_page.target_page

@@ -42,29 +42,25 @@
             .edit-cell-ctrl
               display: none
 
-    @for $col_n from 1 through $max-cols
-      &.section--#{$col_n}-columns
-        $section-cols: min($max-cols, $col_n)
-        .cell
-          @for $sec_col_n from 1 through $section-cols
-            &.cell--w-#{$sec_col_n}
-              width: percentage($sec_col_n / $col_n)
-            &.cell--x-#{$sec_col_n}
-              left: percentage(($sec_col_n - 1) / $col_n)
-
-    @for $row_n from 1 through $max-rows
-      @each $cell-height in $cell-heights
-        &.section--#{$row_n}-rows.section--#{$cell-height}-height
-          height: ($cell-height * $row_n) * 1px
-          .wrapper
-            height: $cell-height * $row_n * 1px
-
-    @each $cell-height in $cell-heights
-      &.section--#{$cell-height}-height
-        .cell
-          height: $cell-height * 1px
-          @for $col_n from 1 through $max-cols
-            &.cell--h-#{$col_n}
-              height: $cell-height * $col_n * 1px
-            &.cell--y-#{$col_n}
-              top: $cell-height * ($col_n - 1) * 1px
+  @each $page_width in $page-widths
+    &.page--width-#{$page_width}
+      width:  $page_width * 1px
+      @for $col_n from 1 through $max-cols
+        $cell_width: $page_width / $col_n
+        .section.section--#{$col_n}-cols
+          .cell
+            @for $sec_col_n from 1 through $col_n
+              &.cell--w-#{$sec_col_n}
+                width: $cell_width * $sec_col_n * 1px
+              &.cell--x-#{$sec_col_n}
+                left: $cell_width * ($sec_col_n - 1) * 1px
+            @for $sec_row_n from 1 through $max-rows
+              &.cell--h-#{$sec_row_n}
+                height: $cell_width * $sec_row_n * 1px
+              &.cell--y-#{$sec_row_n}
+                top: $cell_width * ($sec_row_n - 1) * 1px
+          @for $row_n from 1 through $max-rows
+            &.section--#{$row_n}-rows
+              height: $cell_width * $row_n * 1px
+              .wrapper
+                height: $cell_width * $row_n * 1px

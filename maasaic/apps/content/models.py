@@ -19,7 +19,7 @@ from maasaic.apps.utils.models import Choices
 # ------------------------------------------------------------------------------
 MAX_COLS_KEY = 'MAX_COLS'
 MAX_ROWS_KEY = 'MAX_ROWS'
-CELL_HEIGHTS_KEY = 'CELL_HEIGHTS'
+PAGE_WIDTHS_KEY = 'PAGE_WIDTHS'
 SASS_VARIABLES = {}
 variables_path = os.path.join(settings.ASSETS_PATH, 'sass/_variables.sass')
 with open(variables_path, 'r') as f:
@@ -30,9 +30,9 @@ with open(variables_path, 'r') as f:
                 SASS_VARIABLES[MAX_COLS_KEY] = int(value)
             elif var_name == '$max-rows':
                 SASS_VARIABLES[MAX_ROWS_KEY] = int(value)
-            elif var_name == '$cell-heights':
-                SASS_VARIABLES[CELL_HEIGHTS_KEY] = [int(hh) for hh in
-                                                    value.split(',')]
+            elif var_name == '$page-widths':
+                SASS_VARIABLES[PAGE_WIDTHS_KEY] = [int(hh) for hh in
+                                                   value.split(',')]
         except ValueError:
             pass
 
@@ -58,30 +58,17 @@ def image_path(instance, filename):
 # ------------------------------------------------------------------------------
 # Status helpers
 # ------------------------------------------------------------------------------
-class PublicationStatus(Choices):
-    UN_PUBLISHED = 'UN_PUBLISHED'
-    PUBLISHED = 'PUBLISHED'
-    DELETED = 'DELETED'
-
-
 class Language(Choices):
     EN = 'EN'
     ES = 'ES'
 
 
-class CellHeight(Choices):
+class PageWidth(Choices):
     pass
 
 
-for cell_height in SASS_VARIABLES[CELL_HEIGHTS_KEY]:
-    setattr(CellHeight, '%s_px' % cell_height, cell_height)
-
-
-class PublicationStatusField(models.CharField):
-    def __init__(self, *args, **kwargs):
-        super(PublicationStatusField, self).__init__(
-            max_length=255,
-            choices=PublicationStatus.choices())
+for page_width in SASS_VARIABLES[PAGE_WIDTHS_KEY]:
+    setattr(PageWidth, '%s_px' % page_width, page_width)
 
 
 class LanguageField(models.CharField):
@@ -105,7 +92,7 @@ class Website(models.Model):
     language = LanguageField()
     favicon = ImageCropField(upload_to=favicon_path, null=True, blank=True)
     favicon_cropping = ImageRatioField('favicon', '128x128')
-    page_width = models.PositiveIntegerField(default=1000)
+    page_width = models.PositiveIntegerField(choices=PageWidth.choices())
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -144,13 +131,16 @@ class Page(models.Model):
     mode = models.CharField(max_length=255, choices=Mode.choices())
     title = models.CharField(max_length=255)
     path = models.CharField(max_length=255, null=True, blank=True)
-    page_width = models.PositiveIntegerField(null=True, blank=True)
+    width = models.PositiveIntegerField(choices=PageWidth.choices())
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ('website', 'path', 'mode')
+
+    def __str__(self):
+        return '%s | %s' % (self.website.name, self.title)
 
     @cached_property
     def all_sections(self):
@@ -160,9 +150,6 @@ class Page(models.Model):
     @cached_property
     def visible_sections(self):
         return [section for section in self.all_sections if section.is_visible]
-
-    def __str__(self):
-        return '%s | %s' % (self.website.name, self.title)
 
     @property
     def public_url(self):
@@ -187,7 +174,6 @@ class Section(models.Model):
         default=1,
         validators=[MinValueValidator(1),
                     MaxValueValidator(SASS_VARIABLES[MAX_ROWS_KEY])])
-    cell_height = models.PositiveIntegerField(choices=CellHeight.choices())
     css = JSONField(null=True, blank=True)
     name = models.CharField(max_length=255)
     html_id = models.CharField(max_length=255, null=True, blank=True)
@@ -199,7 +185,6 @@ class Section(models.Model):
             'order': self.order,
             'n_columns': self.n_columns,
             'n_rows': self.n_rows,
-            'cell_height': self.cell_height,
             'css': self.css,
             'name': self.name,
             'html_id': self.html_id,

@@ -160,7 +160,7 @@ class WebsitePublishForm(forms.ModelForm):
 class PageCreateForm(forms.ModelForm):
     class Meta:
         model = Page
-        fields = ['title', 'path', 'description']
+        fields = ['title', 'path', 'width', 'description']
 
     def __init__(self, website, *args, **kwargs):
         self.website = website
@@ -280,14 +280,12 @@ class PageResetForm(forms.ModelForm):
 class SectionCreateForm(forms.ModelForm):
     class Meta:
         model = Section
-        fields = ['page', 'n_columns', 'n_rows', 'cell_height', 'name',
+        fields = ['page', 'n_columns', 'n_rows', 'name',
                   'html_id']
 
         help_texts = {
             'n_rows': 'Measured in cells. You can always change this '
                       'number in the future.',
-            'cell_height': 'Measured in pixels, this is how high every cell '
-                           'inside this section will be',
             'name': 'Mainly for you to recognize this section.',
             'html_id': 'Optional, useful when you want to create inside links.'
         }
@@ -300,7 +298,6 @@ class SectionCreateForm(forms.ModelForm):
         super(SectionCreateForm, self).__init__(*args, **kwargs)
         self.fields['page'].initial = page
         self.fields['page'].widget = forms.HiddenInput()
-        self.fields['cell_height'].initial = '200'
         self.fields['n_rows'].initial = '5'
         max_cols = SASS_VARIABLES[MAX_ROWS_KEY]
         self.fields['n_columns'].help_text = \
