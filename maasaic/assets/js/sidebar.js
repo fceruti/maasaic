@@ -85,24 +85,24 @@ function bindSidebarEvents() {
         EventBus.fire(SECTION_EDIT_MODAL_REQUEST, sectionAttr);
     });
 
-    $('.js-edit-cell-ctrl-btn-edit').mousedown(function(){
-        $cell = $(this).closest('.cell.cell--layer-edit');
-        var cellId = $cell.attr('data-cell-id');
-        var sectionId = $cell.attr('data-section-id');
+    $('.js-sidebar-cell-btn-edit').mousedown(function(){
+        $cell_list_item = $(this).closest('.cell-list-item');
+        var sectionId = $cell_list_item.data('section-id'),
+            cellId = $cell_list_item.data('cell-id');
+        $cell = $('.cell.cell--layer-edit[data-section-id=' + sectionId + '][data-cell-id=' + cellId + ']')
+
         var sectionCellProperties= getSectionCellProperties(sectionId);
         var cellObj = {
             id: cellId,
             sectionId: sectionId,
-            cellType: $cell.attr('data-type'),
-            x: $cell.attr('data-x'),
-            y: $cell.attr('data-y'),
-            w: $cell.attr('data-w'),
-            h: $cell.attr('data-h'),
+            cellType: $cell.data('type'),
+            x: $cell.data('x'),
+            y: $cell.data('y'),
+            w: $cell.data('w'),
+            h: $cell.data('h'),
             content: $('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner').html(),
             css: getCellCss($cell)
         };
-        console.log($('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner').html())
-        console.log('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner')
         EventBus.fire(CELL_MODAL_REQUEST, sectionCellProperties, cellObj);
     });
 }

@@ -205,23 +205,6 @@ function onInsertCellBtnClicked(target) {
     EventBus.fire(CELL_MODAL_REQUEST, sectionCellProperties, cellObj);
 }
 
-function onCellHoverStart(sectionId, cellId) {
-    $('.cell.cell--layer-edit[data-section-id="' + sectionId + '"][data-cell-id="' + cellId + '"]').addClass('hover');
-}
-
-function onCellHoverEnd(sectionId, cellId) {
-    $('.cell.cell--layer-edit[data-section-id="' + sectionId + '"][data-cell-id="' + cellId + '"]').removeClass('hover');
-}
-
-
-function onSectionHoverStart(sectionId){
-    $('.section[data-section-id=' + sectionId + ']').addClass('hover');
-}
-
-function onSectionHoverEnd(sectionId){
-    $('.section[data-section-id=' + sectionId + ']').removeClass('hover');
-}
-
 
 function bindInsertEvents (){
     EventBus.subscribe(STATE_CHANGED, function(){
@@ -248,7 +231,7 @@ function bindInsertEvents (){
     });
 
     $(document).mouseup(function(event){
-        $target = $(event.target)
+        $target = $(event.target);
 
         // User has lifted the mouse inside a valid area
         if(appState == STATE_INSERT_AREA_DRAWING &&
@@ -275,6 +258,33 @@ function bindInsertEvents (){
         }
     });
 
+}
+EventBus.subscribe(HTML_INJECTED, bindInsertEvents);
+
+
+
+/*******************************************************************************
+* Hover cells & sections
+*******************************************************************************/
+function onCellHoverStart(sectionId, cellId) {
+    $('.cell.cell--layer-edit[data-section-id="' + sectionId + '"][data-cell-id="' + cellId + '"]').addClass('hover');
+}
+
+function onCellHoverEnd(sectionId, cellId) {
+    $('.cell.cell--layer-edit[data-section-id="' + sectionId + '"][data-cell-id="' + cellId + '"]').removeClass('hover');
+}
+
+
+function onSectionHoverStart(sectionId){
+    $('.section[data-section-id=' + sectionId + ']').addClass('hover');
+}
+
+function onSectionHoverEnd(sectionId){
+    $('.section[data-section-id=' + sectionId + ']').removeClass('hover');
+}
+
+
+function bindHoverEvents() {
     $('.cell.cell--layer-edit').hover(
         function() {
             var sectionId = $(this).attr('data-section-id');
@@ -286,13 +296,15 @@ function bindInsertEvents (){
             EventBus.fire(CELL_HOVERING_END, sectionId, cellId);
         }
     );
-
 }
-EventBus.subscribe(HTML_INJECTED, bindInsertEvents);
+
+
 EventBus.subscribe(CELL_HOVERING_START, onCellHoverStart);
 EventBus.subscribe(CELL_HOVERING_END, onCellHoverEnd);
 EventBus.subscribe(SECTION_HOVERING_START, onSectionHoverStart);
 EventBus.subscribe(SECTION_HOVERING_END, onSectionHoverEnd);
+EventBus.subscribe(HTML_INJECTED, bindHoverEvents);
+
 
 /*******************************************************************************
 * Move cell

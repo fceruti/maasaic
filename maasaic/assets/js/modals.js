@@ -124,8 +124,7 @@ function onCellModalRequest(cellProperties, cellObj) {
         $('.note-statusbar').css({'display': 'none'});
 
         if(cellObj['content'] != null && cellObj['content'] != undefined) {
-        console.log($(cellObj['content']))
-            $('#summernote').summernote('code', $(cellObj['content']));
+            $('#summernote').summernote('code', cellObj['content']);
         }
 
         $noteWrapper = $('<div></div>')
@@ -178,8 +177,7 @@ function onCellModalRequest(cellProperties, cellObj) {
             $('.note-editable').css({'box-shadow': $(this).val()})
         });
 
-        // TODO: Bind ajax form
-
+        bindFormEventsWithSelector('#insert-cell-modal form')
         return
     }
     if(cellObj['cellType'] == 'IMAGE') {
