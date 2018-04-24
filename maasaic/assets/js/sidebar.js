@@ -41,6 +41,16 @@ function bindSidebarEvents() {
         }
     );
 
+    $('.section-list-item > .sidebar-item').hover(
+        function() {
+            var sectionId = $(this).closest('.section-list-item').attr('data-section-id');
+            EventBus.fire(SECTION_HOVERING_START, sectionId);
+        }, function() {
+            var sectionId = $(this).closest('.section-list-item').attr('data-section-id');
+            EventBus.fire(SECTION_HOVERING_END, sectionId);
+        }
+    );
+
     Sortable.create($('#js-section-list')[0], {
         handle: '.drag-handle',
         dataIdAttr: 'data-section-id',
@@ -59,7 +69,7 @@ function bindSidebarEvents() {
         });
     });
 
-    $('.js-sidebar-option-btn-edit').click(function(){
+    $('.js-sidebar-section-btn-edit').click(function(){
         $section = $('.section[data-section-id="' + $(this).attr('data-section-id') + '"]')
         var sectionAttr = {
             id: $section.attr('data-section-id'),
@@ -73,6 +83,27 @@ function bindSidebarEvents() {
         }
 
         EventBus.fire(SECTION_EDIT_MODAL_REQUEST, sectionAttr);
+    });
+
+    $('.js-edit-cell-ctrl-btn-edit').mousedown(function(){
+        $cell = $(this).closest('.cell.cell--layer-edit');
+        var cellId = $cell.attr('data-cell-id');
+        var sectionId = $cell.attr('data-section-id');
+        var sectionCellProperties= getSectionCellProperties(sectionId);
+        var cellObj = {
+            id: cellId,
+            sectionId: sectionId,
+            cellType: $cell.attr('data-type'),
+            x: $cell.attr('data-x'),
+            y: $cell.attr('data-y'),
+            w: $cell.attr('data-w'),
+            h: $cell.attr('data-h'),
+            content: $('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner').html(),
+            css: getCellCss($cell)
+        };
+        console.log($('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner').html())
+        console.log('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner')
+        EventBus.fire(CELL_MODAL_REQUEST, sectionCellProperties, cellObj);
     });
 }
 
