@@ -210,7 +210,7 @@ site_props = {
         'name': 'border_radius', 'type': 'str', 'default': 'none'},
     'box_shadow': {
         'scope': SiteDefaultProp.Scope.CELL,
-        'name': 'box_shadows', 'type': 'str', 'default': 'none'},
+        'name': 'box_shadow', 'type': 'str', 'default': 'none'},
 }
 
 

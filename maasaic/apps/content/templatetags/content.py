@@ -66,78 +66,78 @@ def has_page_changed(edit_page):
 
 
 # ------------------------------------------------------------------------------
-# Section
+# Default Attibutes
 # ------------------------------------------------------------------------------
-@register.simple_tag()
-def section_cell_default_padding(section):
-    try:
-        prop = SiteDefaultProp.objects.get(
-            site=section.page.website,
-            scope=SiteDefaultProp.Scope.CELL,
-            prop='padding')
-        return prop.value
-    except SiteDefaultProp.DoesNotExist:
-        return site_props['padding']['default']
+def get_defaults_cache_value(request, website, scope, prop_name):
+    def build_cache_key(scope, prop_name):
+        return '%s-%s' % (scope, prop_name)
+
+    key = build_cache_key(scope, prop_name)
+    if not hasattr(request, '_defaults_cache'):
+        default_props = SiteDefaultProp.objects.filter(site=website)
+        default_props_dict = dict((build_cache_key(pr.scope, pr.prop), pr.value)
+                                  for pr in default_props)
+
+        cache = {}
+        for site_prop in list(site_props.values()):
+            site_prop_key = build_cache_key(site_prop['scope'],
+                                            site_prop['name'])
+            try:
+                cache[site_prop_key] = default_props_dict[site_prop_key]
+            except KeyError:
+                cache[site_prop_key] = site_prop['default']
+
+        setattr(request, '_defaults_cache', cache)
+    print(getattr(request, '_defaults_cache'))
+    return getattr(request, '_defaults_cache')[key]
 
 
-@register.simple_tag()
-def section_cell_default_margin(section):
-    try:
-        prop = SiteDefaultProp.objects.get(
-            site=section.page.website,
-            scope=SiteDefaultProp.Scope.CELL,
-            prop='margin')
-        return prop.value
-    except SiteDefaultProp.DoesNotExist:
-        return site_props['margin']['default']
+@register.simple_tag(takes_context=True)
+def section_cell_default_padding(context, section):
+    return get_defaults_cache_value(request=context['request'],
+                                    website=section.page.website,
+                                    scope=SiteDefaultProp.Scope.CELL,
+                                    prop_name='padding')
 
 
-@register.simple_tag()
-def section_cell_default_background(section):
-    try:
-        prop = SiteDefaultProp.objects.get(
-            site=section.page.website,
-            scope=SiteDefaultProp.Scope.CELL,
-            prop='background')
-        return prop.value
-    except SiteDefaultProp.DoesNotExist:
-        return site_props['background']['default']
+@register.simple_tag(takes_context=True)
+def section_cell_default_margin(context, section):
+    return get_defaults_cache_value(request=context['request'],
+                                    website=section.page.website,
+                                    scope=SiteDefaultProp.Scope.CELL,
+                                    prop_name='margin')
 
 
-@register.simple_tag()
-def section_cell_default_border(section):
-    try:
-        prop = SiteDefaultProp.objects.get(
-            site=section.page.website,
-            scope=SiteDefaultProp.Scope.CELL,
-            prop='border')
-        return prop.value
-    except SiteDefaultProp.DoesNotExist:
-        return site_props['border']['default']
+@register.simple_tag(takes_context=True)
+def section_cell_default_background(context, section):
+    return get_defaults_cache_value(request=context['request'],
+                                    website=section.page.website,
+                                    scope=SiteDefaultProp.Scope.CELL,
+                                    prop_name='background')
 
 
-@register.simple_tag()
-def section_cell_default_border_radius(section):
-    try:
-        prop = SiteDefaultProp.objects.get(
-            site=section.page.website,
-            scope=SiteDefaultProp.Scope.CELL,
-            prop='border_radius')
-        return prop.value
-    except SiteDefaultProp.DoesNotExist:
-        return site_props['border_radius']['default']
+@register.simple_tag(takes_context=True)
+def section_cell_default_border(context, section):
+    return get_defaults_cache_value(request=context['request'],
+                                    website=section.page.website,
+                                    scope=SiteDefaultProp.Scope.CELL,
+                                    prop_name='border')
 
 
-@register.simple_tag()
-def section_cell_default_shadow(section):
-    try:
-        prop = SiteDefaultProp.objects.get(
-            site=section.page.website,
-            scope=SiteDefaultProp.Scope.CELL,
-            prop='box_shadow')
-        return prop.value
-    except SiteDefaultProp.DoesNotExist:
-        return site_props['box_shadow']['default']
+@register.simple_tag(takes_context=True)
+def section_cell_default_border_radius(context, section):
+    return get_defaults_cache_value(request=context['request'],
+                                    website=section.page.website,
+                                    scope=SiteDefaultProp.Scope.CELL,
+                                    prop_name='border_radius')
+
+
+@register.simple_tag(takes_context=True)
+def section_cell_default_shadow(context, section):
+    return get_defaults_cache_value(request=context['request'],
+                                    website=section.page.website,
+                                    scope=SiteDefaultProp.Scope.CELL,
+                                    prop_name='box_shadow')
 
 
 # ------------------------------------------------------------------------------
