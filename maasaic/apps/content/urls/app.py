@@ -36,6 +36,7 @@ from maasaic.apps.content.views.app import PageResetView
 from maasaic.apps.content.views.app import PageUpdateView
 from maasaic.apps.content.views.app import SectionCreateView
 from maasaic.apps.content.views.app import SectionUpdateView
+from maasaic.apps.content.views.app import SectionDeleteView
 from maasaic.apps.content.views.app import SectionOrderUpdateView
 from maasaic.apps.content.views.app import SectionVisibilityUpdateView
 from maasaic.apps.content.views.app import WebsiteConfigView
@@ -61,6 +62,7 @@ cells_urls = [
 sections_urls = [
     path('/create', SectionCreateView.as_view(), name='section_create'),
     path('/<int:pk>/update', SectionUpdateView.as_view(), name='section_update'),
+    path('/<int:pk>/delete', SectionDeleteView.as_view(), name='section_delete'),
     path('/<int:pk>/visibility', SectionVisibilityUpdateView.as_view(), name='section_update_visibility'),
     path('/<int:pk>/order', SectionOrderUpdateView.as_view(), name='section_update_order'),
 ]

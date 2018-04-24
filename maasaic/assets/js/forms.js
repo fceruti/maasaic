@@ -3,7 +3,11 @@ function findInParsed(html, selector){
 }
 
 function bindFormEvents () {
-    $('.js-ajax-form').on('submit', function(event){
+    bindFormEventsWithSelector('.js-ajax-form')
+}
+
+function bindFormEventsWithSelector(selector) {
+    $(selector).on('submit', function(event){
         event.preventDefault();
         var data = $(this).serialize();
         var url = $(this).attr('action');
@@ -16,6 +20,9 @@ function performPost(url, data) {
     if(isPosting === false){
         EventBus.fire(WAITING_SERVER_RESPONSE_STARTED);
         isPosting = true;
+        if(data === undefined || data === null || data === '') {
+            data = {};
+        }
         if(!data.hasOwnProperty('csrfmiddlewaretoken')){
             data['csrfmiddlewaretoken'] = csrfmiddlewaretoken;
         }
@@ -26,6 +33,7 @@ function performPost(url, data) {
           success: function(response) {
             var newHtml = findInParsed(response, '#js-ajax-container');
             $('#js-ajax-container').html($(newHtml).html());
+            $('.modal').modal('hide')
           },
           complete: function() {
             EventBus.fire(HTML_INJECTED);

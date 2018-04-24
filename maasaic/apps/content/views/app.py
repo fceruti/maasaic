@@ -353,6 +353,15 @@ class SectionCreateView(CreateView, LoginRequiredMixin):
         return HttpResponseRedirect(url)
 
 
+class SectionDeleteView(DeleteView, LoginRequiredMixin):
+    model = Section
+
+    def get_success_url(self):
+        section = self.get_object()
+        return reverse('page_update', args=[section.page.website.subdomain,
+                                            section.page.pk])
+
+
 class SectionUpdateView(UpdateView, LoginRequiredMixin):
     form_class = SectionCreateForm
     model = Section

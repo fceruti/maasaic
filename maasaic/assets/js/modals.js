@@ -225,7 +225,7 @@ function onCellModalRequest(cellProperties, cellObj) {
     }
 }
 
-function onSectionModalRequest(sectionAttr) {
+function onEditSectionModalRequest(sectionAttr) {
     var $createModal = $($('#create-section-modal').html());
     console.log(sectionAttr)
     $createModal.find('.modal-title').text('Edit section')
@@ -237,15 +237,17 @@ function onSectionModalRequest(sectionAttr) {
     $createModal.find('input[name=section_background]').attr('value', sectionAttr['cssBackground']);
     $createModal.find('input[name=section_padding_top]').attr('value', sectionAttr['cssPaddingTop']);
     $createModal.find('input[name=section_padding_bottom]').attr('value', sectionAttr['cssPaddingBottom']);
-    $createModal.find('.btn-success').text('Save changes')
+    $createModal.find('.btn-success').text('Save changes');
 
-
-    $('#edit-section-modal').html($createModal)
+    $('#edit-section-modal').html($createModal);
+    $('<form id="delete-section-form" method="POST" action="/sections/' + sectionAttr['id'] + '/delete"><button type="submit" class="btn btn-link text-danger mr-auto"><i class="fa fa-times"></i> Delete</button></form>').insertBefore('#edit-section-modal .btn-success');
     $('#edit-section-modal').modal('show');
 
     $('#edit-section-modal').find('input[name=section_background]').colorpicker();
+
+    bindFormEventsWithSelector('.modal.show form')
 }
 
 
 EventBus.subscribe(CELL_MODAL_REQUEST, onCellModalRequest);
-EventBus.subscribe(SECTION_MODAL_REQUEST, onSectionModalRequest);
+EventBus.subscribe(SECTION_EDIT_MODAL_REQUEST, onEditSectionModalRequest);

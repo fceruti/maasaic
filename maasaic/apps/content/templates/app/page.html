@@ -417,7 +417,7 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form method="POST" action="{% url 'section_create' %}" class="form-horizontal">
+        <form method="POST" action="{% url 'section_create' %}" class="form-horizontal" >
           {% csrf_token %}
           {{ section_create_form.page }}
           <div class="modal-body">
@@ -459,6 +459,7 @@
         <script type="text/javascript">
           $(document).ready(function() {
             $('.colorpicker-element').colorpicker();
+            bindFormEventsWithSelector('#create-section-modal form');
           });
         </script>
       </div>

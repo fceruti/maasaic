@@ -72,7 +72,7 @@ function bindSidebarEvents() {
             cssPaddingBottom: $section.attr('data-css_padding_bottom')
         }
 
-        EventBus.fire(SECTION_MODAL_REQUEST, sectionAttr);
+        EventBus.fire(SECTION_EDIT_MODAL_REQUEST, sectionAttr);
     });
 }
 
