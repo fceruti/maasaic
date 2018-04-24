@@ -440,26 +440,25 @@
               </div>
               <div class="row">
                 <div class="col">
-                  {% bootstrap_field section_create_form.section_background %}
-                </div>
-                <div class="col">
                   {% bootstrap_field section_create_form.section_padding_top %}
                 </div>
                 <div class="col">
                   {% bootstrap_field section_create_form.section_padding_bottom %}
                 </div>
+                <div class="col">
+                  {% bootstrap_field section_create_form.section_background %}
+                </div>
               </div>
             </div>
           </div>
           <div class="modal-footer">
-            <a class="btn btn-link mr-auto" href="{% url 'website_defaults' website.subdomain %}" target="_blank">Change default attributes</a>
-            <button type="button" class="btn btn-link text-danger" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-link mr-auto" href="{% url 'website_defaults' website.subdomain %}" target="_blank">Change default values</a>
             <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Create section</button>
           </div>
         </form>
-        <script>
+        <script type="text/javascript">
           $(document).ready(function() {
-            $('#id_section_background').colorpicker();
+            $('.colorpicker-element').colorpicker();
           });
         </script>
       </div>

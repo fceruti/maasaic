@@ -216,6 +216,11 @@ class PageConfigView(WebsiteDetailBase, PageUrlMixin, UpdateView):
     context_object_name = 'page'
     form_class = PageUpdateForm
 
+    def get_form_kwargs(self):
+        kw = super(PageConfigView, self).get_form_kwargs()
+        kw['website'] = self.website
+        return kw
+
     def form_valid(self, form):
         form.save()
         messages.success(self.request, 'Page updated')

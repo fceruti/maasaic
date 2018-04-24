@@ -19,6 +19,7 @@ from maasaic.apps.content.models import SiteDefaultProp
 from maasaic.apps.content.models import SASS_VARIABLES
 from maasaic.apps.content.models import MAX_COLS_KEY
 from maasaic.apps.content.models import MAX_ROWS_KEY
+from maasaic.apps.utils.forms import ColorWidget
 
 path_pattern = re.compile('^([/\w+-.]*)$')
 
@@ -178,7 +179,7 @@ site_props = {
                      % SASS_VARIABLES[MAX_ROWS_KEY]},
     'sec_background': {
         'scope': SiteDefaultProp.Scope.SECTION,
-        'label_name': 'Background',
+        'label_name': 'Background', 'widget': ColorWidget,
         'name': 'background', 'type': 'str', 'default': '#FFFFFF'},
     'sec_padding-top': {
         'scope': SiteDefaultProp.Scope.SECTION,
@@ -412,6 +413,8 @@ class SectionCreateForm(forms.ModelForm):
                 field_attr['label'] = prop['label_name']
             if 'help_text' in prop:
                 field_attr['help_text'] = prop['help_text']
+            if 'widget' in prop:
+                field_attr['widget'] = prop['widget']()
             try:
                 section_default_prop = SiteDefaultProp.objects.get(
                     site=page.website, scope=prop['scope'], prop=prop['name'])
@@ -492,7 +495,7 @@ class SectionOrderForm(forms.ModelForm):
 class CellCreateForm(forms.ModelForm):
     css_padding = forms.CharField(required=False)
     css_margin = forms.CharField(required=False)
-    css_background = forms.CharField(required=False)
+    css_background = forms.CharField(required=False, widget=ColorWidget)
     css_border = forms.CharField(required=False)
     css_border_radius = forms.CharField(required=False)
     css_shadow = forms.CharField(required=False)
