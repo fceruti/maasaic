@@ -56,7 +56,7 @@
          data-name="{{ section.name }}"
          data-html_id="{{ section.html_id }}"
          data-n_rows="{{ section.n_rows }}"
-         data-n_columns="{{ section.n_columns}}"
+         data-n_cols="{{ section.n_columns}}"
          data-css_background="{{ section.css.background }}"
          data-css_padding_top="{{ section.css.padding_top }}"
          data-css_padding_bottom="{{ section.css.padding_bottom }}"
@@ -355,7 +355,7 @@
               </div>
               <div class="sidebar-item-content">
                 <h2 class="name">{{ section.name }}</h2>
-                <h3 class="description">(C:{{ section.n_columns }}, R:{{ section.n_rows }}, H:{{ section.cell_height }}px)</h3>
+                <h3 class="description">(Cols:{{ section.n_columns }}, Rows:{{ section.n_rows }})</h3>
               </div>
             </div>
 

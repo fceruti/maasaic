@@ -32,7 +32,7 @@ function getCell(layer, sectionId, x, y) {
 function getSectionCellProperties(sectionId) {
     var $section = $('.section[data-section-id=' + sectionId + ']')
     var totalWidth = parseInt($section.attr('data-width')),
-        totalCols = parseInt($section.attr('data-n_columns')),
+        totalCols = parseInt($section.attr('data-n_cols')),
         padding = $section.attr('data-cell_default_padding'),
         margin = $section.attr('data-cell_default_margin'),
         background = $section.attr('data-cell_default_background'),
