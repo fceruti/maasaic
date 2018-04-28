@@ -204,6 +204,11 @@ class PageCreateView(WebsiteDetailBase, CreateView):
     form_class = PageCreateForm
     current_tab = 'pages'
 
+    def get_form_kwargs(self):
+        kw = super(PageCreateView, self).get_form_kwargs()
+        kw['website'] = self.website
+        return kw
+
     def form_valid(self, form):
         form.save()
         messages.success(self.request, 'Page created')

@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate
 from django.db import transaction
 
+from maasaic.apps.content.utils import clean_path
 from maasaic.apps.content.models import Cell
 from maasaic.apps.content.models import MAX_ROWS_KEY
 from maasaic.apps.content.models import Page
@@ -289,6 +290,7 @@ class PageCreateForm(forms.ModelForm):
                 mode=Page.Mode.LIVE,
                 title=self.cleaned_data['title'],
                 path=path,
+                width=self.cleaned_data['width'],
                 description=self.cleaned_data['description'])
             Page.objects.create(
                 website=self.website,
@@ -297,20 +299,12 @@ class PageCreateForm(forms.ModelForm):
                 mode=Page.Mode.EDIT,
                 title=self.cleaned_data['title'],
                 path=path,
+                width=self.cleaned_data['width'],
                 description=self.cleaned_data['description'])
         return live_page
 
     def clean_path(self):
-        path = self.cleaned_data['path']
-        if path and path != '/':
-            if path[0] == '/':
-                path = path[1:]
-            if path and path[-1] == '/':
-                path = path[:-1]
-            if path and path == '':
-                path = '/'
-        else:
-            path = '/'
+        path = clean_path(input_str=self.cleaned_data['path'])
         if not path_pattern.match(path):
             err_msg = 'Please create a valid path with the following ' \
                       'characters: a-z, A-Z, 0-9, /, -, _.'
@@ -344,16 +338,7 @@ class PageUpdateForm(PageCreateForm):
         return live_page
 
     def clean_path(self):
-        path = self.cleaned_data['path']
-        if path and path != '/':
-            if path[0] == '/':
-                path = path[1:]
-            if path and path[-1] == '/':
-                path = path[:-1]
-            if path and path == '':
-                path = '/'
-        else:
-            path = '/'
+        path = clean_path(input_str=self.cleaned_data['path'])
         if not path_pattern.match(path):
             err_msg = 'Please create a valid path with the following ' \
                       'characters: a-z, A-Z, 0-9, /, -, _.'

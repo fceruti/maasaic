@@ -76,3 +76,9 @@ def get_margin_string_from_position(position: dict) -> str:
         else:
             tmpl = '{top}px {right}px {bottom}px {left}px'
     return tmpl.format(**position)
+
+
+def clean_path(input_str: str) -> str:
+    parts = input_str.split('/')
+    cleaned_parts = [part for part in parts if part]
+    return '/%s' % '/'.join(cleaned_parts)

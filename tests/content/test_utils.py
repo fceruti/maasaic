@@ -3,6 +3,7 @@ import pytest
 from maasaic.apps.content.utils import get_margin_string_from_position
 from maasaic.apps.content.utils import get_position_dict_from_margin
 from maasaic.apps.content.utils import get_position_string_from_position
+from maasaic.apps.content.utils import clean_path
 
 
 @pytest.mark.parametrize('margin, position', [
@@ -36,4 +37,21 @@ def test_get_position_string_from_dict(position, margin):
 ])
 def test_get_margin_string_from_position(position, margin):
     assert get_margin_string_from_position(position) == margin
+
+
+@pytest.mark.parametrize('input_str, expected_path', [
+    ('', '/'),
+    ('/', '/'),
+    ('//', '/'),
+
+    ('hello', '/hello'),
+    ('/hello/', '/hello'),
+    ('hello/', '/hello'),
+
+    ('hello/world', '/hello/world'),
+    ('/hello/world/', '/hello/world'),
+    ('hello/world/', '/hello/world'),
+])
+def test_clean_path(input_str, expected_path):
+    assert clean_path(input_str) == expected_path
 
