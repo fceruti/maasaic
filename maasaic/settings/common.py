@@ -176,7 +176,7 @@ COMPRESS_PRECOMPILERS = (
 COMPRESS_ENABLED = False
 COMPRESS_OFFLINE = False
 
-from bootstrap4.components import render_alert
+
 # ------------------------------------------------------------------------------
 # Cropping
 # ------------------------------------------------------------------------------

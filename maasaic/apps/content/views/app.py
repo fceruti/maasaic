@@ -153,6 +153,7 @@ class WebsitePageDefaultsView(WebsiteDetailBase, FormView):
 
     def form_valid(self, form):
         form.save()
+        messages.success(self.request, 'Page default values updated')
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):

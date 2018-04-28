@@ -192,24 +192,31 @@ site_props = {
 
     'color': {
         'scope': SiteDefaultProp.Scope.CELL,
+        'label_name': 'Color', 'widget': ColorWidget,
         'name': 'color', 'type': 'str', 'default': '#111111'},
     'background': {
         'scope': SiteDefaultProp.Scope.CELL,
+        'label_name': 'Background', 'widget': ColorWidget,
         'name': 'background', 'type': 'str', 'default': '#FFFFFF'},
     'margin': {
         'scope': SiteDefaultProp.Scope.CELL,
+        'label_name': 'Margin',
         'name': 'margin', 'type': 'str', 'default': '15px'},
     'padding': {
         'scope': SiteDefaultProp.Scope.CELL,
+        'label_name': 'Padding',
         'name': 'padding', 'type': 'str', 'default': '15px'},
     'border': {
         'scope': SiteDefaultProp.Scope.CELL,
+        'label_name': 'Border',
         'name': 'border', 'type': 'str', 'default': 'none'},
     'border_radius': {
         'scope': SiteDefaultProp.Scope.CELL,
+        'label_name': 'Border radius',
         'name': 'border_radius', 'type': 'str', 'default': 'none'},
     'box_shadow': {
         'scope': SiteDefaultProp.Scope.CELL,
+        'label_name': 'Box shadow',
         'name': 'box_shadow', 'type': 'str', 'default': 'none'},
 }
 
@@ -231,6 +238,12 @@ class WebsiteDefaultsForm(forms.Form):
                 field_attr['initial'] = section_default_prop.value
             except SiteDefaultProp.DoesNotExist:
                 field_attr['initial'] = prop['default']
+            if 'label_name' in prop:
+                field_attr['label'] = prop['label_name']
+            if 'help_text' in prop:
+                field_attr['help_text'] = prop['help_text']
+            if 'widget' in prop:
+                field_attr['widget'] = prop['widget']()
             if prop['type'] == 'int':
                 field_class = forms.IntegerField
                 if 'min' in prop:

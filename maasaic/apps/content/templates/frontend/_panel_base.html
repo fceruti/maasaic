@@ -40,7 +40,9 @@
         </div>
       </div>
     </div>
+
     {% block secondary_header %}{% endblock %}
+
     {% if messages %}
       <div class="container">
         <div class="row">
@@ -49,21 +51,25 @@
             {% for message in messages %}
               {% if message.tags == 'success' %}
                 <div class="alert alert-icon alert-success" role="alert">
+                  <div class="close"></div>
                   <i class="fe fe-check mr-2" aria-hidden="true"></i> {{ message.message }}
                 </div>
               {% endif %}
               {% if message.tags == 'info' %}
                 <div class="alert alert-icon alert-info" role="alert">
+                  <div class="close"></div>
                   <i class="fe fe-bell mr-2" aria-hidden="true"></i> {{ message.message }}
                 </div>
               {% endif %}
               {% if message.tags == 'danger' %}
                 <div class="alert alert-icon alert-danger" role="alert">
+                  <div class="close"></div>
                   <i class="fe fe-alert-octagon mr-2" aria-hidden="true"></i> {{ message.message }}
                 </div>
               {% endif %}
               {% if message.tags == 'warning' %}
                 <div class="alert alert-icon alert-warning" role="alert">
+                  <div class="close"></div>
                   <i class="fe fe-alert-triangle mr-2" aria-hidden="true"></i> {{ message.message }}
                 </div>
               {% endif %}
@@ -72,9 +78,9 @@
         </div>
       </div>
     {% endif %}
+
     {% block panel_content %} {% endblock %}
+
   </div>
 </div>
-
-
 {% endblock %}
