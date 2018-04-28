@@ -1,38 +1,47 @@
 {% extends 'frontend/_base.html' %}
+
 {% load bootstrap4 %}
+{% load static %}
+
 {% block title %}Maasaic | Keep it weird{% endblock %}
 
 {% block content %}
-  <div class="container">
-    <br/>
-      <h1 class="text-center">Maasaic.com</h1>
-      <p class="lead text-center">Make the web weird again!</p>
-      <p class="text-center">Registered users <a href="{% url 'login' %}">login here</a>.</p>
-    <br/>
-    <div class="row justify-content-md-center">
-      <div class="col col-4">
-        <form method="POST" action="{% url 'user_create' %}">
-          <legend>Create your site</legend>
-          {% csrf_token %}
-          {% bootstrap_form_errors user_create_form %}
-          {% bootstrap_field user_create_form.name show_label=False %}
-          <div class="row">
-            <div class="col">
-              {% bootstrap_field user_create_form.subdomain show_label=False %}
+  <div class="page">
+    <div class="page-single">
+      <div class="container">
+        <div class="row">
+          <div class="col col-login mx-auto">
+            <div class="text-center mb-6">
+              <img src="{% static 'img/logos/tailor_brand.png' %}" class="h-10" alt="Maasaic" />
             </div>
-            <div class="col">
-              <h2>.maasaic.com</h2>
-            </div>
-          </div>
-          {% bootstrap_field user_create_form.password show_label=False %}
-          {% bootstrap_field user_create_form.email show_label=False %}
+              <form class="card" action="{% url 'user_create' %}" method="post">
+                {% csrf_token %}
+                <div class="card-body p-6">
+                  <div class="card-title">Create your site</div>
+                  {% bootstrap_form_errors user_create_form %}
+                  <div class="form-group">
+                    <div class="input-group">
+                      <input type="text" class="form-control" placeholder="Your subdomain" name="{{ user_create_form.subdomain.html_name }}"/>
+                      <div class="input-group-append">
+                        <span class="input-group-text">.maasaic.com</span>
+                      </div>
+                    </div>
+                    <small class="form-text text-muted">{{ user_create_form.subdomain.help_text }}</small>
+                  </div>
+                  {% bootstrap_field user_create_form.password show_label=False %}
+                  {% bootstrap_field user_create_form.email show_label=False %}
 
-          {% buttons %}
-            <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-plus-circle"></i> Create site</button>
-          {% endbuttons %}
-        </form>
+                  {% buttons %}
+                    <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-plus-circle"></i> Create site</button>
+                  {% endbuttons %}
+                </div>
+              </form>
+              <div class="text-center text-muted">
+                Already have account yet? <a href="{% url 'login' %}">Login</a>
+              </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-
 {% endblock %}

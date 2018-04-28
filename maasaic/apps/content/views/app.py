@@ -170,9 +170,11 @@ class WebsitePublishView(WebsiteDetailBase, UpdateView):
         is_visible = form.cleaned_data['is_visible']
         if is_visible:
             msg = 'Yeey! Now %s is live ;)' % self.website.domain
+            level = messages.SUCCESS
         else:
-            msg = 'Done. %s is now offline.' % self.website.domain
-        messages.success(self.request, msg)
+            msg = '%s is now offline.' % self.website.domain
+            level = messages.WARNING
+        messages.add_message(self.request, level, msg)
         url = reverse('page_list', args=[self.website.subdomain])
         return HttpResponseRedirect(url)
 
@@ -288,10 +290,12 @@ class PagePublishView(UpdateView, PageUrlMixin, WebsiteDetailView):
                         cell_attr['is_visible'] = True
                         cell_attr['section'] = live_section
                         Cell.objects.create(**cell_attr)
-            messages.success(self.request, 'Page is live')
+            msg = 'The page "%s" is now live' % page.title
+            messages.success(self.request, msg)
         else:
             page = form.save()
-            messages.success(self.request, 'Page is offline')
+            msg = 'The page "%s" is now offline' % page.title
+            messages.warning(self.request, msg)
 
         url = self.request.GET.get(
             'next',

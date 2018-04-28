@@ -1,51 +1,80 @@
 {% extends 'frontend/_base.html' %}
+
 {% load bootstrap4 %}
+{% load static %}
 
 {% block content %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-<div class="container">
-  <a class="navbar-brand" href="#">Maasaic.com</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-{#      <li class="nav-item active">#}
-{#        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>#}
-{#      </li>#}
-{#      <li class="nav-item">#}
-{#        <a class="nav-link" href="#">Link</a>#}
-{#      </li>#}
-{#      <li class="nav-item dropdown">#}
-{#        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
-{#          Dropdown#}
-{#        </a>#}
-{#        <div class="dropdown-menu" aria-labelledby="navbarDropdown">#}
-{#          <a class="dropdown-item" href="#">Action</a>#}
-{#          <a class="dropdown-item" href="#">Another action</a>#}
-{#          <div class="dropdown-divider"></div>#}
-{#          <a class="dropdown-item" href="#">Something else here</a>#}
-{#        </div>#}
-{#      </li>#}
-{#      <li class="nav-item">#}
-{#        <a class="nav-link disabled" href="#">Disabled</a>#}
-{#      </li>#}
-    </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <a class="btn btn-danger btn-sm" href="{% url 'logout' %}">
-        <i class="fa fa-power-off"></i> Logout
-      </a>
-    </form>
-  </div>
-  </div>
-</nav>
-  {% if messages %}
-    <br/>
-    <div class="container">
-      {% bootstrap_messages %}
+<div class="page">
+  <div class="page-main">
+    <div class="header py-4">
+      <div class="container">
+        <div class="d-flex">
+          <a class="header-brand" href="../index.html">
+            <img src="{% static 'img/logos/tailor_brand.png' %}" class="header-brand-img" alt="tabler logo">
+          </a>
+          <div class="d-flex order-lg-2 ml-auto">
+            <div class="dropdown d-none d-md-flex">
+              <a class="nav-link icon" data-toggle="dropdown">
+                <span class="avatar" style="background-image: url({{ website.favicon_url }})"></span>
+                &nbsp;{{ website.name }}&nbsp;
+                <i class="fe fe-chevron-down"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+                {% for website in request.user.website_set.all %}
+                <a href="{% url 'website_detail' website.subdomain %}" class="dropdown-item d-flex">
+                  <span class="avatar mr-3 align-self-center" style="background-image: url({{ website.favicon_url }})"></span>
+                  <div>
+                    <strong>{{ website.name }}</strong>
+                    <div class="small text-muted">{{ website.domain }}</div>
+                  </div>
+                </a>
+                {% endfor %}
+                <div class="dropdown-divider"></div>
+                <a href="{% url 'logout' %}" class="dropdown-item text-center text-muted-dark"><i class="fe fe-log-out"></i> Logout</a>
+              </div>
+            </div>
+          </div>
+          <a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0" data-toggle="collapse" data-target="#headerMenuCollapse">
+            <span class="header-toggler-icon"></span>
+          </a>
+        </div>
+      </div>
     </div>
-  {% endif %}
+    {% block secondary_header %}{% endblock %}
+    {% if messages %}
+      <div class="container">
+        <div class="row">
+          <div class="col col-md-12">
+            <br/>
+            {% for message in messages %}
+              {% if message.tags == 'success' %}
+                <div class="alert alert-icon alert-success" role="alert">
+                  <i class="fe fe-check mr-2" aria-hidden="true"></i> {{ message.message }}
+                </div>
+              {% endif %}
+              {% if message.tags == 'info' %}
+                <div class="alert alert-icon alert-info" role="alert">
+                  <i class="fe fe-bell mr-2" aria-hidden="true"></i> {{ message.message }}
+                </div>
+              {% endif %}
+              {% if message.tags == 'danger' %}
+                <div class="alert alert-icon alert-danger" role="alert">
+                  <i class="fe fe-alert-octagon mr-2" aria-hidden="true"></i> {{ message.message }}
+                </div>
+              {% endif %}
+              {% if message.tags == 'warning' %}
+                <div class="alert alert-icon alert-warning" role="alert">
+                  <i class="fe fe-alert-triangle mr-2" aria-hidden="true"></i> {{ message.message }}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    {% block panel_content %} {% endblock %}
+  </div>
+</div>
 
-{% block panel_content %}{% endblock %}
+
 {% endblock %}

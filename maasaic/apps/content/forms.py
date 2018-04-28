@@ -78,7 +78,6 @@ class UserCreateForm(forms.Form):
 
     subdomain = forms.CharField(max_length=255,
                                 help_text=HELP_TEXTS['SUBDOMAIN'])
-    name = forms.CharField(max_length=255, label='Site name')
     email = forms.EmailField(required=False, help_text=HELP_TEXTS['EMAIL'])
     password = forms.CharField(max_length=255, widget=forms.PasswordInput,
                                help_text=HELP_TEXTS['PASSWORD'])
@@ -116,7 +115,7 @@ class UserCreateForm(forms.Form):
             website = Website.objects.create(
                 user=user,
                 subdomain=subdomain,
-                name=self.cleaned_data['name'])
+                name=subdomain.title())
         return website
 
 

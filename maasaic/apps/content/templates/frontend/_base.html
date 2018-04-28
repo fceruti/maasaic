@@ -6,19 +6,25 @@
     <title>{% block title %}Maasaic{% endblock %}</title>
     <meta charset="UTF-8">
     {% compress css file maasaic-front %}
-      <link href="{% static 'bootstrap/dist/css/bootstrap.css' %}" type="text/css" rel="stylesheet"/>
-      <link href="{% static 'font-awesome/css/font-awesome.min.css' %}" type="text/css" rel="stylesheet"/>
+      <link href="{% static 'tabler-ui/dist/assets/css/dashboard.css' %}" type="text/css" rel="stylesheet"/>
       <link href="{% static 'sass/frontend.sass' %}" type="text/x-sass" rel="stylesheet"/>
     {% endcompress %}
     {% block extra_css %}{% endblock %}
 
     {% compress js file maasaic-front %}
-      <script src="{% static 'jquery/dist/jquery.min.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"  type="text/javascript"></script>
+      <script src="{% static 'tabler-ui/dist/assets/js/require.min.js' %}"></script>
+      <script type="text/javascript">
+        requirejs.config({
+            baseUrl: '/static/tabler-ui/dist/'
+        });
+      </script>
+      <script src="{% static 'jquery/dist/jquery.min.js' %}" type="text/javascript"></script>
+      <script src="{% static 'tabler-ui/dist/assets/js/dashboard.js' %}"  type="text/javascript"></script>
     {% endcompress %}
     {% block extra_js %}{% endblock %}
   </head>
   <body>
     {% block content %}{% endblock %}
+    {% block extra_content %}{% endblock %}
   </body>
 </html>

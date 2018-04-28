@@ -4,48 +4,59 @@
 
 {% block title %}{{ page_title }} | {{ website.name }}{% endblock %}
 
-{% block panel_content %}
+{% block secondary_header %}
+<div class="header collapse d-lg-flex p-0">
   <div class="container">
-    <br/>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'website_list' %}"><i class="fa fa-globe"></i> My sites</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'website_detail' website.subdomain %}">{{ website.name }}</a></li>
-        {% block extra_breadcrumbs %}{% endblock %}
-      </ol>
-    </nav>
-    <div class="media">
-      <img class="mr-3" src="{% static 'img/favicon.png' %}" alt="{{ website.name }} favicon" style="width: 80px">
-      <div class="media-body">
-        <h1 style="margin: 5px 0 5px">{{ website.name }}</h1>
-        <p class="lead"><a href="{{ website.domain }}" target="_blank">{{ website.domain }}</a></p>
-        <p class="lead">
-        <form method="POST" action="{% url 'website_publish' website.subdomain %}" class="form-inline">
+    <div class="row align-items-center">
+      <div class="col-lg-3 ml-auto">
+        <form method="POST" action="{% url 'website_publish' website.subdomain %}" class="input-icon my-3 my-lg-0 float-right" style="margin-right: 15px">
           {% csrf_token %}
-          <label><b>Status:</b>&nbsp;{% if website.is_visible %}<i class="fa fa-circle text-success"></i>&nbsp;Live{% else %}<i class="fa fa-circle text-danger"></i>&nbsp;Offline{% endif %}</label>&nbsp;
           {% if website.is_visible %}
-            <input type="hidden" name="is_visible" value="False" />
-            <input type="submit" value="Take offline" class="btn btn-danger btn-sm"/>
+            <label class="custom-switch">
+              <span class="custom-switch-description"><span class="status-icon bg-success"></span>&nbsp;Live&nbsp;</span>
+              <input type="checkbox" name="is_visible" value="False" class="custom-switch-input" checked="checked" />
+              <span class="custom-switch-indicator"></span>
+            </label>
           {% else %}
-            <input type="hidden" name="is_visible" value="True" />
-            <input type="submit" value="Go live" class="btn btn-success btn-sm" />
+            <label class="custom-switch">
+              <span class="custom-switch-description"><span class="status-icon bg-danger"></span>&nbsp;Offline&nbsp;</span>
+              <input type="checkbox" name="is_visible" value="True" class="custom-switch-input" />
+              <span class="custom-switch-indicator"></span>
+            </label>
           {% endif %}
         </form>
       </div>
+      <div class="col-lg order-lg-first">
+        <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
+          <li class="nav-item">
+            <a class="nav-link{% if current_tab == 'dashboard' %} active{% endif %}" href="{% url 'website_detail' website.subdomain %}"><i class="fe fe-globe"></i> Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if current_tab == 'pages' %} active{% endif %}" href="{% url 'page_list' website.subdomain %}"><i class="fe fe-layers"></i> Pages</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if current_tab == 'defaults' %} active{% endif %}" href="{% url 'website_defaults' website.subdomain %}"><i class="fe fe-image"></i> Gallery</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if current_tab == 'defaults' %} active{% endif %}" href="{% url 'website_defaults' website.subdomain %}"><i class="fe fe-sliders"></i> Default values</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link{% if current_tab == 'config' %} active{% endif %}" href="{% url 'website_config' website.subdomain %}"><i class="fe fe-settings"></i> Configuration</a>
+          </li>
+        </ul>
+      </div>
     </div>
-    <br/>
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link{% if current_tab == 'pages' %} active{% endif %}" href="{% url 'page_list' website.subdomain %}"><i class="fa fa-clone"></i> Pages</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link{% if current_tab == 'config' %} active{% endif %}" href="{% url 'website_config' website.subdomain %}"><i class="fa fa-cog"></i> Configuration</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link{% if current_tab == 'defaults' %} active{% endif %}" href="{% url 'website_defaults' website.subdomain %}"><i class="fa fa-sliders"></i> Default values</a>
-      </li>
-    </ul>
-    <br/>
-    {% block website_detail_content %}{% endblock %}
   </div>
+</div>
 {% endblock %}
+
+{% block extra_content %}
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.custom-switch-input').on('change', function(){
+      this.form.submit();
+    });
+  });
+</script>
+{% endblock %}
+

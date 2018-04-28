@@ -111,12 +111,17 @@ class Website(models.Model):
         return '{schema}://{domain}'.format(schema=schema, domain=self.domain)
 
     @cached_property
+    def favicon_url(self):
+        return '%simg/favicon.png' % settings.STATIC_URL
+
+    @cached_property
     def edit_pages(self):
         return self.page_set.filter(mode=Page.Mode.EDIT)
 
     @cached_property
     def live_pages(self):
         return self.page_set.filter(mode=Page.Mode.LIVE).order_by('path')
+
 
 
 class Page(models.Model):

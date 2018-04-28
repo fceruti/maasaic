@@ -176,7 +176,7 @@ COMPRESS_PRECOMPILERS = (
 COMPRESS_ENABLED = False
 COMPRESS_OFFLINE = False
 
-
+from bootstrap4.components import render_alert
 # ------------------------------------------------------------------------------
 # Cropping
 # ------------------------------------------------------------------------------
@@ -186,6 +186,16 @@ THUMBNAIL_PROCESSORS = (
 ) + thumbnail_settings.THUMBNAIL_PROCESSORS
 IMAGE_CROPPING_JQUERY_URL = None
 IMAGE_CROPPING_BACKEND_PARAMS = {'version_suffix': 'crop'}
+
+
+# ------------------------------------------------------------------------------
+# Messages
+# ------------------------------------------------------------------------------
+from django.contrib import messages
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger'
+}
+
 
 # ------------------------------------------------------------------------------
 # Custom
