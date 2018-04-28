@@ -1,16 +1,32 @@
 {% extends 'frontend/_website_detail_base.html' %}
 {% load bootstrap4 %}
 
-{% block extra_breadcrumbs %}
-  <li class="breadcrumb-item"><a href="{% url 'website_config' website.subdomain %}"><i class="fa fa-cog"></i> Configuration</a></li>
-{% endblock %}
+{% block title %}Configuration {{ block.super }}{% endblock %}
 
-{% block website_detail_content %}
-  <form role="form" class="form-horizontal" method="POST" action="{% url 'website_config' website.subdomain %}">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-    {% buttons %}
-      <button type="submit" class="btn btn-primary">Save changes</button>
-    {% endbuttons %}
-  </form>
+
+{% block panel_content %}
+<div class="my-3 my-md-5">
+  <div class="container">
+    <div class="row row-cards row-deck">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fe fe-settings"></i> Configuration
+            </h3>
+          </div>
+          <div class="card-body">
+            <form role="form" class="form-horizontal" method="POST" action="{% url 'website_config' website.subdomain %}">
+              {% csrf_token %}
+              {% bootstrap_form form %}
+              <div class="btn-list mt-4 text-right">
+                <button type="submit" class="btn btn-primary">Save changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

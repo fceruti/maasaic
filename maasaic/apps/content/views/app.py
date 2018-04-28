@@ -134,8 +134,13 @@ class WebsiteConfigView(WebsiteDetailBase, UpdateView):
     slug_url_kwarg = 'subdomain'
     current_tab = 'config'
 
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Website configuration updated')
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_success_url(self):
-        return reverse('website_detail', args=[self.website.subdomain])
+        return reverse('website_config', args=[self.website.subdomain])
 
 
 class WebsitePageDefaultsView(WebsiteDetailBase, FormView):
