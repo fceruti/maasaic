@@ -224,8 +224,8 @@ class PageConfigView(WebsiteDetailBase, PageUrlMixin, UpdateView):
         return kw
 
     def form_valid(self, form):
-        form.save()
-        messages.success(self.request, 'Page updated')
+        page = form.save()
+        messages.success(self.request, 'The config for "%s" was updated' % page.title)
         url = reverse('page_list', args=[self.website.subdomain])
         return HttpResponseRedirect(url)
 
