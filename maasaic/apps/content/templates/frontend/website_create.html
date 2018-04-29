@@ -4,23 +4,28 @@
 {% block title %}Create site{% endblock %}
 
 {% block panel_content %}
+<div class="my-3 my-md-5">
   <div class="container">
-    <br/>
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'website_list' %}">My sites</a></li>
-        <li class="breadcrumb-item active">Create site</li>
-      </ol>
-    </nav>
-
-    <form role="form" class="form-horizontal" method="POST" action="{% url 'website_create' %}">
-      <legend>Create site</legend>
-      {% csrf_token %}
-      {% bootstrap_form form %}
-      {% buttons %}
-        <button type="submit" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Create site</button>
-      {% endbuttons %}
-    </form>
+    <div class="row row-cards row-deck">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fe fe-plus-circle"></i> Create website
+            </h3>
+          </div>
+          <div class="card-body">
+            <form role="form" class="form-horizontal" method="POST" action="{% url 'website_create' %}">
+              {% csrf_token %}
+              {% bootstrap_form form %}
+              <div class="btn-list mt-4 text-right">
+                <button type="submit" class="btn btn-success"><i class="fe fe-plus-circle"></i> Create website</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-{{ form.media }}
+</div>
 {% endblock %}

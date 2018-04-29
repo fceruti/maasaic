@@ -2,7 +2,7 @@
 {% load bootstrap4 %}
 {% load static %}
 
-{% block title %}Pages{{ block.super }}{% endblock %}
+{% block title %}Pages | {{ website.name }}{% endblock %}
 
 {% block panel_content %}
 <div class="my-3 my-md-5">
@@ -33,12 +33,9 @@
                 <tbody>
                   {% for page in website.live_pages %}
                     <tr>
-                      <td>
-                        <div>{{ page.title }}</div>
-                        <div class="small text-muted">{{ page.path }}</div>
-                      </td>
+                      <td><a href="{% url 'page_config' website.subdomain page.pk %}" target="_blank">{{ page.title }}</a></td>
                       <td>{% if page.description %}{{ page.description }}{% else %}No description provided{% endif %}</td>
-                      <td><a href="{{ page.public_url }}" target="_blank"><i class="fe fe-globe"></i> link</a></td>
+                      <td><a href="{{ page.public_url }}" target="_blank"><i class="fe fe-globe"></i> {{ page.path }}</a></td>
                       <td>
                         <form method="POST" action="{% url 'page_publish' website.subdomain page.pk %}" style="margin-bottom: 0">
                           {% csrf_token %}
@@ -58,10 +55,10 @@
                         </form>
                       </td>
                       <td>
-                        <a href="{% url 'page_config' website.subdomain page.pk %}" class="btn btn-link btn-sm"><i class="fe fe-settings"></i> Config</a>
+                        <a href="{% url 'page_config' website.subdomain page.pk %}" class="btn btn-secondary btn-sm"><i class="fe fe-settings"></i> Config</a>
                       </td>
                       <td>
-                        <a href="{% url 'page_update' website.subdomain page.edit_page.pk %}" target="_blank" class="btn btn-primary btn-sm"><i class="fe fe-edit"></i> Edit page</a>
+                        <a href="{% url 'page_update' website.subdomain page.edit_page.pk %}" target="_blank" class="btn btn-secondary btn-sm"><i class="fe fe-edit"></i> Edit page</a>
                       </td>
                     </tr>
                   {% endfor %}

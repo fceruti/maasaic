@@ -103,8 +103,11 @@ class WebsiteCreateView(LoginRequiredMixin, FormView):
     def form_valid(self, form):
         website = form.save(commit=False)
         website.user = self.request.user
+        if not website.name:
+            website.name = website.subdomain.title()
         website.save()
-        msg = 'The site %s has been created. Keep it weird.' % website.domain
+        msg = 'That\'s it, %s is now created. ' \
+              'Add some pages and make it go live.' % website.domain
         messages.success(self.request, msg)
         url = reverse('website_detail', args=[website.subdomain])
         return HttpResponseRedirect(url)
@@ -117,13 +120,12 @@ class WebsiteDetailBase(LoginRequiredMixin, CurrentTabMixin,
         return self.website
 
 
-class WebsiteDetailView(WebsiteDetailBase, RedirectView):
+class WebsiteDetailView(WebsiteDetailBase, DetailView):
     model = Website
+    template_name = 'frontend/website_dashboard.html'
     slug_field = 'subdomain'
     slug_url_kwarg = 'subdomain'
-
-    def get_redirect_url(self, *args, **kwargs):
-        return reverse('page_list', args=[self.website.subdomain])
+    current_tab = 'dashboard'
 
 
 class WebsiteConfigView(WebsiteDetailBase, UpdateView):

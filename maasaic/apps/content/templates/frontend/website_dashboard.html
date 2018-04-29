@@ -1,0 +1,83 @@
+{% extends 'frontend/_website_detail_base.html' %}
+
+{% load bootstrap4 %}
+
+{% block title %}Dasboard | {{ website.name }}{% endblock %}
+
+
+{% block panel_content %}
+<div class="my-3 my-md-5">
+  <div class="container">
+    <div class="row row-cards row-deck">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">
+              <i class="fe fe-grid"></i> Dashboard
+            </h3>
+          </div>
+          <div class="card-body">
+            <h1>{{ website.name }}</h1>
+            <p>{{ website.public_url }}</p>
+            <p>{{ website.description }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Pages</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="table card-table table-vcenter text-nowrap">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Public link</th>
+                  <th>Status</th>
+                  <th colspan="2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for page in website.live_pages %}
+                  <tr>
+                    <td><a href="{% url 'page_update' website.subdomain page.edit_page.pk %}" target="_blank">{{ page.title }}</a></td>
+                    <td>{% if page.description %}{{ page.description }}{% else %}No description provided{% endif %}</td>
+                    <td><a href="{{ page.public_url }}" target="_blank"><i class="fe fe-globe"></i> {{ page.path }}</a></td>
+                    <td>
+                      <form method="POST" action="{% url 'page_publish' website.subdomain page.pk %}" style="margin-bottom: 0">
+                        {% csrf_token %}
+                        {% if page.is_visible %}
+                          <label class="custom-switch">
+                            <span class="custom-switch-description"><span class="status-icon bg-success"></span>&nbsp;Live&nbsp;</span>
+                            <input type="checkbox" name="is_visible" value="False" class="custom-switch-input" checked="checked" />
+                            <span class="custom-switch-indicator"></span>
+                          </label>
+                        {% else %}
+                          <label class="custom-switch">
+                            <span class="custom-switch-description"><span class="status-icon bg-danger"></span>&nbsp;Offline&nbsp;</span>
+                            <input type="checkbox" name="is_visible" value="True" class="custom-switch-input" />
+                            <span class="custom-switch-indicator"></span>
+                          </label>
+                        {% endif %}
+                      </form>
+                    </td>
+                    <td>
+                      <a href="{% url 'page_config' website.subdomain page.pk %}" class="btn btn-secondary btn-sm"><i class="fe fe-settings"></i> Config</a>
+                    </td>
+                    <td>
+                      <a href="{% url 'page_update' website.subdomain page.edit_page.pk %}" target="_blank" class="btn btn-secondary btn-sm"><i class="fe fe-edit"></i> Edit page</a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

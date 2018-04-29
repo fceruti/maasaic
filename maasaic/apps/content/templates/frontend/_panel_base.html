@@ -9,10 +9,13 @@
     <div class="header py-4">
       <div class="container">
         <div class="d-flex">
-          <a class="header-brand" href="../index.html">
+          <a class="header-brand" href="{% url 'website_list' %}">
             <img src="{% static 'img/logos/tailor_brand.png' %}" class="header-brand-img" alt="tabler logo">
           </a>
           <div class="d-flex order-lg-2 ml-auto">
+            <div class="nav-item d-none d-md-flex">
+              <a href="{% url 'website_create' %}" class="btn btn-sm btn-outline-success"><i class="fe fe-plus-circle"></i> Create website</a>
+            </div>
             <div class="dropdown d-none d-md-flex">
               <a class="nav-link icon" data-toggle="dropdown">
                 <span class="avatar" style="background-image: url({{ website.favicon_url }})"></span>
@@ -62,8 +65,7 @@
                 </div>
               {% endif %}
               {% if message.tags == 'danger' %}
-                <div class="alert alert-icon alert-danger" role="alert">
-                  <div class="close"></div>
+                <div class="alert alert-icon alert-danger alert-dismissible" role="alert">
                   <i class="fe fe-alert-octagon mr-2" aria-hidden="true"></i> {{ message.message }}
                 </div>
               {% endif %}

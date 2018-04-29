@@ -92,7 +92,8 @@ class Website(models.Model):
     language = LanguageField()
     favicon = ImageCropField(upload_to=favicon_path, null=True, blank=True)
     favicon_cropping = ImageRatioField('favicon', '128x128')
-    page_width = models.PositiveIntegerField(choices=PageWidth.choices())
+    page_width = models.PositiveIntegerField(choices=PageWidth.choices(),
+                                             default=1000)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -121,7 +122,6 @@ class Website(models.Model):
     @cached_property
     def live_pages(self):
         return self.page_set.filter(mode=Page.Mode.LIVE).order_by('path')
-
 
 
 class Page(models.Model):
