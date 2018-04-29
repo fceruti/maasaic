@@ -49,7 +49,7 @@ def has_page_changed(edit_page):
     live_sections = live_page.visible_sections
 
     try:
-        assert set(get_obj_hash(section) for section in edit_sections)  == \
+        assert set(get_obj_hash(section) for section in edit_sections) == \
                set(get_obj_hash(section) for section in live_sections)
     except AssertionError:
         return True

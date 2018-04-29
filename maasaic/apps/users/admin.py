@@ -10,7 +10,6 @@ class UserAdmin(DefaultUserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
         ('Permissions', {'fields': ('is_superuser',
-                                       'groups', 'user_permissions')}),
+                                    'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
-

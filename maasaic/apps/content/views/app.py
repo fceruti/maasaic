@@ -12,7 +12,6 @@ from django.views.generic import DeleteView
 from django.views.generic import DetailView
 from django.views.generic import FormView
 from django.views.generic import ListView
-from django.views.generic import RedirectView
 from django.views.generic import UpdateView
 
 from maasaic.apps.content.forms import CellCreateForm
@@ -238,7 +237,8 @@ class PageConfigView(WebsiteDetailBase, PageUrlMixin, UpdateView):
 
     def form_valid(self, form):
         page = form.save()
-        messages.success(self.request, 'The config for "%s" was updated' % page.title)
+        msg = 'The config for "%s" was updated' % page.title
+        messages.success(self.request, msg)
         url = reverse('page_list', args=[self.website.subdomain])
         return HttpResponseRedirect(url)
 
@@ -340,7 +340,8 @@ class PageResetView(FormView, PageUrlMixin, WebsiteDetailBase):
                     cell_attr['section'] = edit_section
                     Cell.objects.create(**cell_attr)
 
-        url = reverse('page_update', args=[self.page.website.subdomain, self.page.pk])
+        url = reverse('page_update',
+                      args=[self.page.website.subdomain, self.page.pk])
         return HttpResponseRedirect(url)
 
 

@@ -32,7 +32,8 @@ def create_test_website(name=None, subdomain=None, user=None) -> Website:
     return website
 
 
-def create_test_page(website=None, path=None, title=None, width=None, description=None):
+def create_test_page(website=None, path=None, title=None, width=None,
+                     description=None):
     if path is None:
         path = '/'
     if website is None:

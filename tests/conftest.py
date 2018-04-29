@@ -16,7 +16,7 @@ def user_website():
     email = 'me@test.com'
     password = '12345678'
     user = create_test_user(email=email, password=password)
-    company = create_test_website(subdomain= 'test-web', user=user)
+    company = create_test_website(subdomain='test-web', user=user)
     return user, company
 
 
