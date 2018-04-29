@@ -45,12 +45,16 @@ class UserLoginForm(forms.Form):
             raise forms.ValidationError('Please enter a valid username')
 
         try:
-            website = Website.objects.get(subdomain=subdomain)
-        except Website.DoesNotExist:
-            err = 'Theres no website with a subdomain of "%s".' % subdomain
-            raise forms.ValidationError(err)
+            user = User.objects.get(username=subdomain)
+            username = user.username
+        except User.DoesNotExist:
+            try:
+                website = Website.objects.get(subdomain=subdomain)
+                username = website.user.username
+            except Website.DoesNotExist:
+                err = 'Theres no website with a subdomain of "%s".' % subdomain
+                raise forms.ValidationError(err)
 
-        username = website.user.username
         self.user_cache = authenticate(self.request,
                                        username=username,
                                        password=password)
