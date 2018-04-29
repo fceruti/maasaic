@@ -1,25 +1,23 @@
 import re
 
 from django import forms
-from django.conf import settings
 from django.contrib.auth import authenticate
 from django.db import transaction
 
-from maasaic.apps.content.utils import clean_path
+from maasaic.apps.content.fields import SubdomainField
 from maasaic.apps.content.models import Cell
+from maasaic.apps.content.models import MAX_COLS_KEY
 from maasaic.apps.content.models import MAX_ROWS_KEY
 from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import SASS_VARIABLES
 from maasaic.apps.content.models import Section
+from maasaic.apps.content.models import SiteDefaultProp
 from maasaic.apps.content.models import UploadedImage
 from maasaic.apps.content.models import Website
+from maasaic.apps.content.utils import clean_path
 from maasaic.apps.content.utils import get_margin_string_from_position
 from maasaic.apps.content.utils import get_position_dict_from_margin
 from maasaic.apps.users.models import User
-from maasaic.apps.content.models import SiteDefaultProp
-from maasaic.apps.content.models import SASS_VARIABLES
-from maasaic.apps.content.models import MAX_COLS_KEY
-from maasaic.apps.content.models import MAX_ROWS_KEY
 from maasaic.apps.utils.forms import ColorWidget
 
 path_pattern = re.compile('^([/\w+-.]*)$')
@@ -77,29 +75,11 @@ class UserCreateForm(forms.Form):
                     'about getting "hacked".'
     }
 
-    subdomain = forms.CharField(max_length=255,
-                                help_text=HELP_TEXTS['SUBDOMAIN'])
+    subdomain = SubdomainField(max_length=255,
+                               help_text=HELP_TEXTS['SUBDOMAIN'])
     email = forms.EmailField(required=False, help_text=HELP_TEXTS['EMAIL'])
     password = forms.CharField(max_length=255, widget=forms.PasswordInput,
                                help_text=HELP_TEXTS['PASSWORD'])
-
-    def clean_subdomain(self):
-        subdomain = self.cleaned_data['subdomain'].lower()
-        try:
-            Website.objects.get(subdomain=self.cleaned_data['subdomain'])
-            msg = 'The domain %s.%s has already been taken. Try another one.' \
-                  % (subdomain, settings.DEFAULT_SITE_DOMAIN)
-            raise forms.ValidationError(msg)
-        except Website.DoesNotExist:
-            pass
-        try:
-            User.objects.get(username=subdomain)
-            msg = 'The domain %s.%s has already been taken. Try another one.' \
-                  % (subdomain, settings.DEFAULT_SITE_DOMAIN)
-            raise forms.ValidationError(msg)
-        except User.DoesNotExist:
-            pass
-        return subdomain
 
     def clean_email(self):
         if self.cleaned_data['email']:
@@ -124,6 +104,8 @@ class UserCreateForm(forms.Form):
 # Websites
 # ------------------------------------------------------------------------------
 class WebsiteCreateForm(forms.ModelForm):
+    subdomain = SubdomainField(max_length=255)
+
     class Meta:
         model = Website
         fields = ['subdomain',
@@ -143,6 +125,7 @@ class WebsiteCreateForm(forms.ModelForm):
         }
 
     def clean_subdomain(self):
+
         return self.cleaned_data['subdomain'].lower()
 
     def __init__(self, *args, **kwargs):
@@ -152,10 +135,12 @@ class WebsiteCreateForm(forms.ModelForm):
 
 
 class WebsiteConfigForm(forms.ModelForm):
+    subdomain = SubdomainField(max_length=255)
+
     class Meta:
         model = Website
-        fields = ['subdomain', 'name', 'description', 'language', 'favicon',
-                  'favicon_cropping']
+        fields = ['subdomain', 'name', 'description', 'language', 'page_width',
+                  'favicon', 'favicon_cropping']
 
     def __init__(self, *args, **kwargs):
         super(WebsiteConfigForm, self).__init__(*args, **kwargs)
