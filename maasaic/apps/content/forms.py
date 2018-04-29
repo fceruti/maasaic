@@ -139,16 +139,19 @@ class WebsiteCreateForm(forms.ModelForm):
 
 
 class WebsiteConfigForm(forms.ModelForm):
-    subdomain = SubdomainField(max_length=255)
 
     class Meta:
         model = Website
-        fields = ['subdomain', 'name', 'description', 'language', 'page_width',
+        fields = ['name', 'description', 'language', 'page_width',
                   'favicon', 'favicon_cropping']
 
     def __init__(self, *args, **kwargs):
         super(WebsiteConfigForm, self).__init__(*args, **kwargs)
-        self.fields['subdomain'].widget.attrs['readonly'] = True
+        self.fields['description'].required = False
+        self.fields['language'].required = False
+        self.fields['favicon'].required = False
+        self.fields['favicon_cropping'].required = False
+        self.fields['name'].widget
 
 
 site_props = {

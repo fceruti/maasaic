@@ -23,7 +23,8 @@ def user_website():
 @pytest.fixture
 def client_user_website(user_website, app_urls, client):
     user, website = user_website
-    post_kwargs = {'subdomain': user.email, 'password': '12345678'}
+    post_kwargs = {'subdomain': user.username, 'password': '12345678'}
     response = client.post(reverse('login'), post_kwargs, follow=True)
     assert response.status_code == 200
+    assert response.context['user'].is_authenticated is True
     return client, user, website

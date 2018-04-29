@@ -3,7 +3,10 @@ from urllib.parse import urljoin
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator
+from django.core.validators import MinLengthValidator
+from django.core.validators import MaxLengthValidator
 from django.db import models
 from django.utils.functional import cached_property
 from django.utils.text import slugify
@@ -86,8 +89,11 @@ class Website(models.Model):
     is_visible = models.BooleanField(default=False)
     private_domain = models.CharField(max_length=255, unique=True,
                                       db_index=True, null=True, blank=True)
-    subdomain = models.CharField(max_length=255, unique=True, db_index=True)
-    name = models.CharField(max_length=255, null=True, blank=True)
+    subdomain = models.CharField(max_length=255, unique=True, db_index=True,
+                                 validators=[MinLengthValidator(1),
+                                             MaxLengthValidator(20)])
+    name = models.CharField(max_length=255, validators=[MinLengthValidator(1),
+                                                        MaxLengthValidator(50)])
     description = models.TextField(null=True, blank=True)
     language = LanguageField()
     favicon = ImageCropField(upload_to=favicon_path, null=True, blank=True)
