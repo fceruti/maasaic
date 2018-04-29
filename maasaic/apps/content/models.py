@@ -13,6 +13,7 @@ from django.utils.text import slugify
 from easy_thumbnails.files import get_thumbnailer
 from image_cropping import ImageCropField
 from image_cropping import ImageRatioField
+from maasaic.apps.content.managers import PageManager
 
 from maasaic.apps.users.models import User
 from maasaic.apps.utils.models import Choices
@@ -146,6 +147,8 @@ class Page(models.Model):
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = PageManager()
 
     class Meta:
         unique_together = ('website', 'path', 'mode')

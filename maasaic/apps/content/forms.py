@@ -288,25 +288,12 @@ class PageCreateForm(forms.ModelForm):
         self.fields['width'].initial = 1000
 
     def save(self, commit=True):
-        with transaction.atomic():
-            path = self.cleaned_data['path']
-            live_page = Page.objects.create(
-                website=self.website,
-                is_visible=False,
-                mode=Page.Mode.LIVE,
-                title=self.cleaned_data['title'],
-                path=path,
-                width=self.cleaned_data['width'],
-                description=self.cleaned_data['description'])
-            Page.objects.create(
-                website=self.website,
-                is_visible=False,
-                target_page=live_page,
-                mode=Page.Mode.EDIT,
-                title=self.cleaned_data['title'],
-                path=path,
-                width=self.cleaned_data['width'],
-                description=self.cleaned_data['description'])
+        live_page, edit_page = Page.objects.create_page(
+            path=self.cleaned_data['path'],
+            website=self.website,
+            title=self.cleaned_data['title'],
+            width=self.cleaned_data['width'],
+            description=self.cleaned_data['description'])
         return live_page
 
     def clean_path(self):

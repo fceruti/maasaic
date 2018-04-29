@@ -269,7 +269,7 @@ class PageDeleteView(DeleteView, PageUrlMixin, WebsiteDetailBase):
     model = Page
 
     def get_object(self, queryset=None):
-        self.page
+        return self.page
 
     def get_success_url(self):
         return reverse('page_list', args=[self.website.subdomain])

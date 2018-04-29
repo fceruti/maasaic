@@ -2,6 +2,7 @@ import string
 from random import choice
 
 from maasaic.apps.content.models import Website
+from maasaic.apps.content.models import Page
 from maasaic.apps.users.models import User
 
 
@@ -29,3 +30,21 @@ def create_test_website(name=None, subdomain=None, user=None) -> Website:
         user = create_test_user()
     website = Website.objects.create(user=user, name=name, subdomain=subdomain)
     return website
+
+
+def create_test_page(website=None, path=None, title=None, width=None, description=None):
+    if path is None:
+        path = '/'
+    if website is None:
+        website = create_test_website()
+    if title is None:
+        title = 'Test page'
+    if width is None:
+        width = 1000
+    if description is None:
+        description = 'No description given'
+    return Page.objects.create_page(website=website,
+                                    path=path,
+                                    title=title,
+                                    width=width,
+                                    description=description)
