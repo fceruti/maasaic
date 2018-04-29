@@ -278,6 +278,7 @@ class PageCreateForm(forms.ModelForm):
             'The same as with title, this is shown on search results and ' \
             'social media shares.'
         self.fields['description'].widget.attrs['rows'] = 3
+        self.fields['width'].initial = 1000
 
     def save(self, commit=True):
         with transaction.atomic():
