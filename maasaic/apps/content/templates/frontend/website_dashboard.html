@@ -27,8 +27,9 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title">Pages</h3>
+            <h3 class="card-title"><i class="fe fe-layers"></i> Pages</h3>
           </div>
+          {% if website.live_pages %}
           <div class="table-responsive">
             <table class="table card-table table-vcenter text-nowrap">
               <thead>
@@ -75,6 +76,11 @@
               </tbody>
             </table>
           </div>
+          {% else %}
+            <div class="card-body">
+              <p>Your site is created but it has no pages on it. Create your first page <a href="{% url 'page_create' website.subdomain %}">here</a></p>
+            </div>
+          {% endif %}
         </div>
       </div>
     </div>

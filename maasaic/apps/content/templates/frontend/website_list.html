@@ -13,54 +13,53 @@
           <div class="card-header">
             <h3 class="card-title"><i class="fe fe-globe"></i> My Websites</h3>
           </div>
-          <div class="card-body">
-            <div class="table-responsive">
-              <table class="table table-hover table-outline table-vcenter text-nowrap">
-                <thead>
+          <div class="table-responsive">
+            <table class="table card-table table-vcenter text-nowrap">
+              <thead>
+                <tr>
+                  <th>Favicon</th>
+                  <th>Name</th>
+                  <th>Public link</th>
+                  <th>Status</th>
+                  <th>Created</th>
+                  <th>Updated</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for website in websites %}
                   <tr>
-                    <th>Favicon</th>
-                    <th>Name</th>
-                    <th>Public link</th>
-                    <th>Status</th>
-                    <th>Created</th>
-                    <th>Updated</th>
+                    <td class="text-center">
+                      <a href="{% url 'website_detail' website.subdomain %}">
+                        <div class="avatar d-block" style="background-image: url({{ website.favicon_url }})"></div>
+                      </a>
+                    </td>
+                    <td>
+                      <div><a href="{% url 'website_detail' website.subdomain %}">{{ website.name }}</a></div>
+                    </td>
+                    <td>
+                      <div class="small text-muted">
+                        <a href="{{ website.public_url }}" target="_blank">{{ website.domain }}</a>
+                      </div>
+                    </td>
+                    <td>
+                      {%if website.is_visible %}
+                        <span class="status-icon bg-success"></span> Live
+                      {% else %}
+                        <span class="status-icon bg-danger"></span> Offline
+                      {% endif %}
+                    </td>
+                    <td>{{ website.created_at|date:"" }}</td>
+                    <td>{{ website.updated_at|date:"" }}</td>
+                    <td>
+                      <a class="icon" href="{% url 'website_detail' website.subdomain %}">
+                        <i class="fe fe-edit"></i>
+                      </a>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {% for website in websites %}
-                    <tr>
-                      <td class="text-center">
-                        <a href="{% url 'website_detail' website.subdomain %}">
-                          <div class="avatar d-block" style="background-image: url({{ website.favicon_url }})"></div>
-                        </a>
-                      </td>
-                      <td>
-                        <div><a href="{% url 'website_detail' website.subdomain %}">{{ website.name }}</a></div>
-                      </td>
-                      <td>
-                        <div class="small text-muted">
-                          <a href="{{ website.public_url }}" target="_blank">{{ website.domain }}</a>
-                        </div>
-                      </td>
-                      <td>
-                        {%if website.is_visible %}
-                          <span class="status-icon bg-success"></span> Live
-                        {% else %}
-                          <span class="status-icon bg-danger"></span> Offline
-                        {% endif %}
-                      </td>
-                      <td>{{ website.created_at|date:"" }}</td>
-                      <td>{{ website.updated_at|date:"" }}</td>
-                      <td>
-                        <a class="icon" href="{% url 'website_detail' website.subdomain %}">
-                          <i class="fe fe-edit"></i>
-                        </a>
-                      </td>
-                    </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
+                {% endfor %}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
