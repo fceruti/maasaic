@@ -40,6 +40,7 @@ def test_get_margin_string_from_position(position, margin):
 
 
 @pytest.mark.parametrize('input_str, expected_path', [
+    (None, '/'),
     ('', '/'),
     ('/', '/'),
     ('//', '/'),

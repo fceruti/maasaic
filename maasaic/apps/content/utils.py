@@ -79,6 +79,8 @@ def get_margin_string_from_position(position: dict) -> str:
 
 
 def clean_path(input_str: str) -> str:
+    if input_str is None:
+        input_str = ''
     parts = input_str.split('/')
     cleaned_parts = [part for part in parts if part]
     return '/%s' % '/'.join(cleaned_parts)
