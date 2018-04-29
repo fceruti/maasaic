@@ -120,6 +120,18 @@ class Website(models.Model):
 
     @cached_property
     def favicon_url(self):
+        if self.favicon_cropping:
+            from image_cropping.utils import get_backend
+            thumbnail_url = get_backend().get_thumbnail_url(
+                self.favicon,
+                {
+                    'size': (128, 128),
+                    'box': self.favicon_cropping,
+                    'crop': True,
+                    'detail': True,
+                }
+            )
+            return thumbnail_url
         return '%simg/favicon.png' % settings.STATIC_URL
 
     @cached_property

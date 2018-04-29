@@ -3,7 +3,7 @@ import re
 from django import forms
 from django.contrib.auth import authenticate
 from django.db import transaction
-
+from image_cropping import ImageCropWidget
 from maasaic.apps.content.fields import SubdomainField
 from maasaic.apps.content.models import Cell
 from maasaic.apps.content.models import MAX_COLS_KEY
@@ -144,6 +144,9 @@ class WebsiteConfigForm(forms.ModelForm):
         model = Website
         fields = ['name', 'description', 'language', 'page_width',
                   'favicon', 'favicon_cropping']
+        widget = {
+            'favicon': ImageCropWidget,
+        }
 
     def __init__(self, *args, **kwargs):
         super(WebsiteConfigForm, self).__init__(*args, **kwargs)
