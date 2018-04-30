@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.views.generic import FormView
 from django.views.generic import RedirectView
 from django.views.generic import TemplateView
+from django.views.generic import View
 
 from maasaic.apps.content.forms import UserCreateForm
 from maasaic.apps.content.forms import UserLoginForm
@@ -14,7 +15,14 @@ from maasaic.apps.content.forms import UserLoginForm
 # ------------------------------------------------------------------------------
 # Home
 # ------------------------------------------------------------------------------
-class HomeView(TemplateView):
+class LogoutRequired(View):
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('website_list'))
+        return super(LogoutRequired, self).dispatch(request, *args, **kwargs)
+
+
+class HomeView(LogoutRequired, TemplateView):
     template_name = 'frontend/home.html'
 
     def get_context_data(self, **kwargs):
@@ -23,7 +31,7 @@ class HomeView(TemplateView):
         return context
 
 
-class UserCreateView(FormView):
+class UserCreateView(LogoutRequired, FormView):
     template_name = 'frontend/user_create.html'
     form_class = UserCreateForm
 
@@ -36,7 +44,7 @@ class UserCreateView(FormView):
         return HttpResponseRedirect(url)
 
 
-class UserLoginView(FormView):
+class UserLoginView(LogoutRequired, FormView):
     template_name = 'frontend/user_login.html'
     form_class = UserLoginForm
 
