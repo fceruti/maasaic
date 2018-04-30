@@ -88,7 +88,6 @@ def get_defaults_cache_value(request, website, scope, prop_name):
                 cache[site_prop_key] = site_prop['default']
 
         setattr(request, '_defaults_cache', cache)
-    print(getattr(request, '_defaults_cache'))
     return getattr(request, '_defaults_cache')[key]
 
 

@@ -1,8 +1,11 @@
 @import 'variables'
 
-.body-edit-page
+.edit-body
   .page .section .section-inner
     margin: 0 0 0 20px
+  @each $page_width in $page-widths
+    &.body--width-#{$page_width}
+      min-width: $page_width  + $sidebar-width + 40px
 
 .page
   .section

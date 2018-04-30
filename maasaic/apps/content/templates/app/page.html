@@ -7,7 +7,7 @@
 
 {% block title %}{% if page_edit_on %}EDIT: {% endif %}{{ page.title }}{% endblock %}
 
-{% block body_class %}{% if page_edit_on %}body-edit-page{% endif %}{% endblock %}
+{% block body_class %}{% if page_edit_on %}edit-body body--width-{{ page.width }}{% endif %}{% endblock %}
 
 {% block extra_js %}
   {% include 'widgets/fonts.html' %}
@@ -24,6 +24,13 @@
   {# BEING: AJAX CONTAINER #}
   <div id="js-ajax-container">
 {% endif %}
+
+{% if page.visible_sections|length == 0 %}
+<div class="alert alert-info" style="margin: 10px 290px 0 10px; padding: 40px">
+  <h2>Your page has been create</h2>
+  <p>Now it's time to add a section. Go ahead and press "Add <i class="fa fa-plus"></i>" next to the "SECTIONS" title on the sidebar to add a new Section.</p>
+</div>
+{% else %}
 <div class="page
             page--width-{{ page.width }}"
      data-website-id="{{ page.website.id }}"
@@ -229,6 +236,7 @@
     </div>
   {% endfor %}
 </div>
+{% endif %}
 
 {# Sidebar #}
 {% if page_edit_on %}
