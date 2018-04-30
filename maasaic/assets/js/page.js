@@ -52,7 +52,7 @@ function getSectionCellProperties(sectionId) {
 
 function getSectionParentsUrlParts(sectionId) {
     var $section = $('.section[data-section-id=' + sectionId + ']');
-    var $page = $section.closest('.page');
+    var $page = $section.closest('.webpage');
     var websiteSubdomain = $page.attr('data-website-subdomain'),
         pageId = $page.attr('data-page-id');
     return {'websiteSubdomain': websiteSubdomain,

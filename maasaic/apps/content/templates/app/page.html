@@ -25,14 +25,8 @@
   <div id="js-ajax-container">
 {% endif %}
 
-{% if page.visible_sections|length == 0 %}
-<div class="alert alert-info" style="margin: 10px 290px 0 10px; padding: 40px">
-  <h2>Your page has been create</h2>
-  <p>Now it's time to add a section. Go ahead and press "Add <i class="fa fa-plus"></i>" next to the "SECTIONS" title on the sidebar to add a new Section.</p>
-</div>
-{% else %}
-<div class="page
-            page--width-{{ page.width }}"
+<div class="webpage
+            webpage--width-{{ page.width }}"
      data-website-id="{{ page.website.id }}"
      data-website-subdomain="{{ page.website.subdomain }}"
      data-website-name="{{ page.website.name }}"
@@ -43,6 +37,12 @@
      data-path="{{ page.path }}"
      data-width="{{ page.width }}"
      data-description="{{ page.description }}">
+  {% if page.visible_sections|length == 0 %}
+    <div class="alert alert-info" style="margin: 10px 310px 0 10px; padding: 40px">
+      <h2>Your page has been create</h2>
+      <p>Now it's time to add a section. Go ahead and press "Add <i class="fe fe-plus"></i>" next to the "SECTIONS" title on the sidebar to add a new Section.</p>
+    </div>
+  {% else %}
   {% for section in page.visible_sections %}
     <div class="section
                 section--{{ section.n_columns }}-cols
@@ -123,7 +123,7 @@
                           js-insert-cell-btn"
                    data-cell-type="TEXT">
                 <div class="icon">
-                  <i class="fa fa-font"></i>
+                  <i class="fe fe-file-text"></i>
                 </div>
                 <div class="text">Text</div>
               </div>
@@ -131,7 +131,7 @@
                           js-insert-cell-btn"
                    data-cell-type="IMAGE">
                 <div class="icon">
-                  <i class="fa fa-camera"></i>
+                  <i class="fe fe-image"></i>
                 </div>
                 <div class="text">Image</div>
               </div>
@@ -139,7 +139,7 @@
                           js-insert-cell-btn"
                    data-cell-type="VIDEO">
                 <div class="icon">
-                  <i class="fa fa-youtube"></i>
+                  <i class="fe fe-film"></i>
                 </div>
                 <div class="text">Video</div>
               </div>
@@ -147,7 +147,7 @@
                           js-insert-cell-btn"
                    data-cell-type="CLONE">
                 <div class="icon">
-                  <i class="fa fa-clone"></i>
+                  <i class="fe fe-copy"></i>
                 </div>
                 <div class="text">Clone</div>
               </div>
@@ -155,7 +155,7 @@
                           js-insert-cell-btn"
                    data-cell-type="IFRAME">
                 <div class="icon">
-                  <i class="fa fa-code"></i>
+                  <i class="fe fe-globe"></i>
                 </div>
                 <div class="text">Iframe</div>
               </div>
@@ -190,21 +190,21 @@
                     <div class="edit-cell-ctrl-btn
                                 js-edit-cell-ctrl-btn-move">
                       <div class="icon">
-                        <i class="fa fa-arrows"></i>
+                        <i class="fe fe-send"></i>
                       </div>
                       <span class="text">Move</span>
                     </div>
                     <div class="edit-cell-ctrl-btn
                                 js-edit-cell-ctrl-btn-edit">
                       <div class="icon">
-                        <i class="fa fa-edit"></i>
+                        <i class="fe fe-edit"></i>
                       </div>
                       <span class="text">Edit</span>
                     </div>
                     <div class="edit-cell-ctrl-btn
                                 js-edit-cell-ctrl-btn-delete">
                       <div class="icon">
-                        <i class="fa fa-times"></i>
+                        <i class="fe fe-trash"></i>
                       </div>
                       <span class="text">Delete</span>
                     </div>
@@ -244,34 +244,37 @@
     <div id="sidebar-inner">
       {# Website #}
       <h3 class="sidebar-title">
-        Website <span class="sidebar-title-status">{% if website.is_visible %}<i class="fa fa-circle text-success"></i> Live{% else %}<i class="fa fa-circle text-danger"></i> Offline{% endif %}</span>
+        <div class="sidebar-item-option right">
+          <a class="btn btn-secondary btn-sm title-btn" href="{% url 'website_detail' website.subdomain %}"><i class="fe fe-edit"></i> Edit</a>
+        </div>
+        Website <span class="sidebar-title-status">{% if website.is_visible %}<span class="status-icon bg-success"></span> Live{% else %}<span class="status-icon bg-danger"></span> {% endif %}</span>
       </h3>
       <div class="sidebar-item">
-        <div class="sidebar-item-option left">
-          <div class="sidebar-dropdown-wrapper"
-               id="js-website-select-dropdown">
-            <div class="sidebar-option-btn bordered">
-              <i class="fa fa-angle-down"></i>
-            </div>
-            <ul class="sidebar-dropdown">
-              {% for web in user.website_set.all %}
-                <li><a href="#">
-                  <span class="name">{{ web.name }}</span>
-                  <span class="description">{{ web.domain }}</span>
-                </a></li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
-        <div class="sidebar-item-option right">
-          <a class="sidebar-option-btn" href="{% url 'website_detail' website.subdomain %}">
-            <i class="fa fa-edit"></i>
-          </a>
-        </div>
-        <div class="sidebar-item-content">
-          <h2 class="name">{{ website.name }}</h2>
-          <h3 class="description">{{ website.domain|truncatechars:26 }}</h3>
-        </div>
+        <select id="website-select">
+          {% for web in user.website_set.all %}
+            <option value="{{ web.subdomain }}" data-name="{{ web.name }}" data-domain="{{ web.domain }}" data-favicon="{{ web.favicon_url }}" {% if web == website %}selected="selected"{% endif %}>{{ web.domain }}</option>
+          {% endfor %}
+        </select>
+        <script>
+          function renderWebsiteOption(item, escape){
+            return '<div><img src="' + item.favicon + '"/ class="image"></span><span class="label">' + item.name + '</span><span class="caption">' + item.url + '</span></div>';
+          }
+          $(document).ready(function(){
+            $('#website-select').selectize({
+              options: [
+                {% for web in user.website_set.all %}
+                  {subdomain: "{{ web.subdomain}}", url: "{{ web.domain }}", name: "{{ web.name}}", favicon: "{{ web.favicon_url }}"}{% if not forloop.last %},{% endif %}
+                {% endfor%}
+              ],
+              onChange: function(value) {
+                window.location.href = '/sites/' + value;
+              },
+              render: {
+                item: renderWebsiteOption,
+                option: renderWebsiteOption
+            }});
+          });
+        </script>
       </div>
 
       {# Page #}
@@ -281,59 +284,64 @@
           <form method="POST" action="{% url 'page_publish' website.subdomain page.target_page.pk %}?next={{ request.path }}">
             {% csrf_token %}
             <input type="hidden" name="is_visible" value="True" />
-            <button type="submit" class="title-btn" data-toggle="tooltip" data-placement="top" title="Make all your changes visible to the world.">
-              <i class="fa fa-check"></i> Publish
+            <button type="submit" class="btn btn-secondary btn-sm title-btn" data-toggle="tooltip" data-placement="top" title="Make all your changes visible to the world.">
+              <i class="fe fe-check"></i> Publish
             </button>
           </form>
-          <div class="sidebar-item-option right">
-            <form method="POST" action="{% url 'page_reset' website.subdomain page.pk %}?next={{ request.path }}" data-toggle="tooltip" data-placement="top" title="Go back to last published version.">
-              {% csrf_token %}
-              <button type="submit" class="title-btn" style="margin-right: 10px">
-                <i class="fa fa-undo"></i> Undo
-              </button>
-            </form>
-          </div>
+          <form method="POST" action="{% url 'page_reset' website.subdomain page.pk %}?next={{ request.path }}" º>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-secondary btn-sm title-btn" style="margin-right: 5px" data-toggle="tooltip" data-placement="top" title="WARNING! This will delete all changes made after the last time you published this page.">
+              <i class="fe fe-rotate-ccw"></i> Undo
+            </button>
+          </form>
         {% endif %}
-        Page <span class="sidebar-title-status">{% if page.target_page.is_visible %}<i class="fa fa-circle text-success"></i> Live{% else %}<i class="fa fa-circle text-danger"></i> Offline{% endif %}</span>
+        {% if page.target_page.is_visible%}
+          <span data-toggle="tooltip" data-placement="top" title="This page is is visible to the public.">
+            Page <span class="sidebar-title-status"><span class="status-icon bg-success"></span>
+          </span>
+        {% else %}
+           <span data-toggle="tooltip" data-placement="top" title="This page is not visible to the public.">
+             Page <span class="sidebar-title-status"><span class="status-icon bg-danger"></span>
+           </span>
+        {% endif %}
       </h3>
       <div class="sidebar-item">
-        <div class="sidebar-item-option left">
-          <div class="sidebar-dropdown-wrapper"
-               id="js-page-select-dropdown">
-            <div class="sidebar-option-btn bordered">
-              <i class="fa fa-angle-down"></i>
-            </div>
-            <ul class="sidebar-dropdown">
-              {% for page in website.edit_pages %}
-                <li><a href="{% url 'page_update' website.subdomain page.pk %}">
-                  <span class="name">{{ page.title }}</span>
-                  <span class="description">{{ page.path }}</span>
-                </a></li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
-        <div class="sidebar-item-option right">
-          <a class="sidebar-option-btn" href="{% url 'page_config' website.subdomain page.target_page.pk %}" data-toggle="tooltip" data-placement="top" title="Edit page properties">
-            <i class="fa fa-edit"></i>
-          </a>
-        </div>
-        <div class="sidebar-item-option right">
-          <a class="sidebar-option-btn" href="{% url 'page_update' website.subdomain page.pk %}{% if show_borders %}?borders=false{% endif%}" data-toggle="tooltip" data-placement="top" title="{% if show_borders %}Hide guidelines{% else %}Show guidelines{% endif%}">
-            <i class="fa fa-table"></i>
-          </a>
-        </div>
-        <div class="sidebar-item-content">
-          <h2 class="name" title="{{ page.title }}">{{ page.title|truncatechars:25 }}</h2>
-          <h3 class="description" title="{{ page.path }}">{{ page.path|truncatechars:20 }}</h3>
-        </div>
+        <select id="page-select">
+          {% for loop_page in website.edit_pages %}
+            <option value="{{ loop_page.id }}" {% if loop_page == page %}selected="selected"{% endif %}>{{ loop_page.title }}</option>
+          {% endfor %}
+        </select>
+        <script>
+          function renderPageOption(item, escape){
+            return '<div></span><span class="label">' + item.title + '</span><span class="caption">' + item.path + '</span></div>';
+          }
+          $(document).ready(function(){
+            $('#page-select').selectize({
+              options: [
+                {% for page in website.edit_pages %}
+                  {title: "{{ page.title }}", description: "{{ page.description }}", path: "{{ page.path }}"}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+              ],
+              onChange: function(value) {
+                var subdomain = $('.webpage').data('website-subdomain');
+                window.location.href = '/sites/' + subdomain + '/pages/' + value + '/update';
+              },
+              render: {
+                item: renderPageOption,
+                option: renderPageOption
+            }});
+          });
+        </script>
       </div>
       {# Sections #}
       <h3 class="sidebar-title">
         Sections
-        <button type="button" class="title-btn js-section-add-btn" data-toggle="modal" data-target="#create-section-modal">
-          Add <i class="fa fa-plus"></i>
+        <button type="button" class="btn btn-secondary btn-sm title-btn js-section-add-btn" data-toggle="modal" data-target="#create-section-modal">
+          <i class="fe fe-plus"></i> Add
         </button>
+        <a class="btn btn-secondary btn-sm title-btn" href="{% url 'page_update' website.subdomain page.pk %}{% if show_borders %}?borders=false{% endif%}" data-toggle="tooltip" data-placement="top" title="{% if show_borders %}Hide guidelines{% else %}Show guidelines{% endif%}" style="margin-right: 5px">
+          <i class="fe fe-grid"></i> {% if show_borders %}Hide grid{% else %}Show grid{% endif%}
+        </a>
       </h3>
       <ul class="section-list" id="js-section-list">
         {% for section in page.all_sections %}
@@ -341,14 +349,14 @@
             <div class="sidebar-item">
               <div class="sidebar-item-option left">
                 <div class="sidebar-option-btn bordered grab drag-handle">
-                  <i class="fa fa-reorder"></i>
+                  <i class="fe fe-menu"></i>
                 </div>
               </div>
               <div class="sidebar-item-option right">
                 <div class="sidebar-option-btn
                             js-sidebar-section-btn-edit"
                      data-section-id="{{ section.id }}">
-                  <i class="fa fa-edit"></i>
+                  <i class="fe fe-edit"></i>
                 </div>
               </div>
               <div class="sidebar-item-option right">
@@ -356,8 +364,8 @@
                   {% csrf_token %}
                   <input type="hidden" name="is_visible" value="{% if section.is_visible %}False{% else %}True{% endif %}" />
                   <button class="sidebar-option-btn" type="submit">
-                    {% if section.is_visible %}<i class="fa fa-eye"></i>
-                    {% else %}<i class="fa fa-eye-slash"></i>{% endif %}
+                    {% if section.is_visible %}<i class="fe fe-eye"></i>
+                    {% else %}<i class="fe fe-eye-off"></i>{% endif %}
                   </button>
                 </form>
               </div>
@@ -376,13 +384,13 @@
                   <div class="sidebar-item {% if not cell.is_visible %}not-visible{% endif %}">
                     <div class="sidebar-item-option left">
                       <div class="sidebar-option-btn bordered grab drag-handle">
-                        <i class="fa fa-reorder"></i>
+                        <i class="fe fe-menu"></i>
                       </div>
                     </div>
                     <div class="sidebar-item-option right">
                       <div class="sidebar-option-btn
                                   js-sidebar-cell-btn-edit">
-                        <i class="fa fa-edit"></i>
+                        <i class="fe fe-edit"></i>
                       </div>
                     </div>
                     <div class="sidebar-item-option right">
@@ -390,8 +398,8 @@
                         {% csrf_token %}
                         <input type="hidden" name="is_visible" value="{% if cell.is_visible %}False{% else %}True{% endif %}" />
                         <button class="sidebar-option-btn" type="submit">
-                          {% if cell.is_visible %}<i class="fa fa-eye"></i>
-                          {% else %}<i class="fa fa-eye-slash"></i>{% endif %}
+                          {% if cell.is_visible %}<i class="fe fe-eye"></i>
+                          {% else %}<i class="fe fe-eye-off"></i>{% endif %}
                         </button>
                       </form>
                     </div>

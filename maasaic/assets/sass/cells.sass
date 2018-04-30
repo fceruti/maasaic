@@ -48,11 +48,14 @@
             font-size: $edit-cell-ctrl-btn-icon-size
             height: $edit-cell-ctrl-btn-icon-height
             margin-bottom: $edit-cell-ctrl-btn-icon-margin-bottom
+
           .text
             font-size: $edit-cell-ctrl-btn-text-size
+            font-weight: bold
             text-transform: uppercase
           &:hover
-            color: $edit-cell-ctrl-btn-color-hover
+            .icon, .text
+              color: $edit-cell-ctrl-btn-color-hover !important
 
   &.cell--layer-insert
     @include transition(border,background 0.2s)
@@ -104,7 +107,8 @@
       color: $insert-cell-ctrl-btn-text-color
       font-size: $insert-cell-ctrl-btn-font-size
       white-space: nowrap
+      font-weight: bold
     &:hover
       cursor: pointer
       .icon, .text
-        color: $primary-color
+        color: lighten($insert-cell-ctrl-btn-text-color, 20%) !important

@@ -1,13 +1,13 @@
 @import 'variables'
 
 .edit-body
-  .page .section .section-inner
+  .webpage .section .section-inner
     margin: 0 0 0 20px
   @each $page_width in $page-widths
     &.body--width-#{$page_width}
       min-width: $page_width  + $sidebar-width + 40px
 
-.page
+.webpage
   .section
     &.hover
       background: $primary-color !important
@@ -48,7 +48,7 @@
               display: none
 
   @each $page_width in $page-widths
-    &.page--width-#{$page_width}
+    &.webpage--width-#{$page_width}
       .section-inner
         width:  $page_width * 1px
       @for $col_n from 1 through $max-cols

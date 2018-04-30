@@ -145,9 +145,9 @@ def section_cell_default_shadow(context, section):
 @register.simple_tag()
 def cell_type_icon(cell):
     if cell.cell_type == Cell.Type.TEXT:
-        return mark_safe('<i class="fa fa fa-font"></i>')
+        return mark_safe('<i class="fe fe-file-text"></i>')
     if cell.cell_type == Cell.Type.IMAGE:
-        return mark_safe('<i class="fa fa fa-camera"></i>')
+        return mark_safe('<i class="fe fe-image"></i>')
 
 
 @register.simple_tag()

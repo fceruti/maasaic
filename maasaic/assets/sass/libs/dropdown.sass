@@ -4,87 +4,16 @@
 // --------------------------------------------------------------------
 // Dropdown
 // --------------------------------------------------------------------
-.sidebar-dropdown-wrapper
-  position: relative
+.selectize-dropdown .image,
+.selectize-input .image
+  width: 2.8rem
+  height: 2.8rem
 
-  &.active
-    .sidebar-dropdown
-      opacity: 1
-      pointer-events: auto
+.selectize-dropdown .label,
+.selectize-input .label
+  display: block
 
-  .sidebar-dropdown
-    position: absolute
-    top: 32px
-    left: 0
-    right: 0
-    z-index: $sidebar-dropdown-zindex
-    width: $sidebar-width - (2 * 15px)
-    text-align: left
-
-    /* Styles */
-    @include linear-gradient($sidebar-bg...)
-    border: 1px solid $sidebar-dropdown-border-color
-    box-shadow: 0 0 5px rgba(0,0,0,0.1)
-    font-weight: normal
-    transition: all 0.2s ease-in
-    list-style: none
-    border-radius: 4px
-
-    /* Hiding */
-    opacity: 0
-    pointer-events: none
-
-    &:after
-      content: ""
-      width: 0
-      height: 0
-      position: absolute
-      bottom: 100%
-      left: 8px
-      border-width: 0 6px 6px 6px
-      border-style: solid
-      border-color: $sidebar-dropdown-border-color transparent
-
-    &:before
-      content: ""
-      width: 0
-      height: 0
-      position: absolute
-      bottom: 100%
-      left: 6px
-      border-width: 0 8px 8px 8px
-      border-style: solid
-      border-color: $sidebar-dropdown-border-color transparent
-
-    li
-      a
-        display: block
-        padding: 10px
-        text-decoration: none
-        border-bottom: 1px solid $sidebar-dropdown-border-color
-        transition: all 0.1s ease-out
-        .name
-          font-size: $sidebar-font-size-normal
-          color: $sidebar-dropdown-item-name-color
-          display: block
-        .description
-          display: block
-          font-size: $sidebar-font-size-small
-          color: $sidebar-dropdown-item-desc-color
-        &:visited, &:active
-          .name
-            color: $sidebar-dropdown-item-name-color
-          .description
-            color: $sidebar-dropdown-item-desc-color
-      &:hover
-        a
-          color: $sidebar-dropdown-item-name-hover-color
-          .name
-            color: $sidebar-dropdown-item-name-hover-color
-          .description
-            color: $sidebar-dropdown-item-desc-hover-color
-      &:first-of-type a
-        border-radius: 4px 4px 0 0
-      &:last-of-type a
-        border-radius: 0 0 4px 4px
-        border: none
+.selectize-dropdown .caption,
+.selectize-input .caption
+  font-size: 0.8rem
+  opacity: 0.8

@@ -23,6 +23,7 @@
 
 .sidebar-title
   font-size: $sidebar-title-font-size
+  line-height: 25px
   color: $sidebar-title-color
   margin: $sidebar-title-margin
   text-transform: uppercase
@@ -39,23 +40,9 @@
 
   .title-btn
     float: right
-    border: 1px solid
-    padding: 1px 8px
-    font-size: 10px
-    border-radius: 4px
-    cursor: pointer
-    background: none
-    color: $sidebar-title-color
-    line-height: 13px
-    position: relative
-    bottom: 1px
-    &:hover
-      color: $primary-color
-    &:active
-      outline: 0
 
 .sidebar-item
-  height: $sidebar-item-height
+  min-height: $sidebar-item-height
   margin: 0 -15px 5px
   padding: $sidebar-item-vertical-padding 15px
   clear: both
@@ -87,7 +74,7 @@
       float: left
     &.right
       float: right
-    .fa
+    .fe
       line-height: $sidebar-item-height - (2 * $sidebar-item-vertical-padding) - 2
 
   .sidebar-option-btn
@@ -125,6 +112,12 @@
     .sidebar-option-btn
       color: $sidebar-light-color-2
       border-color: $sidebar-light-color-2
+
+.section-list
+  margin: 0
+  padding: 0
+  li
+    list-style-type: none
 
 .cell-list
   margin: 5px 0
