@@ -38,7 +38,8 @@ function getSectionCellProperties(sectionId) {
         background = $section.attr('data-cell_default_background'),
         border = $section.attr('data-cell_default_border'),
         borderRadius = $section.attr('data-cell_default_border_radius'),
-        shadow = $section.attr('data-cell_default_shadow');
+        shadow = $section.attr('data-cell_default_shadow'),
+        sectionBackground = $section.data('css_background');
     var cellHeight = totalWidth / totalCols;
     return {'colWidth': totalWidth / totalCols,
             'rowHeight': cellHeight,
@@ -47,7 +48,8 @@ function getSectionCellProperties(sectionId) {
             'background': background,
             'border': border,
             'borderRadius': borderRadius,
-            'shadow': shadow};
+            'shadow': shadow,
+            'sectionBackground': sectionBackground};
 }
 
 function getSectionParentsUrlParts(sectionId) {

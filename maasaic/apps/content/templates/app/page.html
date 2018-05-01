@@ -429,7 +429,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title"> Create section</h5>
+          <h4 class="modal-title"> Create section</h4>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -490,10 +490,78 @@
     </div>
   </div>
 
+  {# CELL MODAL TEMPLATE #}
+  <div id="cell-modal-tmpl" class="hidden">
+    <div>
+    <div class="modal-header">
+      <h4 class="modal-title"><i class="fe fe-file-text"></i> New Text cell</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+    <form class="ajax-form" method="POST" action="">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col">
+            <h5>Content</h5>
+            <div class="edit-content-panel"></div>
+          </div>
+          <div class="col col-2">
+            <h5>Cell properties</h5>
+            {% csrf_token %}
+            <div class="form-group">
+              <label class="form-label">Margin</label>
+              <input type="text" class="form-control" name="css_margin">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Padding</label>
+              <input type="text" class="form-control" name="css_padding">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Background</label>
+              <div class="input-group colorpicker-component colorpicker-element">
+                <div class="input-group-prepend">
+                  <span class="input-group-text input-group-addon"><i></i></span>
+                </div>
+                <input type="text" name="css_background" class="form-control input-sm"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Border</label>
+              <input type="text" class="form-control" name="css_border">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Border radius</label>
+              <input type="text" class="form-control" name="css_border_radius">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Box shadow</label>
+              <input type="text" class="form-control" name="css_shadow">
+            </div>
+            <input    name="id"                            type="hidden" />
+            <input    name="cell_type"                     type="hidden" />
+            <input    name="section"                       type="hidden" />
+            <input    name="x"                             type="hidden" />
+            <input    name="y"                             type="hidden" />
+            <input    name="w"                             type="hidden" />
+            <input    name="h"                             type="hidden" />
+            <textarea name="content" class="hidden"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-link text-danger" data-dismiss="modal"><i class="fe fe-slash"></i> Cancel</button>
+        <button type="submit" class="btn btn-success btn-md" id="modal-btn">Create cell</button>
+      </div>
+    </form>
+    </div>
+  </div>
+
   {# INSERT CELL MODAL #}
-  <div class="modal" tabindex="-1" role="dialog" id="insert-cell-modal">
+  <div class="modal" tabindex="-1" role="dialog" id="cell-modal">
     <div class="modal-dialog modal-huge" role="document">
-      <div class="modal-content"></div>
+      <div class="modal-content">
+      </div>
     </div>
   </div>
 
