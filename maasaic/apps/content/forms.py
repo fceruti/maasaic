@@ -1,11 +1,16 @@
+import json
 import re
+from io import BytesIO
 
+from PIL import Image
 from django import forms
 from django.contrib.auth import authenticate
 from django.db import transaction
 from image_cropping import ImageCropWidget
+
 from maasaic.apps.content.fields import SubdomainField
 from maasaic.apps.content.models import Cell
+from maasaic.apps.content.models import CellImage
 from maasaic.apps.content.models import MAX_COLS_KEY
 from maasaic.apps.content.models import MAX_ROWS_KEY
 from maasaic.apps.content.models import Page
@@ -480,6 +485,11 @@ class CellCreateForm(forms.ModelForm):
     css_border_radius = forms.CharField(required=False)
     css_shadow = forms.CharField(required=False)
 
+    image_id = forms.CharField(required=False)
+    image_type = forms.CharField(required=False)
+    image_src = forms.CharField(required=False)
+    image_cropping = forms.CharField(required=False)
+
     class Meta:
         model = Cell
         fields = ['section', 'cell_type', 'x', 'y', 'w', 'h', 'content']
@@ -512,6 +522,40 @@ class CellCreateForm(forms.ModelForm):
             other_cell.order += 1
             other_cell.save()
         cell.save()
+        data = self.cleaned_data
+        if data['cell_type'] == Cell.Type.IMAGE:
+            if data['image_type'] == 'file':
+                uploaded_image = UploadedImage.objects.get(id=data['image_id'])
+            else:
+                # TODO: download and create image in other cases
+                raise Exception()
+
+            crop_data = json.loads(data['image_cropping'])
+            crop_coords = [int(point) for point in crop_data['points']]
+
+            cell_image = CellImage(
+                cell=cell,
+                uploaded_image=uploaded_image,
+                cropping=crop_data,)
+
+            img_path = str(uploaded_image.image.path)
+            extension = img_path.split('.')[-1].lower()
+
+            if extension in ['jpg', 'jpeg']:
+                img_format = 'JPEG'
+            elif extension in ['png']:
+                img_format = 'PNG'
+            else:
+                raise Exception
+
+            img_io = BytesIO()
+            img = Image.open(img_path)
+            img_crop = img.crop(crop_coords)
+            img_crop.save(img_io, format=img_format)
+
+            cell_image.image.save('crop.%s' % extension, img_io, save=True)
+            cell_image.save()
+
         return cell
 
 

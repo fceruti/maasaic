@@ -1,18 +1,60 @@
-<form method="POST" action="{% url 'image_create' website.subdomain %}" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Upload image" class="btn btn-success btn-sm"/>
-</form>
-<h5>My gallery</h5>
-{% if images %}
-  <div class="row">
-    {% for image in images %}
-      <div class="col col-3">
-        <img src="{{ MEDIA_URL }}{{ image.thumbnail_url }}" alt=""/>
-        <h3>{{ image.width }}x{{ image.height }} | {{ image.size|filesizeformat }}</h3>
+{% load static %}
+<div class="modal-body">
+  <div class="container-fluid">
+    <ul class="nav nav-tabs" id="image-select-options" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" href="#my-gallery" data-toggle="tab" role="tab">My gallery</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#google" data-toggle="tab" role="tab">Google Images</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#unsplash" data-toggle="tab" role="tab">Unsplash</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#giphy" data-toggle="tab" role="tab">Giphy</a>
+      </li>
+    </ul>
+    <br />
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="my-gallery" role="tabpanel">
+        <form method="POST" action="{% url 'image_create' website.subdomain %}" enctype="multipart/form-data" style="float:right; margin: 0" id="upload-image-form">
+          {% csrf_token %}
+          {{form.errors}}
+          <label class="btn btn-primary" style="margin: 0">
+            <i class="fe fe-upload-cloud"></i> Upload image <input type="file" name="image" hidden/>
+          </label>
+        </form>
+        <h4 style="line-height: 33px">My gallery</h4>
+        <div class="modal-media-results">
+          {% if images %}
+            {% for image in images %}
+              <label class="imagecheck mb-4">
+                <input name="image_file" type="radio" value="{{ image.id }}" data-image-id="{{ image.id }}" data-original-src="{% get_media_prefix %}{{ image.image }}" class="imagecheck-input">
+                <figure class="imagecheck-figure">
+                  <img src="{{ image.thumbnail_url }}" class="thumb" alt=""/>
+                </figure>
+                <p slass="stats">{{ image.width }}x{{ image.height }} | {{ image.size|filesizeformat }}</p>
+              </label>
+            {% endfor %}
+          {% else %}
+            <div class="alert alert-info">You don't have images yet. Upload your first one and you'll see it here.</div>
+          {% endif %}
+        </div>
       </div>
-    {% endfor %}
+
+      <div class="tab-pane fade"             id="google" role="tabpanel">
+        <input type="text" class="form-control" placeholder="Google search...">
+        <div class="modal-media-results">
+
+        </div>
+      </div>
+      <div class="tab-pane fade"             id="unsplash" role="tabpanel">
+        <h5>Unsplash</h5>
+      </div>
+      <div class="tab-pane fade"             id="giphy" role="tabpanel">
+        <h5>Giphy</h5>
+      </div>
+    </div>
   </div>
-{% else %}
-  <div class="alert alert-info">You don't have images yet. Upload your first one and you'll see it here.</div>
-{% endif %}
+</div>

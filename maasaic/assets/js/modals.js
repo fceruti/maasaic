@@ -1,6 +1,79 @@
+var activeImageTab = '#my-gallery';
+
+var currentImage = null;
+var currentCellProperties = null;
+var currentCellObj = null;
+var croppie = null;
+
+function refreshImageGallery() {
+    if(activeImageTab == '#my-gallery'){
+        $.get('/sites/' + subdomain + '/images', function( data ) {
+
+            $('#cell-modal .choose-image-form-container').html( data );
+
+            // Current tab
+            $('#image-select-options a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                activeImageTab = $(e.target).attr('href');
+            })
+
+            // File selected
+            $('#upload-image-form input[name=image]').on('change', function() {
+                $form = $(this).closest('form');
+                var data = new FormData($form[0]);
+                var url = $form.attr('action');
+                EventBus.fire(WAITING_SERVER_RESPONSE_STARTED);
+
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: data,
+                    contentType: 'multipart/form-data',
+                    headers: {'X-CSRFToken': csrfmiddlewaretoken},
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(response) {
+                        refreshImageGallery();
+                    },
+                    complete: function() {
+                        EventBus.fire(WAITING_SERVER_RESPONSE_ENDED);
+                    }
+                });
+            });
+
+            // Image chosen
+            $('input[name=image_file]').on('change', function(){
+                currentImage = {
+                    id: $(this).data('image-id'),
+                    src: $(this).data('original-src')
+                }
+
+                $('#cell-modal #image-preview').attr('src', currentImage.src);
+                $('.image-cell-preview-container input[name=image_id]').val($(this).data('image-id'));
+                $('.image-cell-preview-container input[name=image_type]').val('file');
+                $('.image-cell-preview-container input[name=image_src]').val($(this).data('original-src'));
+
+                $('#image-preview').croppie('destroy');
+                $('#image-preview').croppie({
+                    viewport: {
+                        width: currentCellProperties['colWidth'] * currentCellObj['w'],
+                        height: currentCellProperties['rowHeight'] * currentCellObj['h']
+                    },
+                    showZoomer: true,
+                    update: function(data) {
+                        $('.image-cell-preview-container input[name=image_cropping]').val(JSON.stringify(data));
+                    }
+                })
+            });
+        });
+    }
+}
 
 function onCellModalRequest(cellProperties, cellObj) {
     console.log('onCellModalRequest', cellProperties, cellObj)
+    currentCellObj = cellObj;
+    currentCellProperties = cellProperties;
+
 
     var cellWidth = cellProperties['colWidth'] * cellObj['w'],
         cellHeight = cellProperties['rowHeight'] * cellObj['h'],
@@ -74,7 +147,7 @@ function onCellModalRequest(cellProperties, cellObj) {
     if(cellObj['cellType'] == 'TEXT') {
 
         // Add summernote
-        $cellModalTmpl.find('.edit-content-panel').html('<div id="summernote"></div>');
+        $cellModalTmpl.find('.edit-content-panel').html('<h5>Content</h5><div id="summernote"></div>');
 
         // Build modal
         $('#cell-modal .modal-content').html($cellModalTmpl.html());
@@ -112,17 +185,6 @@ function onCellModalRequest(cellProperties, cellObj) {
         $('#cell-modal .note-statusbar').css({'display': 'none'});
         $('#cell-modal .note-editor').css({'background': sectionBackground});
 
-        $noteWrapper = $('<div></div>')
-        $noteWrapper.addClass('editing-cell-outer');
-        var noteWrapperStyle = window['utils']['get_position_dict_from_margin'](margin);
-        noteWrapperStyle['position'] = 'absolute';
-        noteWrapperStyle['background'] = background;
-        noteWrapperStyle['shadow'] = shadow;
-        noteWrapperStyle['border'] = border;
-        noteWrapperStyle['borderRadius'] = borderRadius;
-        $noteWrapper.css(noteWrapperStyle);
-        $('#cell-modal .note-editable').wrap($noteWrapper);
-        $('#cell-modal .note-editable').css({'height': '100%'});
         $('#cell-modal .note-editable').addClass('editing-cell-inner');
 
         // Insert content
@@ -132,49 +194,44 @@ function onCellModalRequest(cellProperties, cellObj) {
         }
     }
     if(cellObj['cellType'] == 'IMAGE') {
-        // Initialize modal
-        $('#insert-cell-modal .modal-dialog').addClass('modal-lg');
-        var modalHtml =
-            '<div class="modal-header">' +
-                '<h5 class="modal-title"><i class="fa fa-camera"></i> New Image cell</h5>' +
-                '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
-                    '<span aria-hidden="true">&times;</span>' +
-                '</button>' +
-            '</div>' +
-            '<div class="modal-body">' +
-                '<h5>Select image</h5>' +
-                '<ul class="nav nav-tabs" id="myTab" role="tablist">'+
-                    '<li class="nav-item">'+
-                        '<a class="nav-link active" data-toggle="tab" href="#insert-image-gallery" role="tab" aria-controls="home" aria-selected="true"><i class="fa fa-picture-o"></i>  My Gallery</a>'+
-                    '</li>'+
-                    '<li class="nav-item">'+
-                        '<a class="nav-link" data-toggle="tab" href="#insert-image-unsplash" role="tab"><i class="fa fa-camera-retro"></i> Unsplash</a>'+
-                    '</li>'+
-                    '<li class="nav-item">'+
-                        '<a class="nav-link" data-toggle="tab" href="#insert-image-google" role="tab"><i class="fa fa-google"></i> Google search</a>'+
-                    '</li>'+
-                '</ul>'+
-                '<div class="tab-content" id="myTabContent">'+
-                    '<div class="insert-image-modal-tab-pane tab-pane fade show active" id="insert-image-gallery"  role="tabpanel">My Gallery</div>'+
-                    '<div class="insert-image-modal-tab-pane tab-pane fade"             id="insert-image-unsplash" role="tabpanel">Unsplash</div>'+
-                    '<div class="insert-image-modal-tab-pane tab-pane fade"             id="insert-image-google"   role="tabpanel">Google</div>'+
-                '</div>'+
-            '</div>' +
-            '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-link text-danger" data-dismiss="modal">Cancel</button>' +
-                '<button type="submit" class="btn btn-success" id="modal-btn"><i class="fa fa-plus-circle"></i> Create image cell</button>' +
-            '</div>';
-        $('#insert-cell-modal .modal-content').html(modalHtml);
-        $.get('/sites/' + subdomain + '/images', function( data ) {
-            $('#insert-image-gallery').html( data );
-        });
 
-        $('#insert-cell-modal').modal('show');
+        // Build modal
+        $('#cell-modal .modal-content').html($cellModalTmpl.html());
+        $('#cell-modal').modal('show');
+
+        refreshImageGallery();
+
+        $('#cell-modal .edit-content-panel').html('<h5>Preview</h5><div class="image-cell-preview-container"><div class="image-cell-preview"><div class="editing-cell-inner"><img id="image-preview" /></div></div><input type="hidden" name="image_id" /><input type="hidden" name="image_src" /><input type="hidden" name="image_type" /><input type="hidden" name="image_cropping" /></div>')
+
+        $('#cell-modal .image-cell-preview-container').css({
+            'background': sectionBackground,
+            'padding': '40px 0'});
+
+        $('#cell-modal .image-cell-preview').css({
+            'height': cellHeight + 'px',
+            'width': cellWidth + 'px',
+            'position': 'relative',
+            'margin': '0 auto',
+            'border': '1px solid rgba(0, 40, 100, 0.12)'
+           });
 
     }
 
+    $noteWrapper = $('<div></div>')
+    $noteWrapper.addClass('editing-cell-outer');
+    var noteWrapperStyle = window['utils']['get_position_dict_from_margin'](margin);
+    noteWrapperStyle['position'] = 'absolute';
+    noteWrapperStyle['background'] = background;
+    noteWrapperStyle['shadow'] = shadow;
+    noteWrapperStyle['border'] = border;
+    noteWrapperStyle['borderRadius'] = borderRadius;
+    $noteWrapper.css(noteWrapperStyle);
+
+    $('#cell-modal .editing-cell-inner').wrap($noteWrapper);
+    $('#cell-modal .editing-cell-inner').css({'height': '100%'});
+
     /*
-    *  Sidebar item bindg
+    *  Sidebar item binding
     */
 
     // Padding

@@ -485,7 +485,7 @@ class CellDeleteView(DeleteView, LoginRequiredMixin):
 # ------------------------------------------------------------------------------
 # Images
 # ------------------------------------------------------------------------------
-class ImageCreateView(CreateView, WebsiteUrlMixin, LoginRequiredMixin):
+class ImageCreateView(LoginRequiredMixin, WebsiteUrlMixin, CreateView):
     model = UploadedImage
     form_class = UploadImageForm
     template_name = 'frontend/image_create.html'
@@ -494,7 +494,7 @@ class ImageCreateView(CreateView, WebsiteUrlMixin, LoginRequiredMixin):
         context = super(ImageCreateView, self).get_context_data(**kwargs)
         context['images'] = UploadedImage.objects\
             .filter(website=self.website)\
-            .order_by('created_at')
+            .order_by('-created_at')
         return context
 
     def form_valid(self, form):

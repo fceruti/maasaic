@@ -59,6 +59,18 @@ def image_path(instance, filename):
     return os.path.join(instance.website.subdomain, 'img', new_filename)
 
 
+def image_cell_path(instance, filename):
+    if type(filename) in [list, tuple]:
+        filename = filename[0]
+    extension = filename.split('.')[-1]
+
+    cell = instance.cell
+    page = cell.section.page
+    website = page.website
+    new_fn = 'cell_%s.%s' % (slugify(cell.pk), extension)
+    return os.path.join('img', website.subdomain, 'page-%s' % page.pk, new_fn)
+
+
 # ------------------------------------------------------------------------------
 # Status helpers
 # ------------------------------------------------------------------------------
@@ -296,8 +308,15 @@ class UploadedImage(models.Model):
 
     @property
     def thumbnail_url(self):
-        options = {'size': (200, 200), 'crop': 'smart'}
+        options = {'size': (300, 200), 'crop': 'smart'}
         return get_thumbnailer(self.image).get_thumbnail(options).url
+
+
+class CellImage(models.Model):
+    cell = models.ForeignKey(Cell, on_delete=models.CASCADE)
+    uploaded_image = models.ForeignKey(UploadedImage, null=True, blank=True, on_delete=models.SET_NULL)
+    image = models.ImageField(blank=True, upload_to=image_cell_path)
+    cropping = JSONField()
 
 
 class SiteDefaultProp(models.Model):

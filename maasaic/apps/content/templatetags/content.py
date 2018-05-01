@@ -1,14 +1,16 @@
 import hashlib
 
 from django import template
+from django.conf import settings
 from django.utils.text import mark_safe
 from pyquery import PyQuery as pq
 
+from maasaic.apps.content.forms import site_props
 from maasaic.apps.content.models import Cell
+from maasaic.apps.content.models import CellImage
 from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Section
 from maasaic.apps.content.models import SiteDefaultProp
-from maasaic.apps.content.forms import site_props
 from maasaic.apps.content.utils import get_position_dict_from_margin
 from maasaic.apps.content.utils import get_position_string_from_position
 
@@ -142,6 +144,22 @@ def section_cell_default_shadow(context, section):
 # ------------------------------------------------------------------------------
 # Cell
 # ------------------------------------------------------------------------------
+@register.simple_tag()
+def display_cell(cell):
+    if cell.cell_type == Cell.Type.TEXT:
+        return mark_safe(cell.content)
+    if cell.cell_type == Cell.Type.IMAGE:
+        try:
+            cell_image = CellImage.objects.get(cell=cell)
+            if cell_image.image:
+                url = '%s%s' % (settings.MEDIA_URL, cell_image.image)
+                print(url)
+                return mark_safe('<img src="%s" alt=""/>' % url)
+        except CellImage.DoesNotExist:
+            pass
+        return '--'
+
+
 @register.simple_tag()
 def cell_type_icon(cell):
     if cell.cell_type == Cell.Type.TEXT:
