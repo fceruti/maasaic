@@ -3,7 +3,28 @@ var activeImageTab = '#my-gallery';
 var currentImage = null;
 var currentCellProperties = null;
 var currentCellObj = null;
+var currentMargin = null;
+var currentPadding = null;
 var croppie = null;
+
+function initializeCroppie() {
+    var margin = window['utils']['get_position_dict_from_margin'](currentMargin);
+    var padding = window['utils']['get_position_dict_from_margin'](currentPadding);
+    console.log('X', (currentCellProperties['colWidth'] * currentCellObj['w']) - (margin.left + margin.right + padding.left + padding.right), 'Y', (currentCellProperties['rowHeight'] * currentCellObj['h']) - (margin.top + margin.bottom + padding.top + padding.bottom))
+    console.log(margin, padding)
+    $('#image-preview').croppie('destroy');
+    $('#image-preview').croppie({
+        viewport: {
+            width: (currentCellProperties['colWidth'] * currentCellObj['w']) - (margin.left + margin.right + padding.left + padding.right),
+            height: (currentCellProperties['rowHeight'] * currentCellObj['h']) - (margin.top + margin.bottom + padding.top + padding.bottom)
+        },
+        showZoomer: true,
+        update: function(data) {
+            $('.image-cell-preview-container input[name=image_cropping]').val(JSON.stringify(data));
+        }
+    });
+}
+
 
 function refreshImageGallery() {
     if(activeImageTab == '#my-gallery'){
@@ -53,17 +74,7 @@ function refreshImageGallery() {
                 $('.image-cell-preview-container input[name=image_type]').val('file');
                 $('.image-cell-preview-container input[name=image_src]').val($(this).data('original-src'));
 
-                $('#image-preview').croppie('destroy');
-                $('#image-preview').croppie({
-                    viewport: {
-                        width: currentCellProperties['colWidth'] * currentCellObj['w'],
-                        height: currentCellProperties['rowHeight'] * currentCellObj['h']
-                    },
-                    showZoomer: true,
-                    update: function(data) {
-                        $('.image-cell-preview-container input[name=image_cropping]').val(JSON.stringify(data));
-                    }
-                })
+                initializeCroppie();
             });
         });
     }
@@ -93,11 +104,17 @@ function onCellModalRequest(cellProperties, cellObj) {
     var padding = initialPadding;
     if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('padding')){
         padding = cellObj['css']['padding'];
+    } else {
+        if(cellObj['cellType'] == 'IMAGE') {
+            padding = '0';
+        }
     }
+    currentPadding = padding;
     var margin = initialMargin;
     if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('margin')){
         margin = cellObj['css']['margin'];
     }
+    currentMargin = margin;
     var border = initialBorder;
     if(cellObj.hasOwnProperty('css') && cellObj['css'].hasOwnProperty('border')){
         border = cellObj['css']['border'];
@@ -225,6 +242,7 @@ function onCellModalRequest(cellProperties, cellObj) {
     noteWrapperStyle['shadow'] = shadow;
     noteWrapperStyle['border'] = border;
     noteWrapperStyle['borderRadius'] = borderRadius;
+    noteWrapperStyle['box-sizing'] = 'content-box';
     $noteWrapper.css(noteWrapperStyle);
 
     $('#cell-modal .editing-cell-inner').wrap($noteWrapper);
@@ -238,14 +256,21 @@ function onCellModalRequest(cellProperties, cellObj) {
     $('#cell-modal .editing-cell-inner').css({'padding': padding});
     $('#cell-modal input[name=css_padding]').attr('value', padding);
     $('#cell-modal input[name=css_padding]').on('keyup', function(){
-        $('#cell-modal .editing-cell-inner').css({'padding': $(this).val()});
+        var newPadding = $(this).val();
+        $('#cell-modal .editing-cell-inner').css({'padding': newPadding});
+        console.log('newPadding', newPadding)
+        currentPadding = newPadding;
+        initializeCroppie();
     });
 
     // Margin
     $('#cell-modal input[name=css_margin]').attr('value', margin)
     $('#cell-modal input[name=css_margin]').on('keyup', function(){
-        var newPositions = window['utils']['get_position_dict_from_margin']($(this).val());
+        var newMargin = $(this).val();
+        var newPositions = window['utils']['get_position_dict_from_margin'](newMargin);
         $('#cell-modal .editing-cell-outer').css(newPositions);
+        currentMargin = newMargin;
+        initializeCroppie();
     });
 
     // Background
