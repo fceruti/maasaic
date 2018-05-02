@@ -286,6 +286,9 @@ class PagePublishView(UpdateView, PageUrlMixin, WebsiteDetailView):
     model = Page
     mode = Page.Mode.LIVE
 
+    def get_object(self):
+        return self.page
+
     def form_valid(self, form):
         if form.cleaned_data['is_visible']:
             with transaction.atomic():
@@ -302,7 +305,17 @@ class PagePublishView(UpdateView, PageUrlMixin, WebsiteDetailView):
                         cell_attr = edit_cell.get_attr_dict()
                         cell_attr['is_visible'] = True
                         cell_attr['section'] = live_section
-                        Cell.objects.create(**cell_attr)
+                        live_cell = Cell.objects.create(**cell_attr)
+                        from maasaic.apps.content.models import CellImage
+                        try:
+                            edit_cell_im = CellImage.objects.get(cell=edit_cell)
+                            CellImage.objects.create(
+                                cell=live_cell,
+                                image=edit_cell_im.image,
+                                cropping=edit_cell_im.cropping,
+                                uploaded_image=edit_cell_im.uploaded_image)
+                        except CellImage.DoesNotExist:
+                            pass
             msg = 'The page "%s" is now live' % page.title
             messages.success(self.request, msg)
         else:

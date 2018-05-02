@@ -390,6 +390,10 @@ class SectionCreateForm(forms.ModelForm):
             self.fields['name'].initial = 'Section #%s' % section_n
             self.fields['html_id'].initial = 'section_%s' % section_n
 
+        default_props = SiteDefaultProp.objects.filter(
+            site=page.website,
+            scope=SiteDefaultProp.Scope.SECTION)
+        default_props_dict = dict((prop.name, prop) for prop in default_props)
         for prop in site_props.values():
             if prop['scope'] != SiteDefaultProp.Scope.SECTION:
                 continue
@@ -401,10 +405,8 @@ class SectionCreateForm(forms.ModelForm):
             if 'widget' in prop:
                 field_attr['widget'] = prop['widget']()
             try:
-                section_default_prop = SiteDefaultProp.objects.get(
-                    site=page.website, scope=prop['scope'], prop=prop['name'])
-                field_attr['initial'] = section_default_prop.value
-            except SiteDefaultProp.DoesNotExist:
+                field_attr['initial'] = default_props_dict[prop['name']].value
+            except KeyError:
                 field_attr['initial'] = prop['default']
             if prop['type'] == 'int':
                 field_class = forms.IntegerField

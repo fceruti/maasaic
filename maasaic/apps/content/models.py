@@ -273,6 +273,25 @@ class Cell(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    @property
+    def image_file(self):
+        if self.cell_image:
+            return self.cellimage.image
+        return None
+
+    @property
+    def image_cropping(self):
+        if self.cell_image:
+            return self.cellimage.cropping
+        return None
+
+    @cached_property
+    def cell_image(self):
+        try:
+            return CellImage.objects.get(cell=self)
+        except CellImage.DoesNotExist:
+            return None
+
     def get_attr_dict(self):
         return {
             'cell_type': self.cell_type,
@@ -313,7 +332,7 @@ class UploadedImage(models.Model):
 
 
 class CellImage(models.Model):
-    cell = models.ForeignKey(Cell, on_delete=models.CASCADE)
+    cell = models.OneToOneField(Cell, on_delete=models.CASCADE)
     uploaded_image = models.ForeignKey(UploadedImage, null=True, blank=True, on_delete=models.SET_NULL)
     image = models.ImageField(blank=True, upload_to=image_cell_path)
     cropping = JSONField()

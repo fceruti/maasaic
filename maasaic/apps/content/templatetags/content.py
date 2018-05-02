@@ -23,7 +23,7 @@ register = template.Library()
 CLASS_HASH_FIELDS = {
     Page: ['title', 'path', 'width', 'description'],
     Section: ['order', 'n_columns', 'n_rows', 'css', 'name', 'html_id'],
-    Cell: ['cell_type', 'x', 'y', 'w', 'h', 'content', 'css'],
+    Cell: ['cell_type', 'x', 'y', 'w', 'h', 'content', 'css', 'image_file', 'image_cropping'],
 }
 
 
@@ -153,7 +153,6 @@ def display_cell(cell):
             cell_image = CellImage.objects.get(cell=cell)
             if cell_image.image:
                 url = '%s%s' % (settings.MEDIA_URL, cell_image.image)
-                print(url)
                 return mark_safe('<img src="%s" alt=""/>' % url)
         except CellImage.DoesNotExist:
             pass
