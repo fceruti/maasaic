@@ -519,12 +519,14 @@ class CellCreateForm(forms.ModelForm):
     def save(self, commit=True):
         cell = super(CellCreateForm, self).save(commit=False)
         cell.css = self.get_css()
-        cell.order = 0
-        for other_cell in Cell.objects.filter(section=cell.section):
-            other_cell.order += 1
-            other_cell.save()
+        if not cell.pk:
+            cell.order = 0
+            for other_cell in Cell.objects.filter(section=cell.section):
+                other_cell.order += 1
+                other_cell.save()
         cell.save()
         data = self.cleaned_data
+
         if data['cell_type'] == Cell.Type.IMAGE:
             if data['image_type'] == 'file':
                 uploaded_image = UploadedImage.objects.get(id=data['image_id'])
@@ -535,10 +537,12 @@ class CellCreateForm(forms.ModelForm):
             crop_data = json.loads(data['image_cropping'])
             crop_coords = [int(point) for point in crop_data['points']]
 
-            cell_image = CellImage(
-                cell=cell,
-                uploaded_image=uploaded_image,
-                cropping=crop_data,)
+            try:
+                cell_image = CellImage.objects.get(cell=cell)
+            except CellImage.DoesNotExist:
+                cell_image = CellImage(cell=cell)
+            cell_image.uploaded_image = uploaded_image
+            cell_image.cropping = crop_data
 
             img_path = str(uploaded_image.image.path)
             extension = img_path.split('.')[-1].lower()
@@ -568,13 +572,7 @@ class CellCreateForm(forms.ModelForm):
 class CellUpdateContentForm(CellCreateForm):
     class Meta:
         model = Cell
-        fields = ['content']
-
-    def save(self, commit=True):
-        cell = super(CellCreateForm, self).save(commit=False)
-        cell.css = self.get_css()
-        cell.save()
-        return cell
+        fields = ['content', 'cell_type']
 
 
 class CellPositionForm(forms.ModelForm):

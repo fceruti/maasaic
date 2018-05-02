@@ -23,7 +23,8 @@ register = template.Library()
 CLASS_HASH_FIELDS = {
     Page: ['title', 'path', 'width', 'description'],
     Section: ['order', 'n_columns', 'n_rows', 'css', 'name', 'html_id'],
-    Cell: ['cell_type', 'x', 'y', 'w', 'h', 'content', 'css', 'image_file', 'image_cropping'],
+    Cell: ['cell_type', 'x', 'y', 'w', 'h', 'content', 'css',
+           'image_file', 'image_cropping'],
 }
 
 

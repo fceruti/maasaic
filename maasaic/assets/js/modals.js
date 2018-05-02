@@ -7,11 +7,10 @@ var currentMargin = null;
 var currentPadding = null;
 var croppie = null;
 
-function initializeCroppie() {
+function initializeCroppie(params) {
     var margin = window['utils']['get_position_dict_from_margin'](currentMargin);
     var padding = window['utils']['get_position_dict_from_margin'](currentPadding);
-    console.log('X', (currentCellProperties['colWidth'] * currentCellObj['w']) - (margin.left + margin.right + padding.left + padding.right), 'Y', (currentCellProperties['rowHeight'] * currentCellObj['h']) - (margin.top + margin.bottom + padding.top + padding.bottom))
-    console.log(margin, padding)
+
     $('#image-preview').croppie('destroy');
     $('#image-preview').croppie({
         viewport: {
@@ -23,6 +22,28 @@ function initializeCroppie() {
             $('.image-cell-preview-container input[name=image_cropping]').val(JSON.stringify(data));
         }
     });
+    if(params!= null && params != undefined){
+        $('#image-preview').croppie('bind', {
+            url: currentImage.src,
+            points: params['points'],
+            zoom: params['zoom']
+        });
+    }
+
+}
+
+function setCurrentImage(id, originalSrc, cropping) {
+    currentImage = {
+        id: id,
+        src: originalSrc,
+        cropping: cropping
+    }
+
+    $('.image-cell-preview-container input[name=image_id]').val(currentImage.id);
+    $('.image-cell-preview-container input[name=image_type]').val('file');
+    $('.image-cell-preview-container input[name=image_src]').val(currentImage.src);
+
+    initializeCroppie(cropping);
 }
 
 
@@ -64,24 +85,13 @@ function refreshImageGallery() {
 
             // Image chosen
             $('input[name=image_file]').on('change', function(){
-                currentImage = {
-                    id: $(this).data('image-id'),
-                    src: $(this).data('original-src')
-                }
-
-                $('#cell-modal #image-preview').attr('src', currentImage.src);
-                $('.image-cell-preview-container input[name=image_id]').val($(this).data('image-id'));
-                $('.image-cell-preview-container input[name=image_type]').val('file');
-                $('.image-cell-preview-container input[name=image_src]').val($(this).data('original-src'));
-
-                initializeCroppie();
+                setCurrentImage($(this).data('image-id'), $(this).data('original-src'), null);
             });
         });
     }
 }
 
 function onCellModalRequest(cellProperties, cellObj) {
-    console.log('onCellModalRequest', cellProperties, cellObj)
     currentCellObj = cellObj;
     currentCellProperties = cellProperties;
 
@@ -211,18 +221,27 @@ function onCellModalRequest(cellProperties, cellObj) {
         }
     }
     if(cellObj['cellType'] == 'IMAGE') {
-
         // Build modal
         $('#cell-modal .modal-content').html($cellModalTmpl.html());
         $('#cell-modal').modal('show');
-
         refreshImageGallery();
 
-        $('#cell-modal .edit-content-panel').html('<h5>Preview</h5><div class="image-cell-preview-container"><div class="image-cell-preview"><div class="editing-cell-inner"><img id="image-preview" /></div></div><input type="hidden" name="image_id" /><input type="hidden" name="image_src" /><input type="hidden" name="image_type" /><input type="hidden" name="image_cropping" /></div>')
+        var html = '<h5>Preview</h5>' +
+            '<div class="image-cell-preview-container">' +
+            '<div class="image-cell-preview">' +
+            '<div class="editing-cell-inner">' +
+            '<div id="image-preview"></div></div></div>' +
+            '<input type="hidden" name="image_id" />' +
+            '<input type="hidden" name="image_src" />' +
+            '<input type="hidden" name="image_type" />' +
+            '<input type="hidden" name="image_cropping" /></div>';
+
+        $('#cell-modal .edit-content-panel').html(html);
 
         $('#cell-modal .image-cell-preview-container').css({
             'background': sectionBackground,
-            'padding': '40px 0'});
+            'padding': '40px 0'
+        });
 
         $('#cell-modal .image-cell-preview').css({
             'height': cellHeight + 'px',
@@ -230,7 +249,13 @@ function onCellModalRequest(cellProperties, cellObj) {
             'position': 'relative',
             'margin': '0 auto',
             'border': '1px solid rgba(0, 40, 100, 0.12)'
-           });
+        });
+
+        if(cellObj['imageId'] != null && cellObj['imageId'] != undefined &&
+           cellObj['imageCropping'] != null && cellObj['imageCropping'] != undefined &&
+           cellObj['imageOriginalSrc'] != null && cellObj['imageOriginalSrc'] != undefined){
+            setCurrentImage(cellObj['imageId'], cellObj['imageOriginalSrc'], JSON.parse(cellObj['imageCropping'].replace(/'/g, '"')));
+        }
 
     }
 
@@ -258,7 +283,6 @@ function onCellModalRequest(cellProperties, cellObj) {
     $('#cell-modal input[name=css_padding]').on('keyup', function(){
         var newPadding = $(this).val();
         $('#cell-modal .editing-cell-inner').css({'padding': newPadding});
-        console.log('newPadding', newPadding)
         currentPadding = newPadding;
         initializeCroppie();
     });
@@ -303,7 +327,6 @@ function onCellModalRequest(cellProperties, cellObj) {
 
 function onEditSectionModalRequest(sectionAttr) {
     var $createModal = $($('#create-section-modal').html());
-    console.log(sectionAttr)
     $createModal.find('.modal-title').text('Edit section')
     $createModal.find('form').attr('action', '/sections/' + sectionAttr['id'] + '/update');;
     $createModal.find('input[name=name]').attr('value', sectionAttr['name']);

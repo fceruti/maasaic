@@ -446,13 +446,16 @@ function bindEditCellEvents() {
         var cellObj = {
             id: cellId,
             sectionId: sectionId,
-            cellType: $cell.attr('data-type'),
-            x: $cell.attr('data-x'),
-            y: $cell.attr('data-y'),
-            w: $cell.attr('data-w'),
-            h: $cell.attr('data-h'),
+            cellType: $cell.data('type'),
+            x: $cell.data('x'),
+            y: $cell.data('y'),
+            w: $cell.data('w'),
+            h: $cell.data('h'),
             content: $('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner').html(),
-            css: getCellCss($cell)
+            css: getCellCss($cell),
+            imageId: $cell.data('image-id'),
+            imageOriginalSrc: $cell.data('image-original-src'),
+            imageCropping: $cell.data('image-cropping'),
         };
         console.log($('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner').html())
         console.log('.cell.cell--layer-view[data-cell-id=' + cellId + '] .cell-inner')
