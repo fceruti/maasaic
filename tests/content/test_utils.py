@@ -8,13 +8,16 @@ from maasaic.apps.content.utils import clean_path
 
 @pytest.mark.parametrize('margin, position', [
     ('10px', {'top': 10, 'right': 10, 'bottom': 10, 'left': 10}),
+    ('10px 0', {'top': 10, 'right': 0, 'bottom': 10, 'left': 0}),
     ('10px 20px', {'top': 10, 'right': 20, 'bottom': 10, 'left': 20}),
     ('10px 20px 30px', {'top': 10, 'right': 20, 'bottom': 30, 'left': 20}),
+    ('10px 0 30px', {'top': 10, 'right': 0, 'bottom': 30, 'left': 0}),
     ('10px 20px 30px 40px', {'top': 10, 'right': 20, 'bottom': 30, 'left': 40}),
+    ('0 20px 30px 40px', {'top': 0, 'right': 20, 'bottom': 30, 'left': 40}),
     ('10px 20px 30px 40px 50px', {'top': 0, 'right': 0, 'bottom': 0, 'left': 0}),
     ('', {'top': 0, 'right': 0, 'bottom': 0, 'left': 0}),
     ('10pxa', {'top': 0, 'right': 0, 'bottom': 0, 'left': 0}),
-    ('10px a', {'top': 10, 'right': 10, 'bottom': 10, 'left': 10}),
+    ('10px a', {'top': 0, 'right': 0, 'bottom': 0, 'left': 0}),
 ])
 def test_get_position_dict_from_margin(margin, position):
     assert get_position_dict_from_margin(margin) == position
