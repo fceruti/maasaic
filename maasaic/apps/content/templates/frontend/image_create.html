@@ -8,9 +8,9 @@
       <!--<li class="nav-item">-->
         <!--<a class="nav-link" href="#google" data-toggle="tab" role="tab">Google Images</a>-->
       <!--</li>-->
-      <!--<li class="nav-item">-->
-        <!--<a class="nav-link" href="#unsplash" data-toggle="tab" role="tab">Unsplash</a>-->
-      <!--</li>-->
+      <li class="nav-item">
+        <a class="nav-link" href="#contextualwebsearch" data-toggle="tab" role="tab">Web search</a>
+      </li>
       <li class="nav-item">
         <a class="nav-link" href="#giphy" data-toggle="tab" role="tab">Giphy</a>
       </li>
@@ -46,8 +46,54 @@
       <div class="tab-pane fade"             id="google" role="tabpanel">
 
       </div>
-      <div class="tab-pane fade"             id="unsplash" role="tabpanel">
-        <h5>Unsplash</h5>
+      <div class="tab-pane fade"             id="contextualwebsearch" role="tabpanel">
+
+        <input type="text" class="form-control" placeholder="Web search..." id="web-search-input" style="margin-bottom: 15px">
+        <div class="modal-media-results" id="web-search-results">
+
+        </div>
+
+        <script>
+          $(document).ready(function(){
+            var urlTmpl = 'https://contextualwebsearch-websearch-v1.p.mashape.com/api/Search/ImageSearchAPI?autoCorrect=false&count=25&q=';
+
+            $('#web-search-input').on('keyup change', function(){
+              var url = urlTmpl + $(this).val();
+              $.ajax({
+                type: 'GET',
+                url: url,
+                headers: {
+                  "X-Mashape-Key": "9F8A9xZlcymsh4nbFURcBGDHoGvEp1vXSeCjsn06CnO77SclMR",
+                  "X-Mashape-Host": "contextualwebsearch-websearch-v1.p.mashape.com",
+                },
+                success: function(data) {
+                  var html = '';
+                  var data = data['value'];
+                  console.log(data);
+                  for(var i = 0; i < data.length; i++){
+                    var res = data[i];
+                    var originalUrl = res['url'];
+                    var height = res['height'];
+                    var width = res['width'];
+
+                    html +=
+                      '<label class="imagecheck mb-4">' +
+                        '<input name="image_url" type="radio" value="' + originalUrl + '" class="imagecheck-input">' +
+                        '<figure class="imagecheck-figure">' +
+                          '<img src="' + originalUrl + '" class="thumb" alt=""/>' +
+                        '</figure>' +
+                        '<p slass="stats">' + width + 'x' + height + '</p>' +
+                      '</label>';
+                  }
+                  $('#web-search-results').html(html);
+                  $('#web-search-results input[name=image_url]').change(function(event, val){
+                    setCurrentImage(null, $(event.target).val(), null, 'url');
+                  });
+                }
+              })
+            });
+          });
+      </script>
       </div>
       <div class="tab-pane fade"             id="giphy" role="tabpanel">
         <input type="text" class="form-control" placeholder="Gif search..." id="gif-search-input" style="margin-bottom: 15px">
@@ -63,7 +109,6 @@
               $.get(url, function(data){
                 var html = '';
                 var data = data['data'];
-                console.log(data);
                 for(var i = 0; i < data.length; i++){
                   var res = data[i];
                   var previewUrl = res['images']['preview_gif']['url'];

@@ -2,14 +2,14 @@ import json
 import re
 from io import BytesIO
 
+import requests
 from PIL import Image
 from django import forms
 from django.contrib.auth import authenticate
-from django.db import transaction
-from image_cropping import ImageCropWidget
-import requests
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
+from django.db import transaction
+from image_cropping import ImageCropWidget
 
 from maasaic.apps.content.fields import SubdomainField
 from maasaic.apps.content.models import Cell

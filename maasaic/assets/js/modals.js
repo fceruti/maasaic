@@ -1,5 +1,3 @@
-var activeImageTab = '#my-gallery';
-
 var currentImage = null;
 var currentCellProperties = null;
 var currentCellObj = null;
@@ -48,53 +46,46 @@ function setCurrentImage(id, originalSrc, cropping, imageType) {
 
 
 function refreshImageGallery() {
-    if(activeImageTab == '#my-gallery'){
-        $.get('/sites/' + subdomain + '/images', function( data ) {
 
-            $('#cell-modal .choose-image-form-container').html( data );
+    $.get('/sites/' + subdomain + '/images', function( data ) {
 
-            // Current tab
-            $('#image-select-options a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                activeImageTab = $(e.target).attr('href');
-            })
+        $('#cell-modal .choose-image-form-container').html( data );
 
-            // File selected
-            $('#upload-image-form input[name=image]').on('change', function() {
-                $form = $(this).closest('form');
-                var data = new FormData($form[0]);
-                var url = $form.attr('action');
-                EventBus.fire(WAITING_SERVER_RESPONSE_STARTED);
+        // File selected
+        $('#upload-image-form input[name=image]').on('change', function() {
+            $form = $(this).closest('form');
+            var data = new FormData($form[0]);
+            var url = $form.attr('action');
+            EventBus.fire(WAITING_SERVER_RESPONSE_STARTED);
 
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: data,
-                    contentType: 'multipart/form-data',
-                    headers: {'X-CSRFToken': csrfmiddlewaretoken},
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    success: function(response) {
-                        refreshImageGallery();
-                    },
-                    complete: function() {
-                        EventBus.fire(WAITING_SERVER_RESPONSE_ENDED);
-                    }
-                });
-            });
-
-            // Image chosen
-            $('input[name=image_file]').on('change', function(){
-                setCurrentImage($(this).data('image-id'), $(this).data('original-src'), null, 'file');
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: data,
+                contentType: 'multipart/form-data',
+                headers: {'X-CSRFToken': csrfmiddlewaretoken},
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    refreshImageGallery();
+                },
+                complete: function() {
+                    EventBus.fire(WAITING_SERVER_RESPONSE_ENDED);
+                }
             });
         });
-    }
+
+        // Image chosen
+        $('input[name=image_file]').on('change', function(){
+            setCurrentImage($(this).data('image-id'), $(this).data('original-src'), null, 'file');
+        });
+    });
 }
 
 function onCellModalRequest(cellProperties, cellObj) {
     currentCellObj = cellObj;
     currentCellProperties = cellProperties;
-
 
     var cellWidth = cellProperties['colWidth'] * cellObj['w'],
         cellHeight = cellProperties['rowHeight'] * cellObj['h'],

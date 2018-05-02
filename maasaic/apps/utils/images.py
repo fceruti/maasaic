@@ -43,7 +43,7 @@ def resize_gif(image, box, zoom, output_file=None):
         print("Warning: only 1 frame found")
         all_frames[0].save(output_file, optimize=True, format='GIF')
     else:
-        all_frames[0].save(output_file, optimize=True, save_all=True, append_images=all_frames[1:], loop=1000, format='GIF')
+        all_frames[0].save(output_file, optimize=True, save_all=True, append_images=all_frames[1:], duration=image.info['duration'], loop=0, format='GIF')
     return output_file
 
 
