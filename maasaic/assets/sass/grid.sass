@@ -18,6 +18,11 @@
       &.show-borders
         border-left: 1px solid rgba(0, 0, 0, 0.07)
         border-top: 1px solid rgba(0, 0, 0, 0.07)
+        .cell--layer-insert
+          border-top: none
+          border-right: 1px solid rgba(0, 0, 0, 0.07)
+          border-bottom: 1px solid rgba(0, 0, 0, 0.07)
+          border-left: none
       .cell
         position: absolute
         overflow: hidden
@@ -27,11 +32,6 @@
       .insert-layer
         .cell
           z-index: $cell-insert-layer-zindex
-          &.show-borders
-            border-top: none
-            border-right: 1px solid rgba(0, 0, 0, 0.07)
-            border-bottom: 1px solid rgba(0, 0, 0, 0.07)
-            border-left: none
         &.is-inserting
           .cell
             z-index: $cell-insert-layer-inserting-zindex

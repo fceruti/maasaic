@@ -105,6 +105,12 @@ function bindSidebarEvents() {
         };
         EventBus.fire(CELL_MODAL_REQUEST, sectionCellProperties, cellObj);
     });
+
+    $('.js-section-show-borders-btn').click(function(){
+        $('.section-inner').toggleClass('show-borders');
+        $(this).find('span').text($(this).find('span').html() == "Hide grid" ? "Show grid" : "Hide grid");
+    })
+
 }
 
 EventBus.subscribe(HTML_INJECTED, bindSidebarEvents);

@@ -68,8 +68,7 @@
          data-css_padding_top="{{ section.css.padding_top }}"
          data-css_padding_bottom="{{ section.css.padding_bottom }}"
          data-section-id="{{ section.pk }}">
-      <div class="section-inner {% if show_borders %}show-borders{% endif %}">
-
+      <div class="section-inner show-borders">
         {# VIEW LAYER #}
         <div class="view-layer">
           {% for cell in section.visible_cells|slice:"::-1" %}
@@ -106,7 +105,6 @@
               {% for col in section.n_columns|times %}
                 <div class="cell
                             cell--layer-insert
-                            {% if show_borders %}show-borders{% endif %}
                             cell--w-1
                             cell--h-1
                             cell--x-{{ col }}
@@ -342,8 +340,8 @@
         <button type="button" class="btn btn-secondary btn-sm title-btn js-section-add-btn" data-toggle="modal" data-target="#create-section-modal">
           <i class="fe fe-plus"></i> Add
         </button>
-        <a class="btn btn-secondary btn-sm title-btn" href="{% url 'page_update' website.subdomain page.pk %}{% if show_borders %}?borders=false{% endif%}" data-toggle="tooltip" data-placement="top" title="{% if show_borders %}Hide guidelines{% else %}Show guidelines{% endif%}" style="margin-right: 5px">
-          <i class="fe fe-grid"></i> {% if show_borders %}Hide grid{% else %}Show grid{% endif%}
+        <a class="btn btn-secondary btn-sm title-btn js-section-show-borders-btn" style="margin-right: 5px">
+          <i class="fe fe-grid"></i> <span>Hide grid</span>
         </a>
       </h3>
       <ul class="section-list" id="js-section-list">
