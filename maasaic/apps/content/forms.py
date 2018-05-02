@@ -159,7 +159,7 @@ class WebsiteConfigForm(forms.ModelForm):
         self.fields['language'].required = False
         self.fields['favicon'].required = False
         self.fields['favicon_cropping'].required = False
-        self.fields['name'].widget
+        # self.fields['name'].widget
 
 
 site_props = {
@@ -551,6 +551,10 @@ class CellCreateForm(forms.ModelForm):
             img_io = BytesIO()
             img = Image.open(img_path)
             img_crop = img.crop(crop_coords)
+
+            width, height = img_crop.size
+            zoom = float(crop_data['zoom'])
+            img_crop = img_crop.resize((int(width * zoom), int(height * zoom)), Image.ANTIALIAS)
             img_crop.save(img_io, format=img_format)
 
             cell_image.image.save('crop.%s' % extension, img_io, save=True)
