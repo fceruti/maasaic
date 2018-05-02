@@ -7,6 +7,9 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.db import transaction
 from image_cropping import ImageCropWidget
+import requests
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 
 from maasaic.apps.content.fields import SubdomainField
 from maasaic.apps.content.models import Cell
@@ -527,15 +530,35 @@ class CellCreateForm(forms.ModelForm):
         cell.save()
         data = self.cleaned_data
 
+        from maasaic.apps.utils.images import resize_gif
         if data['cell_type'] == Cell.Type.IMAGE:
             if data['image_type'] == 'file':
                 uploaded_image = UploadedImage.objects.get(id=data['image_id'])
+            elif data['image_type'] == 'url':
+                url = data['image_src']
+                resp = requests.get(url)
+
+                img_temp = NamedTemporaryFile(delete=True)
+                img_temp.write(resp.content)
+                img_temp.flush()
+
+                file_name = url.split('/')[-1]
+                uploaded_image = UploadedImage(
+                    website=cell.section.page.website)
+
+                img = Image.open(img_temp)
+                width, height = img.size
+                uploaded_image.width = width
+                uploaded_image.height = height
+                uploaded_image.size = len(img.tobytes())
+                uploaded_image.image.save(file_name, File(img_temp), save=True)
+                uploaded_image.save()
             else:
-                # TODO: download and create image in other cases
-                raise Exception()
+                raise Exception('invalid image_type: %s' % data['image_type'])
 
             crop_data = json.loads(data['image_cropping'])
             crop_coords = [int(point) for point in crop_data['points']]
+            zoom = float(crop_data['zoom'])
 
             try:
                 cell_image = CellImage.objects.get(cell=cell)
@@ -551,17 +574,22 @@ class CellCreateForm(forms.ModelForm):
                 img_format = 'JPEG'
             elif extension in ['png']:
                 img_format = 'PNG'
+            elif extension in ['gif']:
+                img_format = 'GIF'
             else:
                 raise Exception
 
-            img_io = BytesIO()
             img = Image.open(img_path)
-            img_crop = img.crop(crop_coords)
+            img_io = BytesIO()
+            if img_format == 'GIF':
+                resize_gif(image=img, box=crop_coords, zoom=zoom, output_file=img_io)
+            else:
+                img_crop = img.crop(crop_coords)
 
-            width, height = img_crop.size
-            zoom = float(crop_data['zoom'])
-            img_crop = img_crop.resize((int(width * zoom), int(height * zoom)), Image.ANTIALIAS)
-            img_crop.save(img_io, format=img_format)
+                width, height = img_crop.size
+
+                img_crop = img_crop.resize((int(width * zoom), int(height * zoom)), Image.ANTIALIAS)
+                img_crop.save(img_io, format=img_format)
 
             cell_image.image.save('crop.%s' % extension, img_io, save=True)
             cell_image.save()

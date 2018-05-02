@@ -35,9 +35,9 @@ from maasaic.apps.content.views.app import PagePublishView
 from maasaic.apps.content.views.app import PageResetView
 from maasaic.apps.content.views.app import PageUpdateView
 from maasaic.apps.content.views.app import SectionCreateView
-from maasaic.apps.content.views.app import SectionUpdateView
 from maasaic.apps.content.views.app import SectionDeleteView
 from maasaic.apps.content.views.app import SectionOrderUpdateView
+from maasaic.apps.content.views.app import SectionUpdateView
 from maasaic.apps.content.views.app import SectionVisibilityUpdateView
 from maasaic.apps.content.views.app import WebsiteConfigView
 from maasaic.apps.content.views.app import WebsiteCreateView

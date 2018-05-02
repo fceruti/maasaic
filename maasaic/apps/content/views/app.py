@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
@@ -5,6 +6,8 @@ from django.db.models import Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+import json
+from django.http import HttpResponse
 from django.utils.functional import cached_property
 from django.views import View
 from django.views.generic import CreateView
@@ -505,6 +508,7 @@ class ImageCreateView(LoginRequiredMixin, WebsiteUrlMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(ImageCreateView, self).get_context_data(**kwargs)
+        context['GIPHY_KEY'] = settings.GIPHY_KEY
         context['images'] = UploadedImage.objects\
             .filter(website=self.website)\
             .order_by('-created_at')

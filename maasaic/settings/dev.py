@@ -3,15 +3,15 @@ from maasaic.settings.common import *
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 INSTALLED_APPS += [
-    # 'debug_toolbar',
+    'debug_toolbar',
     'django_extensions',
 ]
 
 MIDDLEWARE += [
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-INTERNAL_IPS = ['localhost', '127.0.0.1', 'maasaic-local.com:8000', 'fceruti.maasaic-local.com:8000']
+INTERNAL_IPS = ['localhost', '127.0.0.1', 'maasaic-local.com:8000', 'fceruti.maasaic-local.com:8000', 'real.maasaic-local.com:8000']
 JQUERY_URL = None
 
 COMPRESS_ENABLED = True

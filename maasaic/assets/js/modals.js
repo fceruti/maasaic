@@ -22,17 +22,17 @@ function initializeCroppie(params) {
             $('.image-cell-preview-container input[name=image_cropping]').val(JSON.stringify(data));
         }
     });
-    if(params!= null && params != undefined){
-        $('#image-preview').croppie('bind', {
-            url: currentImage.src,
-            points: params['points'],
-            zoom: params['zoom']
-        });
+    var croppieArgs = {url: currentImage.src};
+    if (params!=null){
+        croppieArgs['points'] = params['points'],
+        croppieArgs['zoom'] = params['zoom'];
     }
+
+    $('#image-preview').croppie('bind', croppieArgs);
 
 }
 
-function setCurrentImage(id, originalSrc, cropping) {
+function setCurrentImage(id, originalSrc, cropping, imageType) {
     currentImage = {
         id: id,
         src: originalSrc,
@@ -40,7 +40,7 @@ function setCurrentImage(id, originalSrc, cropping) {
     }
 
     $('.image-cell-preview-container input[name=image_id]').val(currentImage.id);
-    $('.image-cell-preview-container input[name=image_type]').val('file');
+    $('.image-cell-preview-container input[name=image_type]').val(imageType);
     $('.image-cell-preview-container input[name=image_src]').val(currentImage.src);
 
     initializeCroppie(cropping);
@@ -85,7 +85,7 @@ function refreshImageGallery() {
 
             // Image chosen
             $('input[name=image_file]').on('change', function(){
-                setCurrentImage($(this).data('image-id'), $(this).data('original-src'), null);
+                setCurrentImage($(this).data('image-id'), $(this).data('original-src'), null, 'file');
             });
         });
     }
@@ -254,7 +254,7 @@ function onCellModalRequest(cellProperties, cellObj) {
         if(cellObj['imageId'] != null && cellObj['imageId'] != undefined &&
            cellObj['imageCropping'] != null && cellObj['imageCropping'] != undefined &&
            cellObj['imageOriginalSrc'] != null && cellObj['imageOriginalSrc'] != undefined){
-            setCurrentImage(cellObj['imageId'], cellObj['imageOriginalSrc'], JSON.parse(cellObj['imageCropping'].replace(/'/g, '"')));
+            setCurrentImage(cellObj['imageId'], cellObj['imageOriginalSrc'], JSON.parse(cellObj['imageCropping'].replace(/'/g, '"')), 'file');
         }
 
     }
