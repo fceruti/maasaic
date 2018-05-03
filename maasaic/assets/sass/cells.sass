@@ -11,31 +11,35 @@
     @include transition(border,background 0.2s)
     @include box-sizing(border-box)
     border: $edit-cell-border
+    overflow: visible
     &.hover
       background: $edit-cell-bg-hover
       border: $edit-cell-border-hover
       .edit-cell-ctrl
-        top: 5px
+        display: block
+        opacity: 1
 
     .edit-cell-inner
       position: relative
 
     .edit-cell-ctrl
-      @include transition(top 0.2s)
+      @include transition(all 0.2s)
       z-index: $edit-cell-ctrl-zindex
       position: absolute
-      top: -60px
-      left: 10px
+      top: 5px
+      left: 5px
+      display: none
+      opacity: 0
 
       .edit-cell-ctrl-btns
         @include box-shadow($edit-cell-ctrl-btns-shadow)
         @include border-radius($edit-cell-ctrl-btns-border-radius)
         @include border-radius($edit-cell-ctrl-btns-border-radius)
         height: $edit-cell-ctrl-btns-height
-        border: 2px solid $edit-cell-ctrl-btn-color
+        width: $edit-cell-ctrl-btns-width
+        border: $edit-cell-ctrl-btns-border
         background: $edit-cell-ctrl-btns-bg
         padding: $edit-cell-ctrl-btns-padding
-        float: right
         .edit-cell-ctrl-btn
           color: $edit-cell-ctrl-btn-color
           width: $edit-cell-ctrl-btn-width

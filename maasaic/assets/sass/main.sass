@@ -1,11 +1,33 @@
 @import 'variables'
 @import 'mixins'
 
+*,
+*::before,
+*::after
+  box-sizing: border-box
+
 html, body
   font-family: $font-family
   color: $text_color
   font-size: $font-size
   position: relative
+  margin: 0
+
+html
+  line-height: 1.15
+
+body
+  font-weight: 400
+  line-height: 1.5
+  direction: ltr
+  -webkit-font-smoothing: antialiased
+  -moz-osx-font-smoothing: grayscale
+  -webkit-tap-highlight-color: transparent
+  -webkit-text-size-adjust: none
+  -ms-touch-action: manipulation
+  touch-action: manipulation
+  -webkit-font-feature-settings: "liga" 0
+  font-feature-settings: "liga" 0
 
 sub
   vertical-align: sub

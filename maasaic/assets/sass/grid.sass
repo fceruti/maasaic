@@ -1,6 +1,7 @@
 @import 'variables'
 
 .edit-body
+  background: white
   .webpage .section .section-inner
     margin: 0 0 0 20px
   @each $page_width in $page-widths
@@ -38,6 +39,7 @@
       .edit-layer
         .cell
           z-index: $cell-edit-layer-zindex
+          overflow: visible
       .move-layer
         .cell
           z-index: $cell-move-layer-zindex
