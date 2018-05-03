@@ -10,6 +10,7 @@ from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
 from django.db import transaction
 from image_cropping import ImageCropWidget
+from maasaic.apps.utils.images import resize_gif
 
 from maasaic.apps.content.fields import SubdomainField
 from maasaic.apps.content.models import Cell
@@ -530,7 +531,6 @@ class CellCreateForm(forms.ModelForm):
         cell.save()
         data = self.cleaned_data
 
-        from maasaic.apps.utils.images import resize_gif
         if data['cell_type'] == Cell.Type.IMAGE:
             if data['image_type'] == 'file':
                 uploaded_image = UploadedImage.objects.get(id=data['image_id'])
@@ -585,13 +585,16 @@ class CellCreateForm(forms.ModelForm):
                 resize_gif(image=img, box=crop_coords, zoom=zoom, output_file=img_io)
             else:
                 img_crop = img.crop(crop_coords)
-
                 width, height = img_crop.size
-
                 img_crop = img_crop.resize((int(width * zoom), int(height * zoom)), Image.ANTIALIAS)
                 img_crop.save(img_io, format=img_format)
 
-            cell_image.image.save('crop.%s' % extension, img_io, save=True)
+            path = str(uploaded_image.image)
+            filename = path.split('/')[-1]
+            name = '.'.join(filename.split('.')[:-1])
+            extension = filename.split('.')[-1]
+            crop_filename = '%s_crop.%s' % (name, extension)
+            cell_image.image.save(crop_filename, img_io, save=True)
             cell_image.save()
 
         return cell

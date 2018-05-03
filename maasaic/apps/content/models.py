@@ -51,24 +51,13 @@ def favicon_path(instance, filename):
 
 
 def image_path(instance, filename):
-    ext = filename.split('.')[-1]
-    if instance.name:
-        new_filename = '%s.%s' % (slugify(instance.name), ext)
-    else:
-        new_filename = filename
-    return os.path.join(instance.website.subdomain, 'img', new_filename)
+    return os.path.join(instance.website.subdomain, 'img', filename)
 
 
 def image_cell_path(instance, filename):
-    if type(filename) in [list, tuple]:
-        filename = filename[0]
-    extension = filename.split('.')[-1]
-
-    cell = instance.cell
-    page = cell.section.page
+    page = instance.cell.section.page
     website = page.website
-    new_fn = 'cell_%s.%s' % (slugify(cell.pk), extension)
-    return os.path.join('img', website.subdomain, 'page-%s' % page.pk, new_fn)
+    return os.path.join('img', website.subdomain, 'page-%s' % page.pk, filename)
 
 
 # ------------------------------------------------------------------------------
@@ -349,3 +338,10 @@ class SiteDefaultProp(models.Model):
 
     class Meta:
         unique_together = ('site', 'scope', 'prop')
+
+
+class GoogleFont(models.Model):
+    url = models.URLField()
+    name = models.CharField(max_length=255)
+    css_name = models.CharField(max_length=255)
+    default = models.CharField(max_length=255)
