@@ -81,7 +81,7 @@ class UserCreateForm(forms.Form):
                      'Also your login nickname,',
         'EMAIL': 'Optional. We don\'t really care about sending you emails. '
                  'It\'s just in case you forget your password. If you don\'t '
-                 'put one and you loose it. You are screwed. Well, '
+                 'put one and you loose it, you are screwed. Well, '
                  'not really, life goes on, it\'s just that you just won\'t '
                  'be able to edit your site anymore.',
         'PASSWORD': 'Try not to put something like "asdf" and then compain '

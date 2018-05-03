@@ -17,7 +17,7 @@
               <form class="card" action="{% url 'user_create' %}" method="post">
                 {% csrf_token %}
                 <div class="card-body p-6">
-                  <div class="card-title">Create your site</div>
+                  <div class="card-title text-center">Join now!</div>
                   {% bootstrap_form_errors user_create_form %}
                   <div class="form-group">
                     <div class="input-group">
@@ -32,7 +32,7 @@
                   {% bootstrap_field user_create_form.email show_label=False %}
 
                   {% buttons %}
-                    <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-plus-circle"></i> Create site</button>
+                    <button type="submit" class="btn btn-primary btn-block"> Join</button>
                   {% endbuttons %}
                 </div>
               </form>

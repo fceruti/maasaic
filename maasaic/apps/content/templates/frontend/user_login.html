@@ -15,7 +15,7 @@
             </div>
               <form class="card" action="{% url 'login' %}" method="post">
                 <div class="card-body p-6">
-                  <div class="card-title">Login to your account</div>
+                  <div class="card-title text-center">Login</div>
                   {% csrf_token %}
                   {% bootstrap_form form %}
                   {% buttons %}
@@ -24,7 +24,7 @@
                 </div>
               </form>
               <div class="text-center text-muted">
-                Don't have account yet? <a href="{% url 'user_create' %}">Register</a>
+                Don't have account yet? <a href="{% url 'user_create' %}">Join now</a>
               </div>
           </div>
         </div>

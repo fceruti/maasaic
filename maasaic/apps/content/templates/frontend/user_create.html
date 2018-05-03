@@ -1,12 +1,47 @@
 {% extends 'frontend/_base.html' %}
 
+{% load static %}
+{% load bootstrap4 %}
+
 {% block title %}Maasaic | Keep it weird{% endblock %}
 
 {% block content %}
-    <form method="POST" action="{% url 'user_create' %}">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="Create page"/>
-    </form>
+  <div class="page">
+    <div class="page-single">
+      <div class="container">
+        <div class="row">
+          <div class="col col-login mx-auto">
+            <div class="text-center mb-6">
+              <img src="{% static 'img/logos/tailor_brand.png' %}" class="h-10" alt="Maasaic" />
+            </div>
+              <form class="card" action="{% url 'user_create' %}" method="post">
+                <div class="card-body p-6">
+                  <div class="card-title text-center">Join now!</div>
+                  {% csrf_token %}
+                  {% bootstrap_form_errors form %}
+                  <div class="form-group">
+                    <div class="input-group">
+                      <input type="text" class="form-control" placeholder="Your subdomain" name="{{ form.subdomain.html_name }}"/>
+                      <div class="input-group-append">
+                        <span class="input-group-text">.maasaic.com</span>
+                      </div>
+                    </div>
+                    <small class="form-text text-muted">{{ form.subdomain.help_text }}</small>
+                  </div>
+                  {% bootstrap_field form.password show_label=False %}
+                  {% bootstrap_field form.email show_label=False %}
+                  {% buttons %}
+                    <button type="submit" class="btn btn-primary btn-block">Join</button>
+                  {% endbuttons %}
+                </div>
+              </form>
+              <div class="text-center text-muted">
+                Already have account yet? <a href="{% url 'login' %}">Login</a>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock %}
 
