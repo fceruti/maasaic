@@ -39,6 +39,7 @@
       {% endspaceless %}
       var csrfmiddlewaretoken = '{{ csrf_token }}';
       var subdomain = '{{ website.subdomain }}';
+      var DEBUG = true;
     </script>
   {% endif %}
 {% endblock %}
@@ -52,22 +53,24 @@
 
 <div class="webpage
             webpage--width-{{ page.width }}"
-     data-website-id="{{ page.website.id }}"
-     data-website-subdomain="{{ page.website.subdomain }}"
-     data-website-name="{{ page.website.name }}"
-     data-website-description="{{ page.website.description }}"
-     data-website-language="{{ page.website.language }}"
-     data-page-id="{{ page.pk }}"
-     data-title="{{ page.title }}"
-     data-path="{{ page.path }}"
-     data-width="{{ page.width }}"
-     data-description="{{ page.description }}">
-  {% if page.visible_sections|length == 0 %}
-    <div class="alert alert-info" style="margin: 10px 310px 0 10px; padding: 40px">
-      <h2>Your page has been create</h2>
-      <p>Now it's time to add a section. Go ahead and press "Add <i class="fe fe-plus"></i>" next to the "SECTIONS" title on the sidebar to add a new Section.</p>
-    </div>
-  {% else %}
+     {% if page_edit_on %}
+       data-website-id="{{ page.website.id }}"
+       data-website-subdomain="{{ page.website.subdomain }}"
+       data-website-name="{{ page.website.name }}"
+       data-website-description="{{ page.website.description }}"
+       data-website-language="{{ page.website.language }}"
+       data-page-id="{{ page.pk }}"
+       data-title="{{ page.title }}"
+       data-path="{{ page.path }}"
+       data-width="{{ page.width }}"
+       data-description="{{ page.description }}"
+     {% endif %}>
+{% if page.visible_sections|length == 0 %}
+  <div class="alert alert-info" style="margin: 10px 310px 0 10px; padding: 40px">
+    <h2>Your page has been create</h2>
+    <p>Now it's time to add a section. Go ahead and press "Add <i class="fe fe-plus"></i>" next to the "SECTIONS" title on the sidebar to add a new Section.</p>
+  </div>
+{% else %}
   {% for section in page.visible_sections %}
     <div class="section
                 section--{{ section.n_columns }}-cols
@@ -77,23 +80,25 @@
           padding-top: {{ section.css.padding_top }};
           padding-bottom: {{ section.css.padding_bottom }}
          "
-         data-order="{{ section.order }}"
-         data-cell_default_padding="{% section_cell_default_padding section %}"
-         data-cell_default_margin="{% section_cell_default_margin section %}"
-         data-cell_default_background="{% section_cell_default_background section %}"
-         data-cell_default_shadow="{% section_cell_default_shadow section %}"
-         data-cell_default_border="{% section_cell_default_border section %}"
-         data-cell_default_border_radius="{% section_cell_default_border_radius section %}"
-         data-width="{{ page.width }}"
-         data-name="{{ section.name }}"
-         data-html_id="{{ section.html_id }}"
-         data-n_rows="{{ section.n_rows }}"
-         data-n_cols="{{ section.n_columns}}"
-         data-css_background="{{ section.css.background }}"
-         data-css_padding_top="{{ section.css.padding_top }}"
-         data-css_padding_bottom="{{ section.css.padding_bottom }}"
-         data-section-id="{{ section.pk }}">
-      <div class="section-inner show-borders">
+         {% if page_edit_on %}
+           data-order="{{ section.order }}"
+           data-cell_default_padding="{% section_cell_default_padding section %}"
+           data-cell_default_margin="{% section_cell_default_margin section %}"
+           data-cell_default_background="{% section_cell_default_background section %}"
+           data-cell_default_shadow="{% section_cell_default_shadow section %}"
+           data-cell_default_border="{% section_cell_default_border section %}"
+           data-cell_default_border_radius="{% section_cell_default_border_radius section %}"
+           data-width="{{ page.width }}"
+           data-name="{{ section.name }}"
+           data-html_id="{{ section.html_id }}"
+           data-n_rows="{{ section.n_rows }}"
+           data-n_cols="{{ section.n_columns}}"
+           data-css_background="{{ section.css.background }}"
+           data-css_padding_top="{{ section.css.padding_top }}"
+           data-css_padding_bottom="{{ section.css.padding_bottom }}"
+           data-section-id="{{ section.pk }}"
+         {% endif %}>
+      <div class="section-inner {% if page_edit_on %}show-borders{% endif %}">
         {# VIEW LAYER #}
         <div class="view-layer">
           {% for cell in section.visible_cells|slice:"::-1" %}
@@ -104,13 +109,15 @@
                         cell--h-{{ cell.h }}
                         cell--x-{{ cell.x }}
                         cell--y-{{ cell.y }}"
-                 data-cell-id="{{ cell.pk }}"
-                 data-section-id="{{ section.pk }}"
-                 data-type="{{ cell.cell_type }}"
-                 data-w="{{ cell.w }}"
-                 data-h="{{ cell.h }}"
-                 data-x="{{ cell.x }}"
-                 data-y="{{ cell.y }}">
+                 {% if page_edit_on %}
+                   data-cell-id="{{ cell.pk }}"
+                   data-section-id="{{ section.pk }}"
+                   data-type="{{ cell.cell_type }}"
+                   data-w="{{ cell.w }}"
+                   data-h="{{ cell.h }}"
+                   data-x="{{ cell.x }}"
+                   data-y="{{ cell.y }}"
+                 {% endif %}>
               <div class="cell-inner-margin" style="{% cell_inner_style_background cell %} {% cell_inner_style_margin_position cell %} border:{{ cell.css.border }}; border-radius: {{ cell.css.border_radius }}; box-shadow: {{ cell.css.box_shadow }}">
                 <div class="cell-inner-padding" style="{% cell_inner_style_padding cell %}">
                   <div class="cell-inner">
@@ -261,8 +268,8 @@
       </div>
     </div>
   {% endfor %}
-</div>
 {% endif %}
+</div>{# webpage #}
 
 {# Sidebar #}
 {% if page_edit_on %}
@@ -600,4 +607,5 @@
     <i class="fa fa-circle-o-notch fa-spin"></i> waiting for response
   </div>
 </div>
+
 {% endblock %}

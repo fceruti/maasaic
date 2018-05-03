@@ -39,6 +39,10 @@ var EventBus = {
     // return if the topic doesn't exist, or there are no listeners
     if(!this.keys[key] || this.keys[key].length < 1) return;
 
+    if (DEBUG) {
+        console.log('EventBus:fire', key, data)
+    }
+
     // send the event to all listeners
     this.keys[key].forEach(function(listener) {
       listener(...data || {});

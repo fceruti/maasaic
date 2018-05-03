@@ -92,7 +92,7 @@ sites_urls = [
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
-    path('register', UserCreateView.as_view(), name='user_create'),
+    path('join', UserCreateView.as_view(), name='user_create'),
     path('login', UserLoginView.as_view(), name='login'),
     path('logout', UserLogoutView.as_view(), name='logout'),
 

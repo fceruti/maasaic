@@ -25,32 +25,34 @@
 
     {% block extra_css %}{% endblock %}
 
-    {% compress js file maasaic-app %}
-      <script src="{% static 'tabler-ui/dist/assets/js/vendors/jquery-3.2.1.min.js' %}"></script>
-      <script src="{% static 'tabler-ui/dist/assets/js/vendors/bootstrap.bundle.min.js' %}"></script>
-      <script src="{% static 'tabler-ui/dist/assets/js/core.js' %}"></script>
-      <script src="{% static 'tabler-ui/dist/assets/js/vendors/selectize.min.js' %}"></script>
-      <script src="{% static 'croppie/croppie.min.js' %}"></script>
+    {% if page_edit_on %}
+      {% compress js file maasaic-app %}
+        <script src="{% static 'tabler-ui/dist/assets/js/vendors/jquery-3.2.1.min.js' %}"></script>
+        <script src="{% static 'tabler-ui/dist/assets/js/vendors/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'tabler-ui/dist/assets/js/core.js' %}"></script>
+        <script src="{% static 'tabler-ui/dist/assets/js/vendors/selectize.min.js' %}"></script>
+        <script src="{% static 'croppie/croppie.min.js' %}"></script>
 
-      <script src="{% static 'summernote/dist/summernote-bs4.min.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js' %}"></script>
-      <script src="{% static 'bootbox.js/bootbox.min.js' %}"></script>
-      <script src="{% static 'sortablejs/Sortable.min.js' %}"></script>
+        <script src="{% static 'summernote/dist/summernote-bs4.min.js' %}"  type="text/javascript"></script>
+        <script src="{% static 'bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js' %}"></script>
+        <script src="{% static 'bootbox.js/bootbox.min.js' %}"></script>
+        <script src="{% static 'sortablejs/Sortable.min.js' %}"></script>
 
-      <script src="{% static 'transcrypt/__javascript__/utils.min.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'js/event-bus.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'js/dropdown.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'js/page.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'js/sidebar.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'js/modals.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'js/loading.js' %}"  type="text/javascript"></script>
-      <script src="{% static 'js/forms.js' %}"  type="text/javascript"></script>
-      <script type="text/javascript">
-        $(document).ready(function(){
-          EventBus.fire(HTML_INJECTED);
-        });
-      </script>
-    {% endcompress %}
+        <script src="{% static 'transcrypt/__javascript__/utils.min.js' %}"  type="text/javascript"></script>
+        <script src="{% static 'js/event-bus.js' %}"  type="text/javascript"></script>
+        <script src="{% static 'js/dropdown.js' %}"  type="text/javascript"></script>
+        <script src="{% static 'js/page.js' %}"  type="text/javascript"></script>
+        <script src="{% static 'js/sidebar.js' %}"  type="text/javascript"></script>
+        <script src="{% static 'js/modals.js' %}"  type="text/javascript"></script>
+        <script src="{% static 'js/loading.js' %}"  type="text/javascript"></script>
+        <script src="{% static 'js/forms.js' %}"  type="text/javascript"></script>
+        <script type="text/javascript">
+          $(document).ready(function(){
+            EventBus.fire(HTML_INJECTED);
+          });
+        </script>
+      {% endcompress %}
+    {% endif %}
     {% block extra_js %}{% endblock %}
   </head>
   <body class="{% block body_class %}{% endblock %}">
