@@ -8,6 +8,7 @@
 
     {% block pre_css %}{% endblock %}
 
+    {% if page_edit_on %}
     {% compress css file maasaic-app %}
       <link href="{% static 'tabler-ui/dist/assets/css/dashboard.css' %}" type="text/css" rel="stylesheet"/>
       <link href="{% static 'summernote/dist/summernote-bs4.css' %}" type="text/css" rel="stylesheet"/>
@@ -22,6 +23,13 @@
       <link href="{% static 'sass/loading.sass' %}" type="text/x-sass" rel="stylesheet"/>
       <link href="{% static 'sass/modals.sass' %}" type="text/x-sass" rel="stylesheet"/>
     {% endcompress %}
+    {% else %}
+    {% compress css file maasaic %}
+      <link href="{% static 'sass/grid.sass' %}" type="text/x-sass" rel="stylesheet"/>
+      <link href="{% static 'sass/main.sass' %}" type="text/x-sass" rel="stylesheet"/>
+      <link href="{% static 'sass/cells.sass' %}" type="text/x-sass" rel="stylesheet"/>
+    {% endcompress %}
+    {% endif %}
 
     {% block extra_css %}{% endblock %}
 

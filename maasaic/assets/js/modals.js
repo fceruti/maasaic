@@ -186,6 +186,7 @@ function onCellModalRequest(cellProperties, cellObj) {
                 ['height', ['height']],
             ],
             fontNames: fontNames,
+            fontNamesIgnoreCheck: googleFonts,
             lineHeights: ['0.5', '0.8', '1.0', '1.2', '1.4', '1.5', '1.6', '1.8', '2.0', '3.0'],
             fontSizes: ['8', '10', '12', '13', '14', '16', '18', '20', '24', '30', '32', '36', '42', '56', '64', '72', '92'],
             callbacks: {

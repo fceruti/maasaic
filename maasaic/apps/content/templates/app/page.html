@@ -19,6 +19,7 @@
       {% endfor %}
     {% endspaceless %}
   {% else %}
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     {% for page_font in page.pagefont_set.all %}
       {% if page_font.font.source == 'GOOGLE' %}
         <link href="{{ page_font.font.url }}" rel="stylesheet">
@@ -34,6 +35,13 @@
         var fontNames = [
           {% for font in fonts %}
             '{{ font.name }}'{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        ];
+        var googleFonts = [
+          {% for font in fonts %}
+            {% if font.source == 'GOOGLE' %}
+              '{{ font.name }}'{% if not forloop.last %},{% endif %}
+            {% endif %}
           {% endfor %}
         ];
       {% endspaceless %}
