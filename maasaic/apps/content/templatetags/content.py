@@ -163,12 +163,12 @@ def display_cell(cell):
 @register.simple_tag()
 def cell_type_icon(cell):
     if cell.cell_type == Cell.Type.TEXT:
-        return mark_safe('<i class="fe fe-file-text"></i>')
+        return mark_safe('<i class="fe fe-type"></i>')
     if cell.cell_type == Cell.Type.IMAGE:
         return mark_safe('<i class="fe fe-image"></i>')
 
 
-@register.simple_tag()
+@register.filter()
 def cell_short_text(cell):
     if cell.cell_type == Cell.Type.TEXT:
         if cell.content:
@@ -176,6 +176,12 @@ def cell_short_text(cell):
             return dom.text()[:10]
         else:
             return '(empty)'
+    if cell.cell_type == Cell.Type.IMAGE:
+        try:
+            path = str(cell.cell_image.image)
+            return path.split('/')[-1]
+        except AttributeError:
+            return 'Image'
 
 
 @register.simple_tag()

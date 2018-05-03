@@ -121,7 +121,7 @@
                           js-insert-cell-btn"
                    data-cell-type="TEXT">
                 <div class="icon">
-                  <i class="fe fe-file-text"></i>
+                  <i class="fe fe-type"></i>
                 </div>
                 <div class="text">Text</div>
               </div>
@@ -133,30 +133,30 @@
                 </div>
                 <div class="text">Image</div>
               </div>
-              <div class="insert-cell-btn no-margin-right
-                          js-insert-cell-btn"
-                   data-cell-type="VIDEO">
-                <div class="icon">
-                  <i class="fe fe-film"></i>
-                </div>
-                <div class="text">Video</div>
-              </div>
-              <div class="insert-cell-btn
-                          js-insert-cell-btn"
-                   data-cell-type="CLONE">
-                <div class="icon">
-                  <i class="fe fe-copy"></i>
-                </div>
-                <div class="text">Clone</div>
-              </div>
-              <div class="insert-cell-btn
-                          js-insert-cell-btn"
-                   data-cell-type="IFRAME">
-                <div class="icon">
-                  <i class="fe fe-globe"></i>
-                </div>
-                <div class="text">Iframe</div>
-              </div>
+              <!--<div class="insert-cell-btn no-margin-right-->
+                          <!--js-insert-cell-btn"-->
+                   <!--data-cell-type="VIDEO">-->
+                <!--<div class="icon">-->
+                  <!--<i class="fe fe-film"></i>-->
+                <!--</div>-->
+                <!--<div class="text">Video</div>-->
+              <!--</div>-->
+              <!--<div class="insert-cell-btn-->
+                          <!--js-insert-cell-btn"-->
+                   <!--data-cell-type="CLONE">-->
+                <!--<div class="icon">-->
+                  <!--<i class="fe fe-copy"></i>-->
+                <!--</div>-->
+                <!--<div class="text">Clone</div>-->
+              <!--</div>-->
+              <!--<div class="insert-cell-btn-->
+                          <!--js-insert-cell-btn"-->
+                   <!--data-cell-type="IFRAME">-->
+                <!--<div class="icon">-->
+                  <!--<i class="fe fe-globe"></i>-->
+                <!--</div>-->
+                <!--<div class="text">Iframe</div>-->
+              <!--</div>-->
             </div>
           </div>
 
@@ -191,7 +191,7 @@
                     <div class="edit-cell-ctrl-btn
                                 js-edit-cell-ctrl-btn-move">
                       <div class="icon">
-                        <i class="fe fe-send"></i>
+                        <i class="fe fe-move"></i>
                       </div>
                       <span class="text">Move</span>
                     </div>
@@ -385,7 +385,7 @@
                   <div class="sidebar-item {% if not cell.is_visible %}not-visible{% endif %}">
                     <div class="sidebar-item-option left">
                       <div class="sidebar-option-btn bordered grab drag-handle">
-                        <i class="fe fe-menu"></i>
+                        {% cell_type_icon cell %}
                       </div>
                     </div>
                     <div class="sidebar-item-option right">
@@ -405,7 +405,7 @@
                       </form>
                     </div>
                     <div class="sidebar-item-content">
-                      <h2 class="name">{% cell_type_icon cell %} | {% cell_short_text cell %}</h2>
+                      <h2 class="name" title="{{ cell|cell_short_text }}">{{ cell|cell_short_text|slice:":20" }}</h2>
                       <h3 class="description"><span class="coordinate">x:</span> {{ cell.x }}, <span class="coordinate">y:</span> {{ cell.y }}, <span class="coordinate">w:</span> {{ cell.w }}, <span class="coordinate">h:</span> {{ cell.h }}</h3>
                     </div>
                   </div>
