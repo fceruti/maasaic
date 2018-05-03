@@ -2,6 +2,7 @@ import nested_admin
 from django.contrib import admin
 
 from maasaic.apps.content.models import Cell
+from maasaic.apps.content.models import Font
 from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Section
 from maasaic.apps.content.models import Website
@@ -60,3 +61,11 @@ class SectionAdmin(admin.ModelAdmin):
 @admin.register(Cell)
 class CellAdmin(admin.ModelAdmin):
     list_display = ['section', 'cell_type', 'h', 'w', 'x', 'y']
+
+
+# ------------------------------------------------------------------------------
+# Fonts
+# ------------------------------------------------------------------------------
+@admin.register(Font)
+class FontAdmin(admin.ModelAdmin):
+    list_display = ['name', 'default', 'source', 'url']

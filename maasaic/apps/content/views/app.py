@@ -6,8 +6,6 @@ from django.db.models import Max
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-import json
-from django.http import HttpResponse
 from django.utils.functional import cached_property
 from django.views import View
 from django.views.generic import CreateView
@@ -35,7 +33,10 @@ from maasaic.apps.content.forms import WebsiteCreateForm
 from maasaic.apps.content.forms import WebsiteDefaultsForm
 from maasaic.apps.content.forms import WebsitePublishForm
 from maasaic.apps.content.models import Cell
+from maasaic.apps.content.models import CellImage
+from maasaic.apps.content.models import Font
 from maasaic.apps.content.models import Page
+from maasaic.apps.content.models import PageFont
 from maasaic.apps.content.models import Section
 from maasaic.apps.content.models import UploadedImage
 from maasaic.apps.content.models import Website
@@ -256,10 +257,7 @@ class PageUpdateView(WebsiteDetailBase, PageUrlMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(PageUpdateView, self).get_context_data(**kwargs)
         context['page_edit_on'] = True
-        from maasaic.apps.content.views.page import FONTS
-        from maasaic.apps.content.views.page import FONTS_URL
-        context['FONTS'] = FONTS
-        context['FONTS_URL'] = FONTS_URL
+        context['fonts'] = Font.objects.all()
         context['section_create_form'] = SectionCreateForm(page=self.page)
         context['show_borders'] = 'borders' not in self.request.GET
         return context
@@ -295,6 +293,7 @@ class PagePublishView(UpdateView, PageUrlMixin, WebsiteDetailView):
     def form_valid(self, form):
         if form.cleaned_data['is_visible']:
             with transaction.atomic():
+                all_content = ''
                 page = form.save()
                 Section.objects.filter(page=page).delete()
                 visible_sections = list(page.edit_page.visible_sections)
@@ -309,7 +308,7 @@ class PagePublishView(UpdateView, PageUrlMixin, WebsiteDetailView):
                         cell_attr['is_visible'] = True
                         cell_attr['section'] = live_section
                         live_cell = Cell.objects.create(**cell_attr)
-                        from maasaic.apps.content.models import CellImage
+                        all_content += live_cell.content
                         try:
                             edit_cell_im = CellImage.objects.get(cell=edit_cell)
                             CellImage.objects.create(
@@ -319,6 +318,16 @@ class PagePublishView(UpdateView, PageUrlMixin, WebsiteDetailView):
                                 uploaded_image=edit_cell_im.uploaded_image)
                         except CellImage.DoesNotExist:
                             pass
+
+                PageFont.objects.filter(page=page).delete()
+                fonts = Font.objects.all()
+                page_fonts = []
+                for font in fonts:
+                    if font.name in all_content:
+                        page_fonts.append(PageFont(page=page, font=font))
+                if page_fonts:
+                    PageFont.objects.bulk_create(page_fonts)
+
             msg = 'The page "%s" is now live' % page.title
             messages.success(self.request, msg)
         else:

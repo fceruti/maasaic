@@ -9,19 +9,44 @@
 
 {% block body_class %}{% if page_edit_on %}edit-body body--width-{{ page.width }}{% endif %}{% endblock %}
 
-{% block extra_js %}
-  {% include 'widgets/fonts.html' %}
+{% block pre_css %}
   {% if page_edit_on %}
-  <script type="text/javascript">
-    var csrfmiddlewaretoken = '{{ csrf_token }}';
-    var subdomain = '{{ website.subdomain }}';
-  </script>
+    {% spaceless %}
+      {% for font in fonts %}
+        {% if font.source == 'GOOGLE' %}
+          <link href="{{ font.url }}" rel="stylesheet">
+        {% endif %}
+      {% endfor %}
+    {% endspaceless %}
+  {% else %}
+    {% for page_font in page.pagefont_set.all %}
+      {% if page_font.font.source == 'GOOGLE' %}
+        <link href="{{ page_font.font.url }}" rel="stylesheet">
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+  {% if page_edit_on %}
+    <script type="text/javascript">
+      {% spaceless %}
+        var fontNames = [
+          {% for font in fonts %}
+            '{{ font.name }}'{% if not forloop.last %},{% endif %}
+          {% endfor %}
+        ];
+      {% endspaceless %}
+      var csrfmiddlewaretoken = '{{ csrf_token }}';
+      var subdomain = '{{ website.subdomain }}';
+    </script>
   {% endif %}
 {% endblock %}
 
 {% block content %}
+
+{# BEING: AJAX CONTAINER #}
 {% if page_edit_on %}
-  {# BEING: AJAX CONTAINER #}
   <div id="js-ajax-container">
 {% endif %}
 

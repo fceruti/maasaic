@@ -340,8 +340,24 @@ class SiteDefaultProp(models.Model):
         unique_together = ('site', 'scope', 'prop')
 
 
-class GoogleFont(models.Model):
-    url = models.URLField()
+class Font(models.Model):
+    class Source(Choices):
+        NATIVE = 'NATIVE'
+        GOOGLE = 'GOOGLE'
+
     name = models.CharField(max_length=255)
-    css_name = models.CharField(max_length=255)
-    default = models.CharField(max_length=255)
+    default = models.CharField(max_length=255, default='sans-serif')
+    source = models.CharField(max_length=255, default=Source.GOOGLE)
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def url(self):
+        url_name = '+'.join(self.name.split(' '))
+        return 'https://fonts.googleapis.com/css?family=%s' % url_name
+
+
+class PageFont(models.Model):
+    page = models.ForeignKey(Page, on_delete=models.CASCADE)
+    font = models.ForeignKey(Font, on_delete=models.CASCADE)

@@ -397,7 +397,7 @@ class SectionCreateForm(forms.ModelForm):
         default_props = SiteDefaultProp.objects.filter(
             site=page.website,
             scope=SiteDefaultProp.Scope.SECTION)
-        default_props_dict = dict((prop.name, prop) for prop in default_props)
+        default_props_dict = dict((prop.prop, prop) for prop in default_props)
         for prop in site_props.values():
             if prop['scope'] != SiteDefaultProp.Scope.SECTION:
                 continue

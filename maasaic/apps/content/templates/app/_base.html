@@ -5,7 +5,9 @@
   <head>
     <title>{% block title %}Maasaic{% endblock %}</title>
     <meta charset="UTF-8">
-    <link href="{{ FONTS_URL }}" rel="stylesheet" type='text/css'>
+
+    {% block pre_css %}{% endblock %}
+
     {% compress css file maasaic-app %}
       <link href="{% static 'tabler-ui/dist/assets/css/dashboard.css' %}" type="text/css" rel="stylesheet"/>
       <link href="{% static 'summernote/dist/summernote-bs4.css' %}" type="text/css" rel="stylesheet"/>
@@ -20,6 +22,7 @@
       <link href="{% static 'sass/loading.sass' %}" type="text/x-sass" rel="stylesheet"/>
       <link href="{% static 'sass/modals.sass' %}" type="text/x-sass" rel="stylesheet"/>
     {% endcompress %}
+
     {% block extra_css %}{% endblock %}
 
     {% compress js file maasaic-app %}

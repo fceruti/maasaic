@@ -1,0 +1,281 @@
+[
+{
+  "model": "content.font",
+  "pk": 1,
+  "fields": {
+    "name": "Arial",
+    "default": "sans-serif",
+    "source": "NATIVE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 2,
+  "fields": {
+    "name": "Arial Black",
+    "default": "sans-serif",
+    "source": "NATIVE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 3,
+  "fields": {
+    "name": "Courier New",
+    "default": "sans-serif",
+    "source": "NATIVE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 4,
+  "fields": {
+    "name": "Helvetica Neue",
+    "default": "Helvetica, sans-serif",
+    "source": "NATIVE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 5,
+  "fields": {
+    "name": "Impact",
+    "default": "sans-serif",
+    "source": "NATIVE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 6,
+  "fields": {
+    "name": "Lucida Grande",
+    "default": "sans-serif",
+    "source": "NATIVE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 7,
+  "fields": {
+    "name": "Tahoma",
+    "default": "sans-serif",
+    "source": "NATIVE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 8,
+  "fields": {
+    "name": "Times New Roman",
+    "default": "Times, serif",
+    "source": "NATIVE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 9,
+  "fields": {
+    "name": "Verdana",
+    "default": "sans-serif",
+    "source": "NATIVE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 10,
+  "fields": {
+    "name": "Roboto",
+    "default": "sans-serif",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 11,
+  "fields": {
+    "name": "Open Sans",
+    "default": "sans-serif",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 12,
+  "fields": {
+    "name": "Montserrat",
+    "default": "sans-serif",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 13,
+  "fields": {
+    "name": "Oswald",
+    "default": "sans-serif",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 14,
+  "fields": {
+    "name": "Raleway",
+    "default": "sans-serif",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 15,
+  "fields": {
+    "name": "Mina",
+    "default": "sans-serif",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 16,
+  "fields": {
+    "name": "Merriweather",
+    "default": "serif",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 17,
+  "fields": {
+    "name": "Amatic SC",
+    "default": "cursive",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 18,
+  "fields": {
+    "name": "Permanent Marker",
+    "default": "cursive",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 19,
+  "fields": {
+    "name": "Nanum Brush Script",
+    "default": "cursive",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 20,
+  "fields": {
+    "name": "Shadows Into Light Two",
+    "default": "cursive",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 21,
+  "fields": {
+    "name": "Covered By Your Grace",
+    "default": "cursive",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 22,
+  "fields": {
+    "name": "Rock Salt",
+    "default": "cursive",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 23,
+  "fields": {
+    "name": "Faster One",
+    "default": "cursive",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 24,
+  "fields": {
+    "name": "Rammetto One",
+    "default": "cursive",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 25,
+  "fields": {
+    "name": "Poiret One",
+    "default": "cursive",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 26,
+  "fields": {
+    "name": "Love Ya Like A Sister",
+    "default": "cursive",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 27,
+  "fields": {
+    "name": "IBM Plex Serif",
+    "default": "serif",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 28,
+  "fields": {
+    "name": "Slabo 27px",
+    "default": "serif",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 29,
+  "fields": {
+    "name": "Cinzel",
+    "default": "serif",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 30,
+  "fields": {
+    "name": "VT323",
+    "default": "monospace",
+    "source": "GOOGLE"
+  }
+},
+{
+  "model": "content.font",
+  "pk": 31,
+  "fields": {
+    "name": "Inconsolata",
+    "default": "monospace",
+    "source": "GOOGLE"
+  }
+}
+]
