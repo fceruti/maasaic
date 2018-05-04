@@ -3,18 +3,17 @@ from urllib.parse import urljoin
 
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
-from django.core.validators import MinValueValidator
+from django.core.validators import MaxLengthValidator
 from django.core.validators import MaxValueValidator
 from django.core.validators import MinLengthValidator
-from django.core.validators import MaxLengthValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.functional import cached_property
-from django.utils.text import slugify
 from easy_thumbnails.files import get_thumbnailer
 from image_cropping import ImageCropField
 from image_cropping import ImageRatioField
-from maasaic.apps.content.managers import PageManager
 
+from maasaic.apps.content.managers import PageManager
 from maasaic.apps.users.models import User
 from maasaic.apps.utils.models import Choices
 
@@ -316,7 +315,7 @@ class UploadedImage(models.Model):
 
     @property
     def thumbnail_url(self):
-        options = {'size': (300, 200), 'crop': 'smart'}
+        options = {'size': (300, 200), 'crop': True}
         return get_thumbnailer(self.image).get_thumbnail(options).url
 
 
