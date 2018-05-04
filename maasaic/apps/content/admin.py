@@ -5,6 +5,7 @@ from maasaic.apps.content.models import Cell
 from maasaic.apps.content.models import Font
 from maasaic.apps.content.models import Page
 from maasaic.apps.content.models import Section
+from maasaic.apps.content.models import UploadedImage
 from maasaic.apps.content.models import Website
 
 
@@ -61,6 +62,14 @@ class SectionAdmin(admin.ModelAdmin):
 @admin.register(Cell)
 class CellAdmin(admin.ModelAdmin):
     list_display = ['section', 'cell_type', 'h', 'w', 'x', 'y']
+
+
+# ------------------------------------------------------------------------------
+# Images
+# ------------------------------------------------------------------------------
+@admin.register(UploadedImage)
+class UploadedImage(admin.ModelAdmin):
+    list_display = ['website', 'image', 'width', 'height', 'size']
 
 
 # ------------------------------------------------------------------------------
