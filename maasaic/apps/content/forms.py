@@ -567,7 +567,7 @@ class CellCreateForm(forms.ModelForm):
             cell_image.uploaded_image = uploaded_image
             cell_image.cropping = crop_data
 
-            img_path = str(uploaded_image.image.path)
+            img_path = str(uploaded_image.image.name)
             extension = img_path.split('.')[-1].lower()
 
             if extension in ['jpg', 'jpeg']:
