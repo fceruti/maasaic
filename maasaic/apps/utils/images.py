@@ -108,7 +108,7 @@ def extract_and_resize_frames(image, box, zoom):
             new_frame.paste(image, (0, 0), image.convert('RGBA'))
             new_frame = new_frame.crop(box)
             width, height = new_frame.size
-            new_frame = new_frame.resize((int(width * zoom), int(height * zoom)), Image.ANTIALIAS)
+            new_frame = new_frame.resize((int(width * zoom * 2), int(height * zoom * 2)), Image.ANTIALIAS)
             all_frames.append(new_frame)
 
             i += 1

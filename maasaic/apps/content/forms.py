@@ -586,7 +586,7 @@ class CellCreateForm(forms.ModelForm):
             else:
                 img_crop = img.crop(crop_coords)
                 width, height = img_crop.size
-                img_crop = img_crop.resize((int(width * zoom), int(height * zoom)), Image.ANTIALIAS)
+                img_crop = img_crop.resize((int(width * zoom * 2), int(height * zoom * 2)), Image.ANTIALIAS)
                 img_crop.save(img_io, format=img_format)
 
             path = str(uploaded_image.image)
