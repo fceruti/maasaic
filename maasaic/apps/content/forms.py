@@ -7,10 +7,10 @@ from PIL import Image
 from django import forms
 from django.contrib.auth import authenticate
 from django.core.files import File
+from django.core.files.storage import default_storage
 from django.core.files.temp import NamedTemporaryFile
 from django.db import transaction
 from image_cropping import ImageCropWidget
-from maasaic.apps.utils.images import resize_gif
 
 from maasaic.apps.content.fields import SubdomainField
 from maasaic.apps.content.models import Cell
@@ -28,6 +28,7 @@ from maasaic.apps.content.utils import get_margin_string_from_position
 from maasaic.apps.content.utils import get_position_dict_from_margin
 from maasaic.apps.users.models import User
 from maasaic.apps.utils.forms import ColorWidget
+from maasaic.apps.utils.images import resize_gif
 
 path_pattern = re.compile('^([/\w+-.]*)$')
 
@@ -579,7 +580,7 @@ class CellCreateForm(forms.ModelForm):
             else:
                 raise Exception
 
-            img = Image.open(img_path)
+            img = Image.open(default_storage.open(img_path))
             img_io = BytesIO()
             if img_format == 'GIF':
                 resize_gif(image=img, box=crop_coords, zoom=zoom, output_file=img_io)
