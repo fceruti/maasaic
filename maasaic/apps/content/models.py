@@ -51,7 +51,7 @@ def favicon_path(instance, filename):
 
 
 def image_path(instance, filename):
-    return os.path.join(instance.website.subdomain, 'img', filename)
+    return os.path.join('img', instance.website.subdomain, 'images', filename)
 
 
 def image_cell_path(instance, filename):
