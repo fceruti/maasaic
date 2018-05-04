@@ -41,6 +41,7 @@ from maasaic.apps.content.views.app import SectionUpdateView
 from maasaic.apps.content.views.app import SectionVisibilityUpdateView
 from maasaic.apps.content.views.app import WebsiteConfigView
 from maasaic.apps.content.views.app import WebsiteCreateView
+from maasaic.apps.content.views.app import WebsiteGalleryView
 from maasaic.apps.content.views.app import WebsiteDetailView
 from maasaic.apps.content.views.app import WebsiteListView
 from maasaic.apps.content.views.app import WebsitePageDefaultsView
@@ -81,6 +82,7 @@ sites_urls = [
     path('', WebsiteListView.as_view(), name='website_list'),
     path('/create', WebsiteCreateView.as_view(), name='website_create'),
     path('/<str:subdomain>', WebsiteDetailView.as_view(), name='website_detail'),
+    path('/<str:subdomain>/gallery', WebsiteGalleryView.as_view(), name='website_gallery'),
     path('/<str:subdomain>/config', WebsiteConfigView.as_view(), name='website_config'),
     path('/<str:subdomain>/defaults', WebsitePageDefaultsView.as_view(), name='website_defaults'),
     path('/<str:subdomain>/publish', WebsitePublishView.as_view(), name='website_publish'),

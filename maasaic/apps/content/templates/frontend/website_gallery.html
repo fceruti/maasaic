@@ -1,0 +1,76 @@
+{% extends 'frontend/_website_detail_base.html' %}
+
+{% load bootstrap4 %}
+{% load static %}
+
+{% block title %}Gallery{% endblock %}
+
+{% block panel_content %}
+<div class="my-3 my-md-5">
+  <div class="container">
+    <div class="row row-cards row-deck">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-options">
+
+              <form method="POST" action="{% url 'image_create' website.subdomain %}" enctype="multipart/form-data" id="upload-image-form">
+                {% csrf_token %}
+                {{ form.errors }}
+                <label class="btn btn-secondary btn-sm float-right" style="margin: 0 8px 0 0">
+                  <i class="fe fe-upload-cloud"></i> Upload image<input type="file" name="image" hidden/>
+                </label>
+              </form>
+
+              <script type="text/javascript">
+                var csrfmiddlewaretoken = '{{ csrf_token }}';
+                $(document).ready(function(){
+                  $('#upload-image-form input[name=image]').on('change', function() {
+                    $form = $(this).closest('form');
+                    var data = new FormData($form[0]);
+                    var url = $form.attr('action');
+
+                    $.ajax({
+                      type: "POST",
+                      url: url,
+                      data: data,
+                      contentType: 'multipart/form-data',
+                      headers: {'X-CSRFToken': csrfmiddlewaretoken},
+                      cache: false,
+                      contentType: false,
+                      processData: false,
+                      complete: function() {
+                        window.location.reload(false);
+                      }
+                    });
+                  });
+                });
+
+              </script>
+            </div>
+            <h3 class="card-title">
+              <i class="fe fe-image"></i> Gallery
+            </h3>
+          </div>
+          <div class="card-body">
+            {% if website.uploadedimage_set.count %}
+              <div class="row">
+                {% for image in website.uploadedimage_set.all %}
+                  <div class="col-4">
+                    <figure class="imagecheck-figure">
+                      <img src="{{ image.thumbnail_url }}" class="thumb" alt=""/>
+                    </figure>
+                    <p slass="stats">{{ image.width }}x{{ image.height }} | {{ image.size|filesizeformat }}</p>
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="alert alert-info">You don't have images yet. Upload your first one and you'll see it here.</div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

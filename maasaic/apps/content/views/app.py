@@ -131,6 +131,11 @@ class WebsiteDetailView(WebsiteDetailBase, DetailView):
     current_tab = 'dashboard'
 
 
+class WebsiteGalleryView(WebsiteDetailView):
+    template_name = 'frontend/website_gallery.html'
+    current_tab = 'gallery'
+
+
 class WebsiteConfigView(WebsiteDetailBase, UpdateView):
     template_name = 'frontend/website_detail_config.html'
     form_class = WebsiteConfigForm

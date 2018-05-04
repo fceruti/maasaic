@@ -35,7 +35,7 @@
             <a class="nav-link{% if current_tab == 'pages' %} active{% endif %}" href="{% url 'page_list' website.subdomain %}"><i class="fe fe-layers"></i> Pages</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link{% if current_tab == 'defaults' %} active{% endif %}" href="{% url 'website_defaults' website.subdomain %}"><i class="fe fe-image"></i> Gallery</a>
+            <a class="nav-link{% if current_tab == 'gallery' %} active{% endif %}" href="{% url 'website_gallery' website.subdomain %}"><i class="fe fe-image"></i> Gallery</a>
           </li>
           <li class="nav-item">
             <a class="nav-link{% if current_tab == 'defaults' %} active{% endif %}" href="{% url 'website_defaults' website.subdomain %}"><i class="fe fe-sliders"></i> Default values</a>
