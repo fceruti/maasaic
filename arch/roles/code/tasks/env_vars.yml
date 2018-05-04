@@ -1,0 +1,8 @@
+---
+- name: Write environment variables
+  template:
+    src="roles/code/templates/environment_vars.sh"
+    dest="/{{ user }}/{{ project_name }}/.env"
+    mode=0740
+    owner="{{ user }}"
+    group="{{ group }}"

@@ -24,14 +24,6 @@
     - 'gunicorn'
     - 'django'
 
-- name: Write environment variables
-  template:
-    src="environment_vars.sh"
-    dest="/{{ user }}/{{ project_name }}/.env"
-    mode=0740
-    owner="{{ user }}"
-    group="{{ group }}"
-
 - name: "Connect environment vars to {{ user }} user"
   lineinfile:
     dest="/{{ user }}/.bashrc"

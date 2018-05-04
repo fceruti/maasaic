@@ -6,6 +6,7 @@
   remote_user: ubuntu
 
   tasks:
+    - include: roles/code/tasks/env_vars.yml
     - include: roles/code/tasks/repo.yml
 
 - include: migrate_db.yml
