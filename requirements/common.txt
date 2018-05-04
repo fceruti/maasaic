@@ -19,4 +19,5 @@ django-nested-admin==3.0.21
 
 # Others
 pyquery==1.4.0
+requests==2.18.4
 -e git+https://github.com/fceruti/django-bootstrap4.git@091e12ce639ebfd4523f48b65be8c3fd5a210f94#egg=django_bootstrap4
