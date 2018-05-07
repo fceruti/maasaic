@@ -1,12 +1,20 @@
 @import 'variables'
 
-.edit-body
-  background: white
-  .webpage .section .section-inner
-    margin: 0 0 0 20px
+body
+
+  &.edit-body
+    background: white
+    .webpage .section .section-inner
+      margin: 0 0 0 20px
+    @each $page_width in $page-widths
+      &.body--width-#{$page_width}
+        min-width: $page_width  + $sidebar-width + 40px
+
   @each $page_width in $page-widths
     &.body--width-#{$page_width}
-      min-width: $page_width  + $sidebar-width + 40px
+      min-width: $page_width  * 1px
+
+
 
 .webpage
   .section
