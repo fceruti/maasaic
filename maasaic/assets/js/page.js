@@ -348,8 +348,9 @@ function doMoveCell(cell){
 
 function stopMoveCell(cell){
     var url = '/cells/' + moveOptions['cellId'] + '/move';
-    var data = {'x': parseInt($(cell).attr('data-x')),
-                'y': parseInt($(cell).attr('data-y'))};
+    var data = {'x': parseInt($(cell).data('x')),
+                'y': parseInt($(cell).data('y')),
+                'section': parseInt($(cell).data('section-id'))};
     performPost(url, data);
     clearMoveArea();
     clearMoveOptions();

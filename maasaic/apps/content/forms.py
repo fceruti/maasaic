@@ -610,7 +610,7 @@ class CellUpdateContentForm(CellCreateForm):
 class CellPositionForm(forms.ModelForm):
     class Meta:
         model = Cell
-        fields = ['x', 'y']
+        fields = ['x', 'y', 'section']
 
 
 class CellVisibilityForm(forms.ModelForm):
