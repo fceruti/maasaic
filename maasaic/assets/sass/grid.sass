@@ -53,7 +53,7 @@
     &.webpage--width-#{$page_width}
       .section-inner
         width:  $page_width * 1px
-      @for $col_n from 1 through $max-cols
+      @for $col_n from $min-cols through $max-cols
         $cell_width: $page_width / $col_n
         .section.section--#{$col_n}-cols
           .cell
@@ -67,7 +67,7 @@
                 height: $cell_width * $sec_row_n * 1px
               &.cell--y-#{$sec_row_n}
                 top: $cell_width * ($sec_row_n - 1) * 1px
-          @for $row_n from 1 through $max-rows
+          @for $row_n from $min-rows through $max-rows
             &.section--#{$row_n}-rows
               .section-inner
                 height: $cell_width * $row_n * 1px
