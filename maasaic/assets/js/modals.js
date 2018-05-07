@@ -182,7 +182,7 @@ function onCellModalRequest(cellProperties, cellObj) {
                 ['font', ['strikethrough', 'superscript', 'subscript']],
                 ['fontsize', ['fontname', 'fontsize']],
                 ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
+                ['para', ['ul', 'ol', 'paragraph', 'link']],
                 ['height', ['height']],
             ],
             fontNames: fontNames,
