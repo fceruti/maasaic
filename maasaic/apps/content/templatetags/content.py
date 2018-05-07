@@ -35,6 +35,23 @@ def get_obj_hash(obj):
 
 
 # ------------------------------------------------------------------------------
+# Website
+# ------------------------------------------------------------------------------
+@register.simple_tag()
+def website_favicon(website):
+    if website.favicon and website.favicon_cropping:
+        href = website.favicon_url
+        extension = str(website.favicon.name).split('.')[-1]
+        image_type = 'image/%s' % extension
+    else:
+        href = settings.STATIC_URL + 'img/favicon.png'
+        image_type = 'image/png'
+
+    favicon_tmpl = '<link rel="shortcut icon" type="%s" href="%s" />'
+    return mark_safe(favicon_tmpl % (image_type, href))
+
+
+# ------------------------------------------------------------------------------
 # Page
 # ------------------------------------------------------------------------------
 @register.simple_tag()

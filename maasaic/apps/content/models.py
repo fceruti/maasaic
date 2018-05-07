@@ -46,7 +46,7 @@ with open(variables_path, 'r') as f:
 def favicon_path(instance, filename):
     ext = filename.split('.')[-1]
     filename = 'favicon.%s' % ext
-    return os.path.join(instance.subdomain, 'favicons', filename)
+    return os.path.join('img', instance.subdomain, 'favicons', filename)
 
 
 def image_path(instance, filename):

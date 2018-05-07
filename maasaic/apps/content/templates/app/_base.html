@@ -1,11 +1,12 @@
 {% load compress %}
 {% load static %}
+{% load content %}
 
 <html>
   <head>
     <title>{% block title %}Maasaic{% endblock %}</title>
     <meta charset="UTF-8">
-
+    {% website_favicon website %}
     {% block pre_css %}{% endblock %}
 
     {% if page_edit_on %}
