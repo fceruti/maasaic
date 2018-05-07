@@ -207,7 +207,7 @@ def cell_inner_style_background(cell):
         background = cell.css['background']
     except KeyError:
         # TODO: fetch section default background
-        background = 'white'
+        background = 'transparent'
     return 'background: %s;' % background
 
 

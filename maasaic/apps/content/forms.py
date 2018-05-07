@@ -185,15 +185,15 @@ site_props = {
     'sec_background': {
         'scope': SiteDefaultProp.Scope.SECTION,
         'label_name': 'Background', 'widget': ColorWidget,
-        'name': 'background', 'type': 'str', 'default': '#FFFFFF'},
+        'name': 'background', 'type': 'str', 'default': '#f6f6f6'},
     'sec_padding-top': {
         'scope': SiteDefaultProp.Scope.SECTION,
         'label_name': 'Padding top',
-        'name': 'padding_top', 'type': 'str', 'default': '30px'},
+        'name': 'padding_top', 'type': 'str', 'default': '15px'},
     'sec_padding-bottom': {
         'scope': SiteDefaultProp.Scope.SECTION,
         'label_name': 'Padding bottom',
-        'name': 'padding_bottom', 'type': 'str', 'default': '30px'},
+        'name': 'padding_bottom', 'type': 'str', 'default': '15px'},
 
     'color': {
         'scope': SiteDefaultProp.Scope.CELL,
@@ -202,15 +202,15 @@ site_props = {
     'background': {
         'scope': SiteDefaultProp.Scope.CELL,
         'label_name': 'Background', 'widget': ColorWidget,
-        'name': 'background', 'type': 'str', 'default': '#FFFFFF'},
+        'name': 'background', 'type': 'str', 'default': 'rgba(255, 255, 255, 0)'},
     'margin': {
         'scope': SiteDefaultProp.Scope.CELL,
         'label_name': 'Margin',
-        'name': 'margin', 'type': 'str', 'default': '15px'},
+        'name': 'margin', 'type': 'str', 'default': '5px'},
     'padding': {
         'scope': SiteDefaultProp.Scope.CELL,
         'label_name': 'Padding',
-        'name': 'padding', 'type': 'str', 'default': '15px'},
+        'name': 'padding', 'type': 'str', 'default': '5px'},
     'border': {
         'scope': SiteDefaultProp.Scope.CELL,
         'label_name': 'Border',
