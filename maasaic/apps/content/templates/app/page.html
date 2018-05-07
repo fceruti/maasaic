@@ -7,7 +7,7 @@
 
 {% block title %}{% if page_edit_on %}EDIT: {% endif %}{{ page.title }}{% endblock %}
 
-{% block body_class %}{% if page_edit_on %}edit-body body--width-{{ page.width }}{% endif %}{% endblock %}
+{% block body_class %}body--width-{{ page.width }}{% if page_edit_on %} edit-body{% endif %}{% endblock %}
 
 {% block pre_css %}
   {% if page_edit_on %}
@@ -607,13 +607,13 @@
     </div>
   </div>
 
-{% endif %}
-
-{# loading #}
-<div id="loading-overlay" class="hidden">
-  <div id="loading-msg">
-    <i class="fa fa-circle-o-notch fa-spin"></i> waiting for response
+  {# loading #}
+  <div id="loading-overlay" class="hidden">
+    <div id="loading-msg">
+      <i class="fa fa-circle-o-notch fa-spin"></i> waiting for response
+    </div>
   </div>
-</div>
+
+{% endif %}
 
 {% endblock %}
