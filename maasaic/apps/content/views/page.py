@@ -31,6 +31,9 @@ class PageView(TemplateView):
         path = self.kwargs['url']
         if not path:
             path = '/'
+        if path[0] != '/':
+            path = '/%s' % path
+
         page = get_object_or_404(Page,
                                  website=self.website,
                                  path=path,

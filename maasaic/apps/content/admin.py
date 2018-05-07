@@ -40,7 +40,7 @@ class SectionInline(nested_admin.NestedStackedInline):
 
 @admin.register(Page)
 class PageAdmin(nested_admin.NestedModelAdmin):
-    list_display = ['website', 'title', 'created_at', 'updated_at']
+    list_display = ['website', 'path', 'mode', 'width', 'title', 'created_at', 'updated_at']
     inlines = [SectionInline]
 
 
