@@ -206,11 +206,11 @@ site_props = {
     'margin': {
         'scope': SiteDefaultProp.Scope.CELL,
         'label_name': 'Margin',
-        'name': 'margin', 'type': 'str', 'default': '5px'},
+        'name': 'margin', 'type': 'str', 'default': '10px'},
     'padding': {
         'scope': SiteDefaultProp.Scope.CELL,
         'label_name': 'Padding',
-        'name': 'padding', 'type': 'str', 'default': '5px'},
+        'name': 'padding', 'type': 'str', 'default': '10px'},
     'border': {
         'scope': SiteDefaultProp.Scope.CELL,
         'label_name': 'Border',
