@@ -1,15 +1,13 @@
 # Maasaic
 
-Maasaic is a sofware to create and host your own websites using a mosaic like structure.
-
-The main idea is to create non-standard good looking websites very easily. You can try it out at maasaic.com
+Maasaic is a sofware to create and host your own websites using a mosaic like structure. The main idea is to create non-standard good looking websites very easily. You can try it out at maasaic.com
 
 ### Dev and testing
 
 To start developing or trying out this project on your local computer follow this
 
 ```
-git clone https://github.com/fceruti/maasaic.com.git
+git clone https://github.com/fceruti/maasaic.git
 cd maasaic
 mkvirtualenv --python=python3 maasaic
 pip install -r requirements/dev.txt
