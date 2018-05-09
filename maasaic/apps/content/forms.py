@@ -548,6 +548,7 @@ class CellCreateForm(forms.ModelForm):
                     website=cell.section.page.website)
 
                 img = Image.open(img_temp)
+                img = img.load()
                 width, height = img.size
                 uploaded_image.width = width
                 uploaded_image.height = height
