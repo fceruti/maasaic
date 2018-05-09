@@ -1,6 +1,10 @@
 # Maasaic
 
-Maasaic is a sofware to create and host your own websites using a mosaic like structure. The main idea is to create non-standard good looking websites very easily. You can try it out at maasaic.com
+Maasaic is a sofware to create and host your own websites using a mosaic like structure. The main idea is to create non-standard good looking websites very easily. You can try it out at maasaic.com.
+
+If you want to see an example of a website created using it, visit my personal website at [fceruti.com](https://fceruti.com).
+
+This is a very early prototype, there are many things to be improved to be even considered for production. For the time beeing I'm using it personally for my website and fixing things and adding features as I need them.
 
 ### Dev and testing
 
